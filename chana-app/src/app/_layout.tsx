@@ -10,13 +10,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: true,
-            headerTransparent: true,
-            title: "",
-          }}
-        />
+        <Stack />
       </SafeAreaProvider>
     </ThemeProvider>
   );
