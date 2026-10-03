@@ -72,7 +72,7 @@ export function ThemedButton({
       {icon && <ThemedIcon icon={icon} themeColor={fg ?? colors.fg} />}
       <ThemedText
         themeColor={fg ?? colors.fg}
-        type={size === "small" ? "small" : "default"}
+        type={size === "small" ? "sublabel" : "label"}
       >
         {label}
       </ThemedText>
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: Spacing.two,
     borderCurve: "continuous",
   },
   fit: {
@@ -100,16 +99,21 @@ const sizeStyles = StyleSheet.create({
   small: {
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
+    gap: Spacing.one,
   },
   medium_1: {
     height: 42,
     paddingHorizontal: Spacing.three,
+    gap: Spacing.three,
   },
   medium_2: {
-    padding: Spacing.three,
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.four,
+    gap: Spacing.three,
   },
   large: {
     flexDirection: "column",
     padding: Spacing.three,
+    gap: Spacing.two,
   },
 });
