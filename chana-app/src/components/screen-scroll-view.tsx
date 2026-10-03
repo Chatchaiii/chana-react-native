@@ -10,8 +10,9 @@ export function ScreenScrollView({
   contentContainerStyle,
   ...otherProps
 }: ScreenScrollViewProps & ScrollViewProps) {
-  const { contentInsetAdjustmentBehavior, contentInsetStyle } =
-    useScreenInsets({ transparentHeader });
+  const { contentInsetAdjustmentBehavior, contentInsetStyle } = useScreenInsets(
+    { transparentHeader },
+  );
 
   return (
     <ScrollView

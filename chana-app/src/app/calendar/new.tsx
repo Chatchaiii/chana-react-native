@@ -1,12 +1,6 @@
-import { ScreenScrollView } from "@/components/screen-scroll-view";
+import { CreateScreen } from "@/components/create-screen";
 import { Tabs } from "@/constants/tabs";
-import { Stack } from "expo-router";
 
-export default function NewCalendar() {
-  return (
-    <>
-      <Stack.Screen options={{ headerTitle: Tabs.calendar.create.label }} />
-      <ScreenScrollView transparentHeader={false} />
-    </>
-  );
+export default function NewEvent() {
+  return <CreateScreen tab={Tabs.calendar} />;
 }

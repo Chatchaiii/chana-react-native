@@ -1,10 +1,10 @@
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
+import { Timings } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
-  Easing,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -12,14 +12,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 
-const TEXT =
-  "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.";
-
 const COLLAPSED_LINES = 3;
-const TIMING = { duration: 250, easing: Easing.out(Easing.cubic) };
 
-/** Author name and post text, truncated to three lines with "View more". */
-export function TextItem() {
+export type TextItemProps = {
+  author: string;
+  text: string;
+};
+
+/** Author name and post text, truncated to three lines with "View more" */
+export function TextItem({ author, text }: TextItemProps) {
   const [expanded, setExpanded] = useState(false);
   // Whether the visible text is cut to COLLAPSED_LINES (with an ellipsis)
   const [clamped, setClamped] = useState(true);
@@ -47,19 +48,21 @@ export function TextItem() {
     if (expanded) {
       // Shrink first, then cut the text so the ellipsis comes back
       setExpanded(false);
-      progress.set(withTiming(0, TIMING, () => scheduleOnRN(setClamped, true)));
+      progress.set(
+        withTiming(0, Timings.normal, () => scheduleOnRN(setClamped, true)),
+      );
     } else {
       // Show the full text, then grow the box to reveal it
       setClamped(false);
       setExpanded(true);
-      progress.set(withTiming(1, TIMING));
+      progress.set(withTiming(1, Timings.normal));
     }
   };
 
   return (
-    <View style={styles.item_wrapper}>
+    <View style={styles.container}>
       <View>
-        <ThemedText type="heading_4">chadchai</ThemedText>
+        <ThemedText type="heading_4">{author}</ThemedText>
 
         <View>
           {/* Invisible copies that measure both heights at the current width */}
@@ -76,7 +79,7 @@ export function TextItem() {
                 setCollapsedHeight(event.nativeEvent.layout.height)
               }
             >
-              {TEXT}
+              {text}
             </ThemedText>
             <ThemedText
               type="subtext"
@@ -84,7 +87,7 @@ export function TextItem() {
                 setFullHeight(event.nativeEvent.layout.height)
               }
             >
-              {TEXT}
+              {text}
             </ThemedText>
           </View>
 
@@ -94,7 +97,7 @@ export function TextItem() {
               themeColor="fg2"
               numberOfLines={clamped ? COLLAPSED_LINES : undefined}
             >
-              {TEXT}
+              {text}
             </ThemedText>
           </Animated.View>
         </View>
@@ -112,7 +115,7 @@ export function TextItem() {
 }
 
 const styles = StyleSheet.create({
-  item_wrapper: {
+  container: {
     paddingHorizontal: Spacing.three,
     paddingBottom: Spacing.three,
     gap: Spacing.one,

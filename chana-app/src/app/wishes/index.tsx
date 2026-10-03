@@ -4,7 +4,7 @@ import { Tabs } from "@/constants/tabs";
 
 export default function Wishes() {
   return (
-    <TabScreen title={Tabs.wishes.title} create={Tabs.wishes.create}>
+    <TabScreen tab={Tabs.wishes}>
       <ScreenScrollView />
     </TabScreen>
   );

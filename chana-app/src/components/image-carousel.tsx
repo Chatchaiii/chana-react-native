@@ -1,6 +1,6 @@
 import { ImageViewer, type ViewerOrigin } from "@/components/image-viewer";
 import { ThemedText } from "@/components/themed-text";
-import { Spacing } from "@/constants/theme";
+import { OverlayColors, Radius, Spacing } from "@/constants/theme";
 import { Image, type ImageSource } from "expo-image";
 import { useRef, useState } from "react";
 import {
@@ -28,7 +28,6 @@ export type ImageCarouselProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const BORDER_RADIUS = 24;
 const DOT_SIZE = 6;
 const ACTIVE_DOT_WIDTH = 16;
 
@@ -74,7 +73,7 @@ export function ImageCarousel({
         y,
         width: frameWidth,
         height: frameHeight,
-        borderRadius: BORDER_RADIUS,
+        borderRadius: Radius.md,
       });
     });
   };
@@ -174,11 +173,9 @@ function Dot({ index, scrollX, pageWidth }: DotProps) {
 // Overlays sit on top of photos, so they use fixed colors instead of the theme
 const styles = StyleSheet.create({
   container: {
-    borderRadius: BORDER_RADIUS,
+    borderRadius: Radius.md,
     borderCurve: "continuous",
     overflow: "hidden",
-    marginHorizontal: Spacing.three,
-    marginBottom: Spacing.three,
   },
   counter: {
     position: "absolute",
@@ -186,14 +183,14 @@ const styles = StyleSheet.create({
     right: Spacing.three,
     paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.half,
-    borderRadius: 999,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: Radius.full,
+    backgroundColor: OverlayColors.scrim,
   },
   hidden: {
     opacity: 0,
   },
   overlayText: {
-    color: "#ffffff",
+    color: OverlayColors.foreground,
   },
   dots: {
     position: "absolute",
@@ -206,7 +203,7 @@ const styles = StyleSheet.create({
   },
   dot: {
     height: DOT_SIZE,
-    borderRadius: DOT_SIZE / 2,
-    backgroundColor: "#ffffff",
+    borderRadius: Radius.full,
+    backgroundColor: OverlayColors.foreground,
   },
 });

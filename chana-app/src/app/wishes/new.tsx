@@ -1,12 +1,6 @@
-import { ScreenScrollView } from "@/components/screen-scroll-view";
+import { CreateScreen } from "@/components/create-screen";
 import { Tabs } from "@/constants/tabs";
-import { Stack } from "expo-router";
 
-export default function NewWishes() {
-  return (
-    <>
-      <Stack.Screen options={{ headerTitle: Tabs.wishes.create.label }} />
-      <ScreenScrollView transparentHeader={false} />
-    </>
-  );
+export default function NewWish() {
+  return <CreateScreen tab={Tabs.wishes} />;
 }

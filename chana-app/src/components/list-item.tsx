@@ -5,16 +5,25 @@ import { Spacing } from "@/constants/theme";
 import { EllipsisIcon } from "@hugeicons/core-free-icons";
 import { StyleSheet, View } from "react-native";
 
-/** Row with an avatar, a title + subtitle and a trailing icon. */
-export function ListItem() {
+export type ListItemProps = {
+  title: string;
+  subtitle?: string;
+  /** Avatar image URL; falls back to the title's initials */
+  avatar?: string;
+};
+
+/** Row with an avatar, a title + subtitle and a trailing icon */
+export function ListItem({ title, subtitle, avatar }: ListItemProps) {
   return (
-    <View style={styles.item_wrapper}>
-      <ThemedAvatar size="m" />
-      <View style={{ flex: 1 }}>
-        <ThemedText type="label">chadchai</ThemedText>
-        <ThemedText type="sublabel" themeColor="fg2">
-          2 days ago
-        </ThemedText>
+    <View style={styles.row}>
+      <ThemedAvatar src={avatar} name={title} size="m" />
+      <View style={styles.text}>
+        <ThemedText type="label">{title}</ThemedText>
+        {subtitle && (
+          <ThemedText type="sublabel" themeColor="fg2">
+            {subtitle}
+          </ThemedText>
+        )}
       </View>
       <ThemedIcon icon={EllipsisIcon} />
     </View>
@@ -22,10 +31,13 @@ export function ListItem() {
 }
 
 const styles = StyleSheet.create({
-  item_wrapper: {
-    alignItems: "center",
+  row: {
     flexDirection: "row",
+    alignItems: "center",
     padding: Spacing.three,
     gap: Spacing.three,
+  },
+  text: {
+    flex: 1,
   },
 });

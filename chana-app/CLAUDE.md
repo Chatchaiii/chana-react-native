@@ -15,9 +15,9 @@ Read this before working on the app. Keep it up to date when architecture, conve
 ## Verify before declaring done
 
 ```bash
-npx tsc --noEmit 2>&1 | grep -v '^example/\|^  '   # example/ errors are pre-existing template leftovers
-npx expo lint src                                    # 1 known pre-existing error in src/hooks/use-color-scheme.web.ts
-npx prettier --write <changed files>                 # only format files you touched
+npx tsc --noEmit                      # must be clean (example/ is excluded)
+npx expo lint                         # must be clean
+npx prettier --write <changed files>  # only format files you touched
 ```
 
 Visual check in the iOS simulator (iPhone 17 Pro, UDID `86094CF1-8555-42D3-803A-AC76915573F1`, Expo Go installed):
@@ -31,46 +31,57 @@ Android: the user also tests on the `Pixel_10` emulator (`emulator-5554`, adb at
 ## Architecture
 
 ```
-src/app/_layout.tsx            Root: GestureHandlerRootView > ThemeProvider > SafeAreaProvider > Drawer
-src/app/(main)/                Home tab (posts): _layout = <DrawerStack>, index, new (modal)
-src/app/{places,wishes,calendar}/   Same shape as (main)
-src/constants/tabs.ts          Single source of truth for tabs: route, title, icon, searchTitle, create {label, href}
-src/constants/theme.ts         Colors (bg1-3, fg1-3, acc1, neg1-2; light/dark), Spacing, radii
+src/app/_layout.tsx                 Root: GestureHandlerRootView > ThemeProvider > SafeAreaProvider > Drawer
+src/app/<tab>/_layout.tsx           One-line re-export of DrawerStack + unstable_settings (all tabs identical)
+src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabScreen>
+src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
+src/constants/tabs.ts               Single source of truth for tabs: route, title, icon, searchTitle, create {label, href}
+src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
+src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
+src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
+src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
+src/utils/strings.ts                getInitials
 ```
+Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 
-- **Drawer** (`_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer items are built from `Tabs`.
-- **DrawerStack** (`components/drawer-stack.tsx`): layout for every tab. Wraps a `Stack` and animates rounded corners + border + fade from `useDrawerProgress()`. Always declares `<Stack.Screen name="index" />` first — declared screens are ordered before file routes, so without it a tab would open on `new`.
-- **TabScreen** (`components/tab-screen.tsx`): rendered by every tab page. Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `create.href`). Search is global; results (`SearchResults`) are grouped by `tab.searchTitle`. Bottom toolbar must be declared in pages, not layouts; iOS 26+ only.
-- **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics` (haptic when drawer settles open/closed).
-- Each tab's `new.tsx` is presented as `presentation: "modal"`; layouts export `unstable_settings.initialRouteName = "index"`.
-- Adding a tab: entry in `Tabs` + folder with `_layout.tsx` (`<DrawerStack>` + `new` modal screen), `index.tsx` (`<TabScreen>`), `new.tsx`.
+- **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`.
+- **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
+- **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
+- **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
+- Adding a tab: entry in `Tabs` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, and a `new.tsx` using `CreateScreen`.
 
 ## Components
 
 | Component | Purpose |
 |---|---|
-| `ThemedText` | `type`: heading, heading_2–4, label, sublabel, text, subtext, code; `themeColor` |
-| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives (`themeColor`/`bg`/`fg` take `ThemeColor` keys) |
-| `ThemedPressable` | Unstyled pressable: haptic (default Medium, `haptic={false}` to disable), scale+dim on press (Reanimated), disabled dim. Use for any tappable item |
-| `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `shape` (ButtonBorderRadii), `align`, `fullWidth`, optional `icon` |
-| `MenuButton` | Header button that dispatches `DrawerActions.openDrawer()` |
+| `ThemedText` | `type`: heading, heading_2–4, label, sublabel, text, subtext, code (looked up from the style table); `themeColor` |
+| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Avatar: `src` (expo-image) or initials of `name`, `size` (ContainerSizes), `radius` (Radius key) |
+| `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
+| `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon` |
+| `MenuButton` | Header button that opens the drawer |
 | `ScreenScrollView` / `useScreenInsets` | ScrollView root with `contentInsetAdjustmentBehavior="automatic"` (iOS) + Android header/bottom padding. Don't wrap scroll content in SafeAreaView |
-| `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, radius 24, overflow hidden) |
-| `Separator` | 1px bg3 line, `padding` (Spacing key) inset, horizontal/vertical |
-| `ListItem`, `TextItem`, `PostItem` | Post UI (still placeholder content). `TextItem` truncates to 3 lines and animates height on View more/less |
-| `ImageCarousel` | Paging images, "1/4" counter + animated dots, tap → `ImageViewer` |
-| `ImageViewer` | Modal viewer that expands from the thumbnail (measured via `measureInWindow`), swipe sideways to browse, vertical drag to dismiss |
+| `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
+| `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
+| `PostItem` | Renders a `Post` (`id, author, postedAt, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` |
+| `ListItem` | Avatar + `title` + `subtitle` + trailing ellipsis |
+| `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height |
+| `ImageCarousel` | Paging images, "1/4" counter + animated dots, tap → `ImageViewer`. No outer margin — the parent places it |
+| `ImageViewer` | Modal viewer that expands from the thumbnail (`measureInWindow`), swipe sideways to browse, vertical drag to dismiss |
+| `CreateScreen` | Body of each tab's `new.tsx` modal |
 
 ## Conventions
 
-- Files kebab-case in `src/components`, `src/hooks`; import via `@/…`; double quotes; Prettier formatting.
-- Styles: `StyleSheet.create` at module bottom; variants as lookup tables (`TypeColors`, `sizeStyles`) composed in a style array; theme colors applied inline via `useTheme()`. Overlays on photos use fixed colors (white / rgba black), not theme colors.
-- Reanimated: use `.get()` / `.set()` on shared values (React Compiler), `scheduleOnRN` from react-native-worklets to call JS from worklets.
-- Prefer eased `withTiming` (~250 ms, `Easing.out(Easing.cubic)`) over springs for UI transitions — the user found springy, large motion "too much".
+- Files kebab-case; always import via `@/…` (no relative imports); double quotes; Prettier formatting.
+- **No magic numbers for shared design values.** Use `Spacing`, `Radius`, `ContainerSizes`, `Colors` via `useTheme()`, `OverlayColors` for UI on top of photos, `Timings` / `PressSpring` for motion, `HapticStyles` + `playHaptic` for haptics. Component-specific constants (e.g. `DOT_SIZE`) stay local, in SCREAMING_CASE at the top of the file.
+- Styles: `StyleSheet.create` at the bottom of the module, camelCase keys; variants as lookup tables (`TypeColors`, `sizeStyles`) composed in a style array; theme colors applied inline. Spacing around a component is set by its parent (via `style`), not baked into the component.
+- Props: component props types are `<Component>Props`, extend the underlying RN props when they forward them, and use defaults in the destructuring. Content comes in through props, never hardcoded in a component.
+- Reanimated: `.get()` / `.set()` on shared values (React Compiler), `scheduleOnRN` from react-native-worklets to call JS from worklets.
+- Prefer eased `withTiming` (`Timings.*`) over springs for transitions — the user found springy, large motion "too much". Springs only for press feedback.
 - Comments: short, explain *why*; match the surrounding density.
 
 ## Gotchas learned
 
+- A ScrollView's `contentOffset` prop is re-applied whenever it changes. Never derive it from a value that changes while scrolling (e.g. a parent that follows the current page) — capture it once with `useState(initial)`. This made `ImageViewer` snap and skip pages.
 - `StyleSheet.absoluteFillObject` doesn't exist in RN 0.86 — spell out `position/top/right/bottom/left`.
 - Rounded drawer scenes: drawer `sceneStyle` background shows in corners; the drawer has a built-in hairline right border (`borderRightWidth: 0`).
 - A `Modal` that never finishes its close animation stays on top invisibly and blocks all touches. Always call `onClose` when the close animation ends (don't gate on `finished`), guard against double dismiss.

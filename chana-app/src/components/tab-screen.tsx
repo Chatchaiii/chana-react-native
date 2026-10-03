@@ -1,17 +1,18 @@
 import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
 import { ThemedAvatar } from "@/components/themed-avatar";
-import type { CreateAction } from "@/constants/tabs";
+import { ThemedPressable } from "@/components/themed-pressable";
+import type { Tab } from "@/constants/tabs";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
-import * as Haptics from "expo-haptics";
+import { HapticStyles, playHaptic } from "@/utils/haptics";
 import { Stack, useRouter } from "expo-router";
-import { type ReactNode, useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Platform } from "react-native";
-import { ThemedPressable } from "./themed-pressable";
 
 export type TabScreenProps = {
+  tab: Tab;
+  /** Header title; defaults to the tab's title */
   title?: string;
-  create: CreateAction;
   children?: ReactNode;
 };
 
@@ -19,18 +20,22 @@ export type TabScreenProps = {
  * Shared header, search bar and bottom toolbar for every drawer tab.
  * Search is global; only the create button differs per tab.
  */
-export function TabScreen({ title = "", create, children }: TabScreenProps) {
+export function TabScreen({
+  tab,
+  title = tab.title,
+  children,
+}: TabScreenProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const haptic = Haptics.ImpactFeedbackStyle.Medium;
   // Android toolbar buttons need an image; iOS uses an SF Symbol
   const androidCreateIcon = useMaterialSymbolSource("edit_square");
   const createIcon =
     Platform.OS === "android" ? androidCreateIcon : "square.and.pencil";
 
-  const handlePress = () => {
-    Haptics.impactAsync(haptic);
-    router.push(create.href);
+  const openCreate = () => {
+    // Native toolbar buttons aren't ThemedPressables, so play the haptic here
+    playHaptic(HapticStyles.press);
+    router.push(tab.create.href);
   };
 
   return (
@@ -41,7 +46,8 @@ export function TabScreen({ title = "", create, children }: TabScreenProps) {
           headerTransparent: true,
           headerLeft: () => <MenuButton />,
           headerRight: () => (
-            <ThemedPressable onPress={() => console.log("Avatar pressed")}>
+            // TODO: open the profile
+            <ThemedPressable accessibilityLabel="Profile">
               <ThemedAvatar />
             </ThemedPressable>
           ),
@@ -50,7 +56,7 @@ export function TabScreen({ title = "", create, children }: TabScreenProps) {
 
       <Stack.SearchBar
         placeholder="Search"
-        onChangeText={(e) => setQuery(e.nativeEvent.text)}
+        onChangeText={(event) => setQuery(event.nativeEvent.text)}
         onCancelButtonPress={() => setQuery("")}
       />
 
@@ -61,8 +67,8 @@ export function TabScreen({ title = "", create, children }: TabScreenProps) {
         {createIcon && (
           <Stack.Toolbar.Button
             icon={createIcon}
-            accessibilityLabel={create.label}
-            onPress={handlePress}
+            accessibilityLabel={tab.create.label}
+            onPress={openCreate}
           />
         )}
       </Stack.Toolbar>
