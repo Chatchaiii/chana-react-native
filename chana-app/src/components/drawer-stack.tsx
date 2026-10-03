@@ -44,7 +44,7 @@ export function DrawerStack({ children }: DrawerStackProps) {
     <Animated.View
       style={[styles.screen, { backgroundColor: theme.bg1 }, screenStyle]}
     >
-      <Stack screenOptions={{ contentStyle: { backgroundColor: theme.bg1 } }}>
+      <Stack screenOptions={{ contentStyle: { backgroundColor: theme.bg2 } }}>
         {/* Declared screens are ordered first, so index must come first to stay the tab's start screen */}
         <Stack.Screen name="index" />
         {children}
@@ -53,7 +53,7 @@ export function DrawerStack({ children }: DrawerStackProps) {
         pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: theme.bg1 },
+          { backgroundColor: theme.bg2 },
           fadeStyle,
         ]}
       />

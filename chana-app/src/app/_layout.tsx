@@ -16,7 +16,7 @@ export default function RootLayout() {
 
   return (
     // Painted in the menu color so the main screen's rounded corners blend into the menu
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.bg2 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.bg1 }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
           <Drawer
@@ -27,11 +27,11 @@ export default function RootLayout() {
               drawerType: "back",
               drawerStyle: {
                 width: "80%",
-                backgroundColor: theme.bg2,
+                backgroundColor: theme.bg1,
                 borderRightWidth: 0,
               },
               // The rounding and fade are drawn by DrawerStack (components/drawer-stack.tsx)
-              sceneStyle: { backgroundColor: "transparent" },
+              sceneStyle: { backgroundColor: theme.bg1 },
               overlayColor: "transparent",
             }}
           >
