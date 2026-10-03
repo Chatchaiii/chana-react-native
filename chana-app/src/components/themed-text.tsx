@@ -8,18 +8,19 @@ export type ThemedTextProps = {
 };
 
 export type TextTypes =
-  | "default"
-  | "title"
-  | "small"
-  | "smallBold"
-  | "subtitle"
-  | "link"
-  | "linkPrimary"
+  | "heading"
+  | "heading_2"
+  | "heading_3"
+  | "heading_4"
+  | "label"
+  | "sublabel"
+  | "text"
+  | "subtext"
   | "code";
 
 export function ThemedText({
   style,
-  type = "default",
+  type = "text",
   themeColor,
   ...rest
 }: ThemedTextProps & TextProps) {
@@ -29,13 +30,14 @@ export function ThemedText({
     <Text
       style={[
         { color: theme[themeColor ?? "fg1"] },
-        type === "default" && styles.default,
-        type === "title" && styles.title,
-        type === "small" && styles.small,
-        type === "smallBold" && styles.smallBold,
-        type === "subtitle" && styles.subtitle,
-        type === "link" && styles.link,
-        type === "linkPrimary" && styles.linkPrimary,
+        type === "heading" && styles.heading,
+        type === "heading_2" && styles.heading_2,
+        type === "heading_3" && styles.heading_3,
+        type === "heading_4" && styles.heading_4,
+        type === "label" && styles.label,
+        type === "sublabel" && styles.sublabel,
+        type === "text" && styles.text,
+        type === "subtext" && styles.subtext,
         type === "code" && styles.code,
         style,
       ]}
@@ -45,43 +47,50 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
-  small: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 500,
+  heading: {
+    fontSize: 64,
+    fontWeight: 800,
+    lineHeight: 72,
   },
-  smallBold: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
-  },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
+  heading_2: {
     fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
+    fontWeight: 800,
+    lineHeight: 56,
   },
-  subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
-  },
-  link: {
+  heading_3: {
+    fontSize: 24,
+    fontWeight: 800,
     lineHeight: 30,
-    fontSize: 14,
   },
-  linkPrimary: {
-    lineHeight: 30,
+  heading_4: {
     fontSize: 14,
-    color: "#3c87f7",
+    fontWeight: 800,
+    lineHeight: 18,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 800,
+    lineHeight: 22,
+  },
+  sublabel: {
+    fontSize: 12,
+    fontWeight: 700,
+    lineHeight: 16,
+  },
+  text: {
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: 21,
+  },
+  subtext: {
+    fontSize: 10,
+    fontWeight: 500,
+    lineHeight: 15,
   },
   code: {
     fontFamily: Fonts.mono,
     fontWeight: Platform.select({ android: 700 }) ?? 500,
     fontSize: 12,
+    lineHeight: 17,
   },
 });

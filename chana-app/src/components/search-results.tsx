@@ -17,7 +17,7 @@ export function SearchResults({ query }: SearchResultsProps) {
     >
       {Object.values(Tabs).map((tab) => (
         <View key={tab.route} style={styles.section}>
-          <ThemedText type="smallBold" themeColor="fg2">
+          <ThemedText type="label" themeColor="fg2">
             {tab.searchTitle}
           </ThemedText>
           {/* TODO: query this tab's data */}

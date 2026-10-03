@@ -2,9 +2,10 @@ import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
 import { ThemedAvatar } from "@/components/themed-avatar";
 import type { CreateAction } from "@/constants/tabs";
+import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { type ReactNode, useState } from "react";
-import { Pressable } from "react-native";
+import { ThemedPressable } from "./themed-pressable";
 
 export type TabScreenProps = {
   title?: string;
@@ -19,6 +20,12 @@ export type TabScreenProps = {
 export function TabScreen({ title = "", create, children }: TabScreenProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const haptic = Haptics.ImpactFeedbackStyle.Medium;
+
+  const handlePress = () => {
+    Haptics.impactAsync(haptic);
+    router.push(create.href);
+  };
 
   return (
     <>
@@ -28,12 +35,9 @@ export function TabScreen({ title = "", create, children }: TabScreenProps) {
           headerTransparent: true,
           headerLeft: () => <MenuButton />,
           headerRight: () => (
-            <Pressable
-              onPress={() => console.log("Avatar pressed")}
-              hitSlop={8}
-            >
+            <ThemedPressable onPress={() => console.log("Avatar pressed")}>
               <ThemedAvatar />
-            </Pressable>
+            </ThemedPressable>
           ),
         }}
       />
@@ -50,7 +54,7 @@ export function TabScreen({ title = "", create, children }: TabScreenProps) {
         <Stack.Toolbar.Button
           icon="square.and.pencil"
           accessibilityLabel={create.label}
-          onPress={() => router.push(create.href)}
+          onPress={handlePress}
         />
       </Stack.Toolbar>
 

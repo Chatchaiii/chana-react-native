@@ -84,7 +84,6 @@ export type IconBorderRadius = keyof typeof IconBorderRadii;
 export const ButtonBorderRadii = {
   default: 16,
   rounded: 24,
-  pill: 999,
 } as const;
 export type ButtonShape = keyof typeof ButtonBorderRadii;
 
