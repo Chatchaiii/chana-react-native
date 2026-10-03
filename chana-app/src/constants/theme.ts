@@ -71,7 +71,6 @@ export const IconContainerSizes = {
   l: 80,
   xl: 120,
 } as const;
-
 export type IconContainerSize = keyof typeof IconContainerSizes;
 
 export const IconBorderRadii = {
@@ -80,8 +79,14 @@ export const IconBorderRadii = {
   square_2: 24,
   square_3: 32,
 } as const;
-
 export type IconBorderRadius = keyof typeof IconBorderRadii;
+
+export const ButtonBorderRadii = {
+  default: 16,
+  rounded: 24,
+  pill: 999,
+} as const;
+export type ButtonShape = keyof typeof ButtonBorderRadii;
 
 export const Spacing = {
   half: 2,
