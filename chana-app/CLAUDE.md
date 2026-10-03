@@ -46,12 +46,12 @@ src/utils/strings.ts                getInitials
 ```
 Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 
-- **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`.
+- **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`. The swipe-to-open is only enabled while a tab is on its `index` (`getFocusedRouteNameFromRoute`), so the left-edge swipe on pushed pages is the native back gesture.
 - **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal and `profile` as a sheet (`SheetScreenOptions`, also exported for tab-specific sheets) (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
 - **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
 - Adding a tab: entry in `Tabs` (incl. `profileHref`) + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen`, and the one-line `profile.tsx`.
-- Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
+- Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
 
 ## Components
 
@@ -65,10 +65,11 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `ScreenScrollView` / `useScreenInsets` | ScrollView root with `contentInsetAdjustmentBehavior="automatic"` (iOS) + Android header/bottom padding. Don't wrap scroll content in SafeAreaView |
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
-| `PostItem` | Renders a `Post` (`id, author, postedAt, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` |
+| `PostItem` | Renders a `Post` (`id, author, postedAt, commentCount, savedCount, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` + `InteractionItem`. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, short press delay so scrolling doesn't flash; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
 | `ListItem` | Avatar + `title` + `subtitle`; "…" button shown when `onOptionsPress` is set |
+| `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
-| `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height |
+| `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |
 | `ImageCarousel` | Paging images, "1/4" counter + animated dots, tap → `ImageViewer`. No outer margin — the parent places it |
 | `ImageViewer` | Modal viewer that expands from the thumbnail (`measureInWindow`), swipe sideways to browse, vertical drag to dismiss |
 | `CreateScreen` | Body of each tab's `new.tsx` modal |

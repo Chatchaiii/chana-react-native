@@ -3,6 +3,7 @@ import { Tabs } from "@/constants/tabs";
 import { useTheme } from "@/hooks/use-theme";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
 import { Drawer } from "expo-router/drawer";
+import { getFocusedRouteNameFromRoute } from "expo-router/react-navigation";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -36,7 +37,14 @@ export default function RootLayout() {
               <Drawer.Screen
                 key={tab.route}
                 name={tab.route}
-                options={{ drawerLabel: tab.title }}
+                options={({ route }) => ({
+                  drawerLabel: tab.title,
+                  // Only swipe the menu open from a tab's main page; on pushed
+                  // pages the left-edge swipe belongs to the back gesture
+                  swipeEnabled:
+                    (getFocusedRouteNameFromRoute(route) ?? "index") ===
+                    "index",
+                })}
               />
             ))}
           </Drawer>
