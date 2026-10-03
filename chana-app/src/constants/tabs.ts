@@ -23,6 +23,8 @@ export type Tab = {
   searchTitle: string;
   /** What the create button opens on this tab */
   create: CreateAction;
+  /** The profile sheet, opened from the header avatar */
+  profileHref: Href;
 };
 
 /**
@@ -37,6 +39,7 @@ export const Tabs = {
     icon: Home01Icon,
     searchTitle: "Posts",
     create: { label: "New post", href: "/new" },
+    profileHref: "/profile",
   },
   places: {
     route: "places",
@@ -44,6 +47,7 @@ export const Tabs = {
     icon: MapIcon,
     searchTitle: "Places",
     create: { label: "New place", href: "/places/new" },
+    profileHref: "/places/profile",
   },
   wishes: {
     route: "wishes",
@@ -51,6 +55,7 @@ export const Tabs = {
     icon: SparkleIcon,
     searchTitle: "Wishes",
     create: { label: "New wish", href: "/wishes/new" },
+    profileHref: "/wishes/profile",
   },
   calendar: {
     route: "calendar",
@@ -58,5 +63,6 @@ export const Tabs = {
     icon: Calendar04Icon,
     searchTitle: "Events",
     create: { label: "New event", href: "/calendar/new" },
+    profileHref: "/calendar/profile",
   },
 } satisfies Record<string, Tab>;

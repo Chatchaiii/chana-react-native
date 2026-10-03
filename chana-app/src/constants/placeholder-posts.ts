@@ -20,4 +20,19 @@ export const PLACEHOLDER_POSTS: Post[] = [
       (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
     ),
   },
+  {
+    id: "3",
+    author: "chadchai",
+    postedAt: "2 days ago",
+    text: LOREM,
+  },
+  {
+    id: "4",
+    author: "chadchai",
+    postedAt: "2 days ago",
+    text: LOREM,
+    images: [1, 2, 3, 4].map(
+      (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
+    ),
+  },
 ];

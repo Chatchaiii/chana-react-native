@@ -35,20 +35,23 @@ src/app/_layout.tsx                 Root: GestureHandlerRootView > ThemeProvider
 src/app/<tab>/_layout.tsx           One-line re-export of DrawerStack + unstable_settings (all tabs identical)
 src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabScreen>
 src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
-src/constants/tabs.ts               Single source of truth for tabs: route, title, icon, searchTitle, create {label, href}
+src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
+src/constants/tabs.ts               Single source of truth for tabs: route, title, icon, searchTitle, create {label, href}, profileHref
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
 src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
+src/constants/placeholder-user.ts   CURRENT_USER stand-in until there's authentication
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 ```
 Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 
 - **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`.
-- **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
+- **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal and `profile` as a sheet (`SheetScreenOptions`, also exported for tab-specific sheets) (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
 - **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
-- Adding a tab: entry in `Tabs` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, and a `new.tsx` using `CreateScreen`.
+- Adding a tab: entry in `Tabs` (incl. `profileHref`) + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen`, and the one-line `profile.tsx`.
+- Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
 
 ## Components
 
@@ -63,11 +66,13 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
 | `PostItem` | Renders a `Post` (`id, author, postedAt, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` |
-| `ListItem` | Avatar + `title` + `subtitle` + trailing ellipsis |
+| `ListItem` | Avatar + `title` + `subtitle`; "…" button shown when `onOptionsPress` is set |
+| `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
 | `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height |
 | `ImageCarousel` | Paging images, "1/4" counter + animated dots, tap → `ImageViewer`. No outer margin — the parent places it |
 | `ImageViewer` | Modal viewer that expands from the thumbnail (`measureInWindow`), swipe sideways to browse, vertical drag to dismiss |
 | `CreateScreen` | Body of each tab's `new.tsx` modal |
+| `ProfileSheet` | Signed-in user's sheet (avatar, name, Edit profile / Settings / Log out — actions still TODO) |
 
 ## Conventions
 

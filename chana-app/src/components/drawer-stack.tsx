@@ -1,6 +1,8 @@
 import { useTheme } from "@/hooks/use-theme";
 import { Stack } from "expo-router";
+import type { NativeStackNavigationOptions } from "expo-router/native-stack";
 import { useDrawerProgress } from "expo-router/drawer";
+import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   interpolate,
@@ -19,11 +21,25 @@ export const unstable_settings = {
   initialRouteName: "index",
 };
 
+/** Native iOS sheet sized to its content (a full-screen modal on Android) */
+export const SheetScreenOptions: NativeStackNavigationOptions = {
+  presentation: "formSheet",
+  sheetAllowedDetents: "fitToContents",
+  sheetGrabberVisible: true,
+  headerShown: false,
+};
+
+export type DrawerStackProps = {
+  /** Extra Stack.Screen declarations for routes only this tab has */
+  children?: ReactNode;
+};
+
 /**
- * Layout of every drawer tab: a Stack with the tab's index and its "new"
- * modal. Rounds and fades the screen as it slides away to reveal the menu.
+ * Layout of every drawer tab: a Stack with the tab's index, its "new" modal and
+ * the profile sheet. Rounds and fades the screen as it slides away to reveal
+ * the menu.
  */
-export function DrawerStack() {
+export function DrawerStack({ children }: DrawerStackProps) {
   const theme = useTheme();
   const progress = useDrawerProgress();
 
@@ -50,6 +66,8 @@ export function DrawerStack() {
         {/* Declared screens are ordered first, so index must come first to stay the tab's start screen */}
         <Stack.Screen name="index" />
         <Stack.Screen name="new" options={{ presentation: "modal" }} />
+        <Stack.Screen name="profile" options={SheetScreenOptions} />
+        {children}
       </Stack>
       <Animated.View
         pointerEvents="none"
