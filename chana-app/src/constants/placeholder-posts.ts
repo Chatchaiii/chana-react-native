@@ -9,12 +9,16 @@ export const PLACEHOLDER_POSTS: Post[] = [
     id: "1",
     author: "chadchai",
     postedAt: "2 days ago",
+    commentCount: 9,
+    savedCount: 2,
     text: LOREM,
   },
   {
     id: "2",
     author: "chadchai",
     postedAt: "2 days ago",
+    commentCount: 4,
+    savedCount: 1,
     text: LOREM,
     images: [1, 2, 3, 4].map(
       (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
@@ -24,12 +28,16 @@ export const PLACEHOLDER_POSTS: Post[] = [
     id: "3",
     author: "chadchai",
     postedAt: "2 days ago",
+    commentCount: 1,
+    savedCount: 3,
     text: LOREM,
   },
   {
     id: "4",
     author: "chadchai",
     postedAt: "2 days ago",
+    commentCount: 2,
+    savedCount: 10,
     text: LOREM,
     images: [1, 2, 3, 4].map(
       (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
