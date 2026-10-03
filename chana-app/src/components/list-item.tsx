@@ -8,6 +8,8 @@ import { StyleSheet, View } from "react-native";
 
 export type ListItemProps = {
   title: string;
+  /** Small detail shown right after the title, e.g. "16h ago" */
+  addOn?: string;
   subtitle?: string;
   /** Avatar image URL; falls back to the title's initials */
   avatar?: string;
@@ -18,6 +20,7 @@ export type ListItemProps = {
 /** Row with an avatar, a title + subtitle and an optional "…" button */
 export function ListItem({
   title,
+  addOn,
   subtitle,
   avatar,
   onOptionsPress,
@@ -26,12 +29,24 @@ export function ListItem({
     <View style={styles.row}>
       <ThemedAvatar src={avatar} name={title} size="m" />
       <View style={styles.text}>
-        <ThemedText type="label">{title}</ThemedText>
-        {subtitle && (
+        <View style={styles.titleRow}>
+          {/* Truncates first, so a long title never pushes the add-on away */}
+          <ThemedText type="label" numberOfLines={1} style={styles.title}>
+            {title}
+          </ThemedText>
+          {/* Ternaries, not &&: an empty string outside <Text> would crash */}
+          {addOn ? (
+            <ThemedText type="sublabel" themeColor="fg2">
+              {addOn}
+            </ThemedText>
+          ) : null}
+        </View>
+
+        {subtitle ? (
           <ThemedText type="sublabel" themeColor="fg2">
             {subtitle}
           </ThemedText>
-        )}
+        ) : null}
       </View>
       {onOptionsPress && (
         <ThemedPressable
@@ -52,6 +67,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: Spacing.three,
     gap: Spacing.three,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.one,
+  },
+  title: {
+    flexShrink: 1,
   },
   text: {
     flex: 1,
