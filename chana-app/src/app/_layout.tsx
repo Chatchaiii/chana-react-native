@@ -3,12 +3,9 @@ import { Tabs } from "@/constants/tabs";
 import { useTheme } from "@/hooks/use-theme";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

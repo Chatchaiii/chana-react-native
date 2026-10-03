@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   subtext: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 500,
-    lineHeight: 15,
+    lineHeight: 16,
   },
   code: {
     fontFamily: Fonts.mono,
