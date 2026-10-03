@@ -4,12 +4,13 @@ import { Menu02Icon } from "@hugeicons/core-free-icons";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/react-navigation";
 
-/** Header button that opens the side menu. */
+/** Header button that opens the side menu */
 export function MenuButton() {
   const navigation = useNavigation();
 
   return (
     <ThemedPressable
+      accessibilityLabel="Open menu"
       onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
     >
       <ThemedIcon icon={Menu02Icon} />

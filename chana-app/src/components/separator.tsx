@@ -1,13 +1,11 @@
-import { Spacing, type Spacings } from "@/constants/theme";
+import { Spacing, type SpacingKey } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { StyleSheet, View } from "react-native";
 
-export type Orientation = "horizontal" | "vertical";
-
 export type SeparatorProps = {
   /** Space kept free at both ends of the line */
-  padding?: Spacings;
-  orientation?: Orientation;
+  padding?: SpacingKey;
+  orientation?: "horizontal" | "vertical";
 };
 
 export function Separator({
@@ -15,14 +13,14 @@ export function Separator({
   orientation = "horizontal",
 }: SeparatorProps) {
   const theme = useTheme();
-  const horizontal = orientation === "horizontal";
+  const inset = Spacing[padding];
 
   return (
     <View
       style={[
-        horizontal
-          ? [styles.horizontal, { marginHorizontal: Spacing[padding] }]
-          : [styles.vertical, { marginVertical: Spacing[padding] }],
+        orientation === "horizontal"
+          ? [styles.horizontal, { marginHorizontal: inset }]
+          : [styles.vertical, { marginVertical: inset }],
         { backgroundColor: theme.bg3 },
       ]}
     />

@@ -1,7 +1,6 @@
-import { ThemeColor } from "@/constants/theme";
+import type { ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react-native";
-import { type TextProps } from "react-native";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react-native";
 
 export type ThemedIconProps = {
   icon: IconSvgElement;
@@ -12,17 +11,17 @@ export type ThemedIconProps = {
 
 export function ThemedIcon({
   icon,
-  themeColor,
+  themeColor = "fg1",
   size = 18,
   strokeWidth = 3,
-}: ThemedIconProps & TextProps) {
+}: ThemedIconProps) {
   const theme = useTheme();
 
   return (
     <HugeiconsIcon
       icon={icon}
       size={size}
-      color={theme[themeColor ?? "fg1"]}
+      color={theme[themeColor]}
       strokeWidth={strokeWidth}
     />
   );

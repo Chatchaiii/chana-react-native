@@ -1,6 +1,7 @@
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
-import { Spacing } from "@/constants/theme";
+import { Timings } from "@/constants/motion";
+import { OverlayColors, Radius, Spacing } from "@/constants/theme";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Image, type ImageSource } from "expo-image";
@@ -14,7 +15,6 @@ import {
   ScrollView,
 } from "react-native-gesture-handler";
 import Animated, {
-  Easing,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
@@ -46,10 +46,7 @@ export type ImageViewerProps = {
   onClose: () => void;
 };
 
-// Short, eased timings: no bounce, and the modal is gone quickly after closing
-const OPEN_TIMING = { duration: 280, easing: Easing.out(Easing.cubic) };
-const CLOSE_TIMING = { duration: 240, easing: Easing.out(Easing.cubic) };
-const SNAP_BACK_TIMING = { duration: 180, easing: Easing.out(Easing.cubic) };
+const CONTROL_SIZE = 40;
 // Vertical drag distance or speed that dismisses the viewer on release
 const DISMISS_DISTANCE = 120;
 const DISMISS_VELOCITY = 800;
@@ -68,6 +65,9 @@ export function ImageViewer({
 }: ImageViewerProps) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  // Read once: the carousel follows along while swiping and passes a new
+  // initialIndex back, which must not move the pager again mid-swipe
+  const [startIndex] = useState(initialIndex);
   const [index, setIndex] = useState(initialIndex);
 
   // 0 = at the thumbnail, 1 = full screen
@@ -76,22 +76,23 @@ export function ImageViewer({
   const closing = useSharedValue(false);
 
   useEffect(() => {
-    progress.set(withTiming(1, OPEN_TIMING));
+    progress.set(withTiming(1, Timings.slow));
   }, [progress]);
 
   const dismiss = () => {
     "worklet";
     if (closing.get()) return;
     closing.set(true);
-    dragY.set(withTiming(0, CLOSE_TIMING));
-    // Always hand control back, even if the animation gets interrupted
-    progress.set(withTiming(0, CLOSE_TIMING, () => scheduleOnRN(onClose)));
+    dragY.set(withTiming(0, Timings.normal));
+    // Always hand control back, even if the animation gets interrupted, so
+    // the modal can never stay on top and block touches
+    progress.set(withTiming(0, Timings.normal, () => scheduleOnRN(onClose)));
   };
 
-  // Vertical drags move the image; horizontal ones are left to the pager
+  // Clearly vertical drags move the image; anything sideways goes to the pager
   const pan = Gesture.Pan()
-    .activeOffsetY([-12, 12])
-    .failOffsetX([-12, 12])
+    .activeOffsetY([-20, 20])
+    .failOffsetX([-10, 10])
     .onUpdate((event) => {
       dragY.set(event.translationY);
     })
@@ -102,7 +103,7 @@ export function ImageViewer({
       ) {
         dismiss();
       } else {
-        dragY.set(withTiming(0, SNAP_BACK_TIMING));
+        dragY.set(withTiming(0, Timings.fast));
       }
     });
 
@@ -132,7 +133,7 @@ export function ImageViewer({
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
-            contentOffset={{ x: initialIndex * width, y: 0 }}
+            contentOffset={{ x: startIndex * width, y: 0 }}
             onScroll={(event) => {
               const next = Math.round(
                 event.nativeEvent.contentOffset.x / width,
@@ -171,7 +172,11 @@ export function ImageViewer({
             accessibilityLabel="Close"
             style={styles.close}
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={20} color="#ffffff" />
+            <HugeiconsIcon
+              icon={Cancel01Icon}
+              size={20}
+              color={OverlayColors.foreground}
+            />
           </ThemedPressable>
         </Animated.View>
       </GestureHandlerRootView>
@@ -279,7 +284,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: "#000000",
+    backgroundColor: OverlayColors.backdrop,
   },
   image: {
     position: "absolute",
@@ -290,21 +295,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: Spacing.three,
     right: Spacing.three,
-    height: 40,
+    height: CONTROL_SIZE,
     alignItems: "center",
     justifyContent: "center",
   },
   counter: {
-    color: "#ffffff",
+    color: OverlayColors.foreground,
   },
   close: {
     position: "absolute",
     right: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: CONTROL_SIZE,
+    height: CONTROL_SIZE,
+    borderRadius: Radius.full,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    backgroundColor: OverlayColors.control,
   },
 });

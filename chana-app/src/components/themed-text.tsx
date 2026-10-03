@@ -1,46 +1,25 @@
-import { Fonts, ThemeColor } from "@/constants/theme";
+import { Fonts, type ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { Platform, StyleSheet, Text, type TextProps } from "react-native";
 
-export type ThemedTextProps = {
+export type TextTypes = keyof typeof styles;
+
+export type ThemedTextProps = TextProps & {
   type?: TextTypes;
   themeColor?: ThemeColor;
 };
 
-export type TextTypes =
-  | "heading"
-  | "heading_2"
-  | "heading_3"
-  | "heading_4"
-  | "label"
-  | "sublabel"
-  | "text"
-  | "subtext"
-  | "code";
-
 export function ThemedText({
-  style,
   type = "text",
-  themeColor,
+  themeColor = "fg1",
+  style,
   ...rest
-}: ThemedTextProps & TextProps) {
+}: ThemedTextProps) {
   const theme = useTheme();
 
   return (
     <Text
-      style={[
-        { color: theme[themeColor ?? "fg1"] },
-        type === "heading" && styles.heading,
-        type === "heading_2" && styles.heading_2,
-        type === "heading_3" && styles.heading_3,
-        type === "heading_4" && styles.heading_4,
-        type === "label" && styles.label,
-        type === "sublabel" && styles.sublabel,
-        type === "text" && styles.text,
-        type === "subtext" && styles.subtext,
-        type === "code" && styles.code,
-        style,
-      ]}
+      style={[{ color: theme[themeColor] }, styles[type], style]}
       {...rest}
     />
   );

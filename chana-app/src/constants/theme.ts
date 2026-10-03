@@ -1,12 +1,11 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import "@/global.css";
 
 import { Platform } from "react-native";
 
+/**
+ * Light and dark palettes. bg = surfaces (1 = top), fg = text and icons
+ * (1 = strongest), acc = accent, neg = destructive.
+ */
 export const Colors = {
   light: {
     bg1: "#ffffff",
@@ -35,8 +34,15 @@ export const Colors = {
     neg2: "#FF000025",
   },
 } as const;
-
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+
+/** Fixed colors for UI drawn on top of photos, where theme colors can't be read */
+export const OverlayColors = {
+  foreground: "#ffffff",
+  scrim: "rgba(0, 0, 0, 0.5)",
+  backdrop: "#000000",
+  control: "rgba(255, 255, 255, 0.15)",
+} as const;
 
 export const Fonts = Platform.select({
   ios: {
@@ -63,30 +69,6 @@ export const Fonts = Platform.select({
   },
 });
 
-export const IconContainerSizes = {
-  xxs: 24,
-  xs: 32,
-  s: 36,
-  m: 40,
-  l: 80,
-  xl: 120,
-} as const;
-export type IconContainerSize = keyof typeof IconContainerSizes;
-
-export const IconBorderRadii = {
-  round: 100,
-  square_1: 16,
-  square_2: 24,
-  square_3: 32,
-} as const;
-export type IconBorderRadius = keyof typeof IconBorderRadii;
-
-export const ButtonBorderRadii = {
-  default: 16,
-  rounded: 24,
-} as const;
-export type ButtonShape = keyof typeof ButtonBorderRadii;
-
 export const Spacing = {
   half: 2,
   one: 4,
@@ -96,7 +78,24 @@ export const Spacing = {
   five: 32,
   six: 64,
 } as const;
-export type Spacings = keyof typeof Spacing;
+export type SpacingKey = keyof typeof Spacing;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 800;
+/** Corner radii shared by every rounded element */
+export const Radius = {
+  sm: 16,
+  md: 24,
+  lg: 32,
+  full: 999,
+} as const;
+export type RadiusKey = keyof typeof Radius;
+
+/** Square sizes for avatars and icon containers */
+export const ContainerSizes = {
+  xxs: 24,
+  xs: 32,
+  s: 36,
+  m: 40,
+  l: 80,
+  xl: 120,
+} as const;
+export type ContainerSize = keyof typeof ContainerSizes;

@@ -4,7 +4,7 @@ import { Tabs } from "@/constants/tabs";
 
 export default function Calendar() {
   return (
-    <TabScreen title={Tabs.calendar.title} create={Tabs.calendar.create}>
+    <TabScreen tab={Tabs.calendar}>
       <ScreenScrollView />
     </TabScreen>
   );

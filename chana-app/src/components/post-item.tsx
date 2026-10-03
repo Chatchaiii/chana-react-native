@@ -1,20 +1,39 @@
-import { ImageCarousel, ImageCarouselProps } from "./image-carousel";
-import { ListItem } from "./list-item";
-import { TextItem } from "./text-item";
+import { ImageCarousel } from "@/components/image-carousel";
+import { ListItem } from "@/components/list-item";
+import { TextItem } from "@/components/text-item";
+import { Spacing } from "@/constants/theme";
+import type { ImageSource } from "expo-image";
+import { StyleSheet } from "react-native";
 
-export type PostItemProps = {
-  images?: ImageCarouselProps["images"];
+export type Post = {
+  id: string;
+  author: string;
+  /** Already formatted, e.g. "2 days ago" */
+  postedAt: string;
+  text: string;
+  images?: (string | ImageSource)[];
 };
 
-// Placeholder photos until posts have real images
+export type PostItemProps = {
+  post: Post;
+};
 
-/** Row with an avatar, a title + subtitle and a trailing icon. */
-export function PostItem({ images }: PostItemProps) {
+/** A post: author row, optional photos and the (truncated) text */
+export function PostItem({ post }: PostItemProps) {
   return (
     <>
-      <ListItem />
-      {images && <ImageCarousel images={images} />}
-      <TextItem />
+      <ListItem title={post.author} subtitle={post.postedAt} />
+      {post.images && post.images.length > 0 && (
+        <ImageCarousel images={post.images} style={styles.carousel} />
+      )}
+      <TextItem author={post.author} text={post.text} />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  carousel: {
+    marginHorizontal: Spacing.three,
+    marginBottom: Spacing.three,
+  },
+});

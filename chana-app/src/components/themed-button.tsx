@@ -5,9 +5,9 @@ import {
 } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import {
-  ButtonBorderRadii,
+  Radius,
   Spacing,
-  type ButtonShape,
+  type RadiusKey,
   type ThemeColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
@@ -15,14 +15,14 @@ import type { IconSvgElement } from "@hugeicons/react-native";
 import { StyleSheet } from "react-native";
 
 export type ButtonType = "default" | "primary" | "secondary" | "tertiary";
-export type ButtonSize = "small" | "medium_1" | "medium_2" | "large";
+export type ButtonSize = keyof typeof sizeStyles;
 
 export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
   icon?: IconSvgElement;
   label: string;
   type?: ButtonType;
   size?: ButtonSize;
-  shape?: ButtonShape;
+  radius?: RadiusKey;
   align?: "center" | "left";
   fullWidth?: boolean;
   bg?: ThemeColor;
@@ -37,13 +37,13 @@ const TypeColors: Record<ButtonType, { bg: ThemeColor; fg: ThemeColor }> = {
   tertiary: { bg: "bg3", fg: "fg1" },
 };
 
-/** Styled button (colors, size, shape, icon + label) on top of ThemedPressable. */
+/** Styled button (colors, size, radius, icon + label) on top of ThemedPressable */
 export function ThemedButton({
   icon,
   label,
   type = "default",
   size = "medium_1",
-  shape = "default",
+  radius = "sm",
   align = "center",
   fullWidth = false,
   bg,
@@ -53,6 +53,7 @@ export function ThemedButton({
 }: ThemedButtonProps) {
   const theme = useTheme();
   const colors = TypeColors[type];
+  const foreground = fg ?? colors.fg;
 
   return (
     <ThemedPressable
@@ -63,16 +64,16 @@ export function ThemedButton({
         !fullWidth && styles.fit,
         align === "left" && styles.alignLeft,
         {
-          borderRadius: ButtonBorderRadii[shape],
+          borderRadius: Radius[radius],
           backgroundColor: theme[bg ?? colors.bg],
         },
         style,
       ]}
     >
-      {icon && <ThemedIcon icon={icon} themeColor={fg ?? colors.fg} />}
+      {icon && <ThemedIcon icon={icon} themeColor={foreground} />}
       <ThemedText
-        themeColor={fg ?? colors.fg}
         type={size === "small" ? "sublabel" : "label"}
+        themeColor={foreground}
       >
         {label}
       </ThemedText>
@@ -107,8 +108,7 @@ const sizeStyles = StyleSheet.create({
     gap: Spacing.three,
   },
   medium_2: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    padding: Spacing.four,
     gap: Spacing.three,
   },
   large: {

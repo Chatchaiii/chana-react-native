@@ -2,33 +2,20 @@ import { List } from "@/components/list";
 import { PostItem } from "@/components/post-item";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { TabScreen } from "@/components/tab-screen";
+import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
 import { Tabs } from "@/constants/tabs";
-import { Spacing } from "@/constants/theme";
-import { StyleSheet } from "react-native";
 
-const demoImages = [1, 2, 3, 4].map(
-  (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
-);
-
-export default function Index() {
+export default function Home() {
   return (
-    <TabScreen create={Tabs.home.create}>
-      <ScreenScrollView contentContainerStyle={styles.body}>
+    // Home shows no title in the header
+    <TabScreen tab={Tabs.home} title="">
+      <ScreenScrollView>
         <List>
-          <PostItem />
-          <PostItem images={demoImages} />
+          {PLACEHOLDER_POSTS.map((post) => (
+            <PostItem key={post.id} post={post} />
+          ))}
         </List>
       </ScreenScrollView>
     </TabScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  body: {
-    gap: Spacing.five,
-  },
-  row_3: {
-    flexDirection: "row",
-    gap: Spacing.three,
-  },
-});

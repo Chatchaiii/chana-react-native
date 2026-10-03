@@ -1,19 +1,21 @@
 import { Separator, type SeparatorProps } from "@/components/separator";
-import { Spacing } from "@/constants/theme";
+import { Radius } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { Children, Fragment, type ReactNode } from "react";
+import { Children, Fragment, isValidElement, type ReactNode } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-
-export type ListType = "plain" | "card";
 
 export type ListProps = {
   children: ReactNode;
   /** plain: no background; card: bg1 background with rounded, clipped corners */
-  type?: ListType;
+  type?: "plain" | "card";
   separatorPadding?: SeparatorProps["padding"];
   style?: StyleProp<ViewStyle>;
 };
 
+/**
+ * Stacks its children with a separator between each of them. For long or
+ * data-driven lists, use a FlatList with `ItemSeparatorComponent={Separator}`.
+ */
 export function List({
   children,
   type = "plain",
@@ -21,7 +23,6 @@ export function List({
   style,
 }: ListProps) {
   const theme = useTheme();
-  const items = Children.toArray(children);
 
   return (
     <View
@@ -30,8 +31,8 @@ export function List({
         style,
       ]}
     >
-      {items.map((item, index) => (
-        <Fragment key={index}>
+      {Children.toArray(children).map((item, index) => (
+        <Fragment key={isValidElement(item) ? item.key : index}>
           {index > 0 && <Separator padding={separatorPadding} />}
           {item}
         </Fragment>
@@ -42,7 +43,7 @@ export function List({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: Spacing.four,
+    borderRadius: Radius.md,
     borderCurve: "continuous",
     overflow: "hidden",
   },
