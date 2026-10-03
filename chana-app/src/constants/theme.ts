@@ -22,13 +22,13 @@ export const Colors = {
     neg2: "#FF000025",
   },
   dark: {
-    bg1: "#000000",
-    bg2: "#5F5F5F",
-    bg3: "#BBBBBB",
+    bg1: "#111111",
+    bg2: "#1e1e1e",
+    bg3: "#2c2c2c",
 
     fg1: "#ffffff",
-    fg2: "#F4F4F4",
-    fg3: "#E8E8E8",
+    fg2: "#bdbdbd",
+    fg3: "#a1a1a1",
 
     acc1: "#C66AF1",
     neg1: "#FF0000",
@@ -96,6 +96,7 @@ export const Spacing = {
   five: 32,
   six: 64,
 } as const;
+export type Spacings = keyof typeof Spacing;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;

@@ -47,7 +47,7 @@ export function ThemedAvatar({
       {src ? (
         <Image source={{ uri: src }} style={[StyleSheet.absoluteFill]} />
       ) : (
-        <ThemedText style={{ color: theme[fg ?? "fg1"] }}>
+        <ThemedText type="label" style={{ color: theme[fg ?? "fg2"] }}>
           {getInitials(name)}
         </ThemedText>
       )}
