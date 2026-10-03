@@ -3,6 +3,7 @@ import { ListItem } from "@/components/list-item";
 import { TextItem } from "@/components/text-item";
 import { Spacing } from "@/constants/theme";
 import type { ImageSource } from "expo-image";
+import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 
 export type Post = {
@@ -20,9 +21,20 @@ export type PostItemProps = {
 
 /** A post: author row, optional photos and the (truncated) text */
 export function PostItem({ post }: PostItemProps) {
+  const router = useRouter();
+
   return (
     <>
-      <ListItem title={post.author} subtitle={post.postedAt} />
+      <ListItem
+        title={post.author}
+        subtitle={post.postedAt}
+        onOptionsPress={() =>
+          router.push({
+            pathname: "/post/[id]/options",
+            params: { id: post.id },
+          })
+        }
+      />
       {post.images && post.images.length > 0 && (
         <ImageCarousel images={post.images} style={styles.carousel} />
       )}

@@ -2,6 +2,7 @@ import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
 import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedPressable } from "@/components/themed-pressable";
+import { CURRENT_USER } from "@/constants/placeholder-user";
 import type { Tab } from "@/constants/tabs";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
@@ -46,9 +47,14 @@ export function TabScreen({
           headerTransparent: true,
           headerLeft: () => <MenuButton />,
           headerRight: () => (
-            // TODO: open the profile
-            <ThemedPressable accessibilityLabel="Profile">
-              <ThemedAvatar />
+            <ThemedPressable
+              accessibilityLabel="Profile"
+              onPress={() => router.push(tab.profileHref)}
+            >
+              <ThemedAvatar
+                src={CURRENT_USER.avatar}
+                name={CURRENT_USER.name}
+              />
             </ThemedPressable>
           ),
         }}

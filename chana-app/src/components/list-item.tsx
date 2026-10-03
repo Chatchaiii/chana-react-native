@@ -1,5 +1,6 @@
 import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedIcon } from "@/components/themed-icon";
+import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
 import { EllipsisIcon } from "@hugeicons/core-free-icons";
@@ -10,10 +11,17 @@ export type ListItemProps = {
   subtitle?: string;
   /** Avatar image URL; falls back to the title's initials */
   avatar?: string;
+  /** Shows the trailing "…" button when set */
+  onOptionsPress?: () => void;
 };
 
-/** Row with an avatar, a title + subtitle and a trailing icon */
-export function ListItem({ title, subtitle, avatar }: ListItemProps) {
+/** Row with an avatar, a title + subtitle and an optional "…" button */
+export function ListItem({
+  title,
+  subtitle,
+  avatar,
+  onOptionsPress,
+}: ListItemProps) {
   return (
     <View style={styles.row}>
       <ThemedAvatar src={avatar} name={title} size="m" />
@@ -25,7 +33,15 @@ export function ListItem({ title, subtitle, avatar }: ListItemProps) {
           </ThemedText>
         )}
       </View>
-      <ThemedIcon icon={EllipsisIcon} />
+      {onOptionsPress && (
+        <ThemedPressable
+          onPress={onOptionsPress}
+          hitSlop={12}
+          accessibilityLabel="Options"
+        >
+          <ThemedIcon icon={EllipsisIcon} />
+        </ThemedPressable>
+      )}
     </View>
   );
 }
