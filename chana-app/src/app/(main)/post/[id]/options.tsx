@@ -3,13 +3,6 @@ import { List } from "@/components/list";
 import { ThemedText } from "@/components/themed-text";
 import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
 import { Spacing } from "@/constants/theme";
-import {
-  Bookmark02Icon,
-  Delete02Icon,
-  Flag02Icon,
-  Link01Icon,
-  Share08Icon,
-} from "@hugeicons/core-free-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -32,19 +25,13 @@ export default function PostOptions() {
       )}
 
       <List type="card" separatorPadding="three">
-        <ActionRow icon={Share08Icon} label="Share" onPress={close} />
-        <ActionRow icon={Link01Icon} label="Copy link" onPress={close} />
-        <ActionRow icon={Bookmark02Icon} label="Save" onPress={close} />
+        <ActionRow icon="square.and.arrow.up" label="Share" onPress={close} />
+        <ActionRow icon="link" label="Copy link" onPress={close} />
+        <ActionRow icon="bookmark" label="Save" onPress={close} />
       </List>
 
       <List type="card" separatorPadding="three">
-        <ActionRow icon={Flag02Icon} label="Report" onPress={close} />
-        <ActionRow
-          icon={Delete02Icon}
-          label="Delete"
-          destructive
-          onPress={close}
-        />
+        <ActionRow icon="trash" label="Delete" destructive onPress={close} />
       </List>
     </View>
   );

@@ -4,11 +4,6 @@ import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedText } from "@/components/themed-text";
 import { CURRENT_USER } from "@/constants/placeholder-user";
 import { Spacing } from "@/constants/theme";
-import {
-  Logout01Icon,
-  Settings02Icon,
-  UserEdit01Icon,
-} from "@hugeicons/core-free-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -41,13 +36,13 @@ export function ProfileSheet() {
       </View>
 
       <List type="card">
-        <ActionRow icon={UserEdit01Icon} label="Edit profile" onPress={close} />
-        <ActionRow icon={Settings02Icon} label="Settings" onPress={close} />
+        <ActionRow icon="user" label="Edit profile" onPress={close} />
+        <ActionRow icon="gear" label="Settings" onPress={close} />
       </List>
 
       <List type="card">
         <ActionRow
-          icon={Logout01Icon}
+          icon="square.and.arrow.right"
           label="Log out"
           destructive
           onPress={close}

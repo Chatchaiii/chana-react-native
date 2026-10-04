@@ -30,7 +30,7 @@ export function AppDrawerContent(props: DrawerContentComponentProps) {
           return (
             <ThemedButton
               key={tab.route}
-              icon={tab.icon}
+              icon={focused ? tab.activeIcon : tab.icon}
               label={tab.title}
               type={focused ? "primary" : "default"}
               size="medium_2"

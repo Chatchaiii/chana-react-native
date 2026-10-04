@@ -1,9 +1,8 @@
+import { Icon } from "@/components/icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Timings } from "@/constants/motion";
 import { OverlayColors, Radius, Spacing } from "@/constants/theme";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react-native";
 import { Image, type ImageSource } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -172,11 +171,7 @@ export function ImageViewer({
             accessibilityLabel="Close"
             style={styles.close}
           >
-            <HugeiconsIcon
-              icon={Cancel01Icon}
-              size={20}
-              color={OverlayColors.foreground}
-            />
+            <Icon icon="xmark" size={20} color={OverlayColors.foreground} />
           </ThemedPressable>
         </Animated.View>
       </GestureHandlerRootView>

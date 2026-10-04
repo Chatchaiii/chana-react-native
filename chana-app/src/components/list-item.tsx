@@ -2,7 +2,6 @@ import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
-import { ArrowRight01Icon, EllipsisIcon } from "@hugeicons/core-free-icons";
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -83,10 +82,10 @@ export function ListItem({
           hitSlop={12}
           accessibilityLabel="Options"
         >
-          <ThemedIcon icon={EllipsisIcon} />
+          <ThemedIcon icon="ellipsis" />
         </ThemedPressable>
       )}
-      {onPress && <ThemedIcon icon={ArrowRight01Icon} themeColor="fg3" />}
+      {onPress && <ThemedIcon icon="chevron.right" themeColor="fg3" />}
     </>
   );
 

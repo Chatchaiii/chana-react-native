@@ -8,7 +8,7 @@ Read this before working on the app. Keep it up to date when architecture, conve
 
 - Expo SDK 57, expo-router 57, React Native 0.86 (New Architecture), React 19, React Compiler on, typed routes on.
 - Animations: react-native-reanimated 4 + react-native-worklets. Gestures: react-native-gesture-handler.
-- Icons: `@hugeicons/core-free-icons` rendered via `ThemedIcon` (see the `hugeicons` skill). SF Symbols only in native toolbar items.
+- Icons: the user's own icons in `assets/icons` (24px SVGs, SF Symbols-style names like `chevron.right`, `home.fill`), converted by `npm run icons` into `src/constants/icons.generated.ts` and rendered via `ThemedIcon icon="name"` at 18px (`Icon` with a raw color, e.g. on photos). No icon library — Hugeicons was removed; don't add one back. SF Symbols / Material symbols only in native toolbar items. `star`/`star.fill` are placeholders drawn by Claude until the user designs their own.
 - Other: expo-image, expo-haptics, expo-status-bar. No font packages (custom fonts were tried and reverted — keep the system font).
 - The user runs the app in **Expo Go** on an iPhone; the dev server (Metro on :8081) is usually already running.
 
@@ -36,7 +36,7 @@ src/app/<tab>/_layout.tsx           One-line re-export of DrawerStack + unstable
 src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabScreen>
 src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
 src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
-src/constants/tabs.ts               Single source of truth for tabs: route, title, icon, searchTitle, create {label, href}, profileHref
+src/constants/tabs.ts               Single source of truth for tabs: route, title, icon + activeIcon (filled, shown for the active tab in the drawer), searchTitle, create {label, href}, profileHref
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
 src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
@@ -61,7 +61,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | Component | Purpose |
 |---|---|
 | `ThemedText` | `type`: heading, heading_2–4, label, sublabel, text, subtext, code (looked up from the style table); `themeColor` |
-| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Icon: optional `fill` color. Avatar: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` (Radius key) |
+| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Icon: `icon` is an `IconName` from assets/icons. `Icon` is the raw-color version (e.g. on photos). Avatar: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` (Radius key) |
 | `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
 | `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon` |
 | `MenuButton` | Header button that opens the drawer |
@@ -72,7 +72,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `ListItem` | Generic row, no domain knowledge. Slots: `leading` (avatar/thumbnail), `overline`, `label` + `addOn`, `sublabel` (`sublabelLines`, default 2), `footer`. `onOptionsPress` → "…" button; `onPress` → whole row pressable + chevron. Domain rows wrap it (`PostItem`, `PlaceItem`) instead of adding domain props to it |
 | `PlaceItem` | Renders a `Place` (`id, name, description, author, distance, rating, image?`) via ListItem with `Thumbnail`, `PlaceMeta` overline and `Rating` footer; opens `/places/[id]` |
 | `Thumbnail` | Rectangular image (`size` = height, `aspectRatio`, `radius`), placeholder icon when no `src` |
-| `Rating` | Read-only 1–5 stars (filled acc1 / outlined fg3) |
+| `Rating` | Read-only 1–5 stars (`star.fill` in acc1 / `star` in fg3) |
 | `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
 | `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |
@@ -100,6 +100,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 - Haptics: anything that both taps a ThemedPressable and opens/closes the drawer plays two haptics.
 - Never render optional strings with `&&` (`{text && <ThemedText>…}`): an empty string or `0` lands outside `<Text>` and crashes. Use a ternary or an explicit check (`count > 0`).
 - `experimental_backgroundImage: "linear-gradient(...)"` works natively (no expo-linear-gradient needed).
+- Adding/changing an icon: drop the SVG into `assets/icons` and run `npm run icons`. Draw shapes in black and cut-out details in white (the generator turns white into a transparent mask cut-out, so `.fill` icons work in dark mode); a white 24×24 background rect and clip-path wrappers are stripped. Never edit `icons.generated.ts` by hand.
 - Claude's brand fonts (Styrene, Tiempos) are licensed — don't add them.
 - Never call `SplashScreen.preventAutoHideAsync()` without a matching `hideAsync()` — on Android the splash then never disappears (iOS hides it anyway, so it looks fine there).
 - `Stack.Toolbar.Button` on Android needs an image source, not an SF Symbol, and warns even when `hidden`. `TabScreen` renders the create button only once `useMaterialSymbolSource("edit_square")` has produced the Android image.
