@@ -96,6 +96,7 @@ export const ContainerSizes = {
   s: 36,
   m: 40,
   l: 80,
-  xl: 120,
+  xl: 100,
+  xxl: 120,
 } as const;
 export type ContainerSize = keyof typeof ContainerSizes;

@@ -1,4 +1,4 @@
-import { ThemedText } from "@/components/themed-text";
+import { ThemedText, type TextTypes } from "@/components/themed-text";
 import {
   ContainerSizes,
   Radius,
@@ -19,8 +19,11 @@ export type ThemedAvatarProps = {
   radius?: RadiusKey;
   bg?: ThemeColor;
   fg?: ThemeColor;
+  /** Text style of the initials, e.g. larger for big avatars */
+  initialsType?: TextTypes;
 };
 
+/** Round picture of a person (or place), with initials as fallback */
 export function ThemedAvatar({
   src,
   name = "Unknown User",
@@ -28,6 +31,7 @@ export function ThemedAvatar({
   radius = "full",
   bg = "bg3",
   fg = "fg2",
+  initialsType = "label",
 }: ThemedAvatarProps) {
   const theme = useTheme();
   const dimension = ContainerSizes[size];
@@ -47,7 +51,7 @@ export function ThemedAvatar({
       {src ? (
         <Image source={src} style={StyleSheet.absoluteFill} />
       ) : (
-        <ThemedText type="label" themeColor={fg}>
+        <ThemedText type={initialsType} themeColor={fg}>
           {getInitials(name)}
         </ThemedText>
       )}

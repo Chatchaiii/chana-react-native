@@ -29,7 +29,8 @@ export function ProfileSheet() {
         <ThemedAvatar
           src={CURRENT_USER.avatar}
           name={CURRENT_USER.name}
-          size="l"
+          size="xxl"
+          initialsType="heading_2"
         />
         <View style={styles.names}>
           <ThemedText type="heading_3">{CURRENT_USER.name}</ThemedText>

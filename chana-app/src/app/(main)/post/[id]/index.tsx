@@ -3,6 +3,7 @@ import { ListItem } from "@/components/list-item";
 import { PostItem } from "@/components/post-item";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { Separator } from "@/components/separator";
+import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedText } from "@/components/themed-text";
 import { PLACEHOLDER_COMMENTS } from "@/constants/placeholder-comments";
 import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
@@ -37,9 +38,10 @@ export default function PostDetail() {
                 {comments.map((comment) => (
                   <ListItem
                     key={comment.id}
-                    title={comment.author}
+                    leading={<ThemedAvatar name={comment.author} size="m" />}
+                    label={comment.author}
                     addOn={comment.postedAt}
-                    subtitle={comment.text}
+                    sublabel={comment.text}
                     onOptionsPress={openCommentOptions}
                   />
                 ))}
