@@ -42,6 +42,7 @@ src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSp
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
 src/constants/placeholder-user.ts   CURRENT_USER stand-in until there's authentication
 src/constants/placeholder-comments.ts  Comment type + stand-in comments (by postId)
+src/constants/placeholder-places.ts    Stand-in Place data
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 ```
@@ -52,6 +53,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
 - **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
 - Adding a tab: entry in `Tabs` (incl. `profileHref`) + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen`, and the one-line `profile.tsx`.
+- Places has `places/[id]` (place detail page, opened from `PlaceItem`).
 - Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
 
 ## Components
@@ -59,7 +61,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | Component | Purpose |
 |---|---|
 | `ThemedText` | `type`: heading, heading_2–4, label, sublabel, text, subtext, code (looked up from the style table); `themeColor` |
-| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Avatar: `src` (expo-image) or initials of `name`, `size` (ContainerSizes), `radius` (Radius key) |
+| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Icon: optional `fill` color. Avatar: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` (Radius key) |
 | `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
 | `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon` |
 | `MenuButton` | Header button that opens the drawer |
@@ -67,7 +69,10 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
 | `PostItem` | Renders a `Post` (`id, author, postedAt, commentCount, savedCount, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` + `InteractionItem`. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, short press delay so scrolling doesn't flash; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
-| `ListItem` | Avatar + `title` (+ optional `addOn` detail like "16h ago") + `subtitle`; "…" button shown when `onOptionsPress` is set. Also used for comments on the post page |
+| `ListItem` | Generic row, no domain knowledge. Slots: `leading` (avatar/thumbnail), `overline`, `label` + `addOn`, `sublabel` (`sublabelLines`, default 2), `footer`. `onOptionsPress` → "…" button; `onPress` → whole row pressable + chevron. Domain rows wrap it (`PostItem`, `PlaceItem`) instead of adding domain props to it |
+| `PlaceItem` | Renders a `Place` (`id, name, description, author, distance, rating, image?`) via ListItem with `Thumbnail`, `PlaceMeta` overline and `Rating` footer; opens `/places/[id]` |
+| `Thumbnail` | Rectangular image (`size` = height, `aspectRatio`, `radius`), placeholder icon when no `src` |
+| `Rating` | Read-only 1–5 stars (filled acc1 / outlined fg3) |
 | `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
 | `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |

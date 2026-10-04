@@ -7,6 +7,8 @@ export type ThemedIconProps = {
   themeColor?: ThemeColor;
   size?: number;
   strokeWidth?: number;
+  /** Fills the icon's shape in this color, e.g. a solid star */
+  fill?: ThemeColor;
 };
 
 export function ThemedIcon({
@@ -14,6 +16,7 @@ export function ThemedIcon({
   themeColor = "fg1",
   size = 18,
   strokeWidth = 3,
+  fill,
 }: ThemedIconProps) {
   const theme = useTheme();
 
@@ -23,6 +26,7 @@ export function ThemedIcon({
       size={size}
       color={theme[themeColor]}
       strokeWidth={strokeWidth}
+      fill={fill ? theme[fill] : "none"}
     />
   );
 }

@@ -2,6 +2,7 @@ import { ImageCarousel } from "@/components/image-carousel";
 import { InteractionItem } from "@/components/interaction-item";
 import { ListItem } from "@/components/list-item";
 import { TextItem } from "@/components/text-item";
+import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { Spacing } from "@/constants/theme";
 import type { ImageSource } from "expo-image";
@@ -40,8 +41,9 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
   const content = (
     <>
       <ListItem
-        title={post.author}
-        subtitle={post.postedAt}
+        leading={<ThemedAvatar name={post.author} size="m" />}
+        label={post.author}
+        sublabel={post.postedAt}
         onOptionsPress={() =>
           router.push({
             pathname: "/post/[id]/options",

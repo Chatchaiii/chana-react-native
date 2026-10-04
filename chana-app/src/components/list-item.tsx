@@ -1,38 +1,60 @@
-import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
-import { EllipsisIcon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, EllipsisIcon } from "@hugeicons/core-free-icons";
+import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 export type ListItemProps = {
-  title: string;
-  /** Small detail shown right after the title, e.g. "16h ago" */
+  label: string;
+  /** Small detail shown right after the label, e.g. "16h ago" */
   addOn?: string;
-  subtitle?: string;
-  /** Avatar image URL; falls back to the title's initials */
-  avatar?: string;
+  sublabel?: string;
+  /** Lines the sublabel may take before truncating */
+  sublabelLines?: number;
+  /** Left side, e.g. a ThemedAvatar or Thumbnail */
+  leading?: ReactNode;
+  /** Small line above the label, e.g. the author and distance */
+  overline?: ReactNode;
+  /** Below the sublabel, e.g. a Rating */
+  footer?: ReactNode;
   /** Shows the trailing "…" button when set */
   onOptionsPress?: () => void;
+  /** Makes the whole row pressable and shows a chevron */
+  onPress?: () => void;
 };
 
-/** Row with an avatar, a title + subtitle and an optional "…" button */
+// Wait before the press feedback so scrolling a list doesn't flash rows
+const PRESS_DELAY = 100;
+
+/**
+ * Generic list row: leading slot, label with optional overline, add-on,
+ * sublabel and footer, then a "…" button or a chevron. Domain rows
+ * (PostItem, PlaceItem) build on it.
+ */
 export function ListItem({
-  title,
+  label,
   addOn,
-  subtitle,
-  avatar,
+  sublabel,
+  sublabelLines = 2,
+  leading,
+  overline,
+  footer,
   onOptionsPress,
+  onPress,
 }: ListItemProps) {
-  return (
-    <View style={styles.row}>
-      <ThemedAvatar src={avatar} name={title} size="m" />
+  const content = (
+    <>
+      {leading}
+
       <View style={styles.text}>
-        <View style={styles.titleRow}>
-          {/* Truncates first, so a long title never pushes the add-on away */}
-          <ThemedText type="label" numberOfLines={1} style={styles.title}>
-            {title}
+        {overline}
+
+        <View style={styles.labelRow}>
+          {/* Truncates first, so a long label never pushes the add-on away */}
+          <ThemedText type="label" numberOfLines={1} style={styles.label}>
+            {label}
           </ThemedText>
           {/* Ternaries, not &&: an empty string outside <Text> would crash */}
           {addOn ? (
@@ -42,12 +64,19 @@ export function ListItem({
           ) : null}
         </View>
 
-        {subtitle ? (
-          <ThemedText type="sublabel" themeColor="fg2">
-            {subtitle}
+        {sublabel ? (
+          <ThemedText
+            type="sublabel"
+            themeColor="fg2"
+            numberOfLines={sublabelLines}
+          >
+            {sublabel}
           </ThemedText>
         ) : null}
+
+        {footer ? <View style={styles.footer}>{footer}</View> : null}
       </View>
+
       {onOptionsPress && (
         <ThemedPressable
           onPress={onOptionsPress}
@@ -57,7 +86,23 @@ export function ListItem({
           <ThemedIcon icon={EllipsisIcon} />
         </ThemedPressable>
       )}
-    </View>
+      {onPress && <ThemedIcon icon={ArrowRight01Icon} themeColor="fg3" />}
+    </>
+  );
+
+  if (!onPress) return <View style={styles.row}>{content}</View>;
+
+  return (
+    <ThemedPressable
+      onPress={onPress}
+      unstable_pressDelay={PRESS_DELAY}
+      accessibilityLabel={label}
+      // With an options button inside, stay a container so it's reachable
+      accessible={!onOptionsPress}
+      style={styles.row}
+    >
+      {content}
+    </ThemedPressable>
   );
 }
 
@@ -68,15 +113,18 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.three,
   },
-  titleRow: {
+  text: {
+    flex: 1,
+  },
+  labelRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.one,
   },
-  title: {
+  label: {
     flexShrink: 1,
   },
-  text: {
-    flex: 1,
+  footer: {
+    marginTop: Spacing.one,
   },
 });
