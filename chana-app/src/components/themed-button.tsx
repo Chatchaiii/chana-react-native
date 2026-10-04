@@ -11,14 +11,14 @@ import {
   type ThemeColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import type { IconSvgElement } from "@hugeicons/react-native";
+import type { IconName } from "@/constants/icons.generated";
 import { StyleSheet } from "react-native";
 
 export type ButtonType = "default" | "primary" | "secondary" | "tertiary";
 export type ButtonSize = keyof typeof sizeStyles;
 
 export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
-  icon?: IconSvgElement;
+  icon?: IconName;
   label: string;
   type?: ButtonType;
   size?: ButtonSize;

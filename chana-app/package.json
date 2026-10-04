@@ -4,8 +4,6 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~57.0.21",
-    "@hugeicons/core-free-icons": "^4.3.5",
-    "@hugeicons/react-native": "^1.0.16",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-device": "~57.0.2",
@@ -42,7 +40,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "icons": "node scripts/generate-icons.mjs && npx prettier --write src/constants/icons.generated.ts"
   },
   "private": true
 }

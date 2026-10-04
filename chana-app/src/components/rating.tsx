@@ -1,7 +1,6 @@
 import { ThemedIcon } from "@/components/themed-icon";
 import type { ThemeColor } from "@/constants/theme";
 import { Spacing } from "@/constants/theme";
-import { StarIcon } from "@hugeicons/core-free-icons";
 import { StyleSheet, View } from "react-native";
 
 export type RatingValue = 1 | 2 | 3 | 4 | 5;
@@ -29,11 +28,9 @@ export function Rating({ value, size = 14, color = "acc1" }: RatingProps) {
         return (
           <ThemedIcon
             key={i}
-            icon={StarIcon}
+            icon={reached ? "star.fill" : "star"}
             size={size}
-            strokeWidth={2}
             themeColor={reached ? color : "fg3"}
-            fill={reached ? color : undefined}
           />
         );
       })}

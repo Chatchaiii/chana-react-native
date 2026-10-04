@@ -6,7 +6,6 @@ import {
   type RadiusKey,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { Image01Icon } from "@hugeicons/core-free-icons";
 import { Image, type ImageSource } from "expo-image";
 import { StyleSheet, View } from "react-native";
 
@@ -50,7 +49,7 @@ export function Thumbnail({
           style={StyleSheet.absoluteFill}
         />
       ) : (
-        <ThemedIcon icon={Image01Icon} themeColor="fg3" />
+        <ThemedIcon icon="photo" themeColor="fg3" />
       )}
     </View>
   );

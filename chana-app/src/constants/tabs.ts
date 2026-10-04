@@ -1,10 +1,4 @@
-import {
-  Calendar04Icon,
-  Home01Icon,
-  MapIcon,
-  SparkleIcon,
-} from "@hugeicons/core-free-icons";
-import type { IconSvgElement } from "@hugeicons/react-native";
+import type { IconName } from "@/constants/icons.generated";
 import type { Href } from "expo-router";
 
 export type CreateAction = {
@@ -18,7 +12,9 @@ export type Tab = {
   /** Drawer label */
   title: string;
   /** Drawer icon */
-  icon: IconSvgElement;
+  icon: IconName;
+  /** Drawer icon while this tab is the active route */
+  activeIcon: IconName;
   /** Heading of this tab's group in the global search results */
   searchTitle: string;
   /** What the create button opens on this tab */
@@ -36,7 +32,8 @@ export const Tabs = {
   home: {
     route: "(main)",
     title: "Home",
-    icon: Home01Icon,
+    icon: "home",
+    activeIcon: "home.fill",
     searchTitle: "Posts",
     create: { label: "New post", href: "/new" },
     profileHref: "/profile",
@@ -44,7 +41,8 @@ export const Tabs = {
   places: {
     route: "places",
     title: "Places",
-    icon: MapIcon,
+    icon: "map",
+    activeIcon: "map.fill",
     searchTitle: "Places",
     create: { label: "New place", href: "/places/new" },
     profileHref: "/places/profile",
@@ -52,7 +50,8 @@ export const Tabs = {
   wishes: {
     route: "wishes",
     title: "Wishes",
-    icon: SparkleIcon,
+    icon: "sparkle",
+    activeIcon: "sparkle.fill",
     searchTitle: "Wishes",
     create: { label: "New wish", href: "/wishes/new" },
     profileHref: "/wishes/profile",
@@ -60,7 +59,8 @@ export const Tabs = {
   calendar: {
     route: "calendar",
     title: "Calendar",
-    icon: Calendar04Icon,
+    icon: "calendar",
+    activeIcon: "calendar.fill",
     searchTitle: "Events",
     create: { label: "New event", href: "/calendar/new" },
     profileHref: "/calendar/profile",

@@ -5,11 +5,11 @@ import {
 } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
-import type { IconSvgElement } from "@hugeicons/react-native";
+import type { IconName } from "@/constants/icons.generated";
 import { StyleSheet } from "react-native";
 
 export type ActionRowProps = Omit<ThemedPressableProps, "children"> & {
-  icon: IconSvgElement;
+  icon: IconName;
   label: string;
   /** Red, for actions like delete */
   destructive?: boolean;

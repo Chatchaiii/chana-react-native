@@ -2,7 +2,6 @@ import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
-import { Bookmark02Icon, MessageCircleIcon } from "@hugeicons/core-free-icons";
 import { StyleSheet, View } from "react-native";
 
 export type InteractionItemProps = {
@@ -28,7 +27,7 @@ export function InteractionItem({
           accessibilityLabel={`Comments, ${commentCount}`}
           style={styles.button}
         >
-          <ThemedIcon icon={MessageCircleIcon} />
+          <ThemedIcon icon="message" />
           {/* Explicit check: a bare 0 outside <Text> would crash */}
           {commentCount > 0 && <ThemedText>{commentCount}</ThemedText>}
         </ThemedPressable>
@@ -41,7 +40,7 @@ export function InteractionItem({
           accessibilityLabel={`Save, ${savedCount} saved`}
           style={styles.button}
         >
-          <ThemedIcon icon={Bookmark02Icon} />
+          <ThemedIcon icon="bookmark" />
           {savedCount > 0 && <ThemedText>{savedCount}</ThemedText>}
         </ThemedPressable>
       )}
