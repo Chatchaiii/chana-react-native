@@ -41,6 +41,7 @@ src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, S
 src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
 src/constants/placeholder-user.ts   CURRENT_USER stand-in until there's authentication
+src/constants/placeholder-comments.ts  Comment type + stand-in comments (by postId)
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 ```
@@ -66,7 +67,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
 | `PostItem` | Renders a `Post` (`id, author, postedAt, commentCount, savedCount, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` + `InteractionItem`. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, short press delay so scrolling doesn't flash; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
-| `ListItem` | Avatar + `title` + `subtitle`; "…" button shown when `onOptionsPress` is set |
+| `ListItem` | Avatar + `title` (+ optional `addOn` detail like "16h ago") + `subtitle`; "…" button shown when `onOptionsPress` is set. Also used for comments on the post page |
 | `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
 | `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |
@@ -92,6 +93,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 - Rounded drawer scenes: drawer `sceneStyle` background shows in corners; the drawer has a built-in hairline right border (`borderRightWidth: 0`).
 - A `Modal` that never finishes its close animation stays on top invisibly and blocks all touches. Always call `onClose` when the close animation ends (don't gate on `finished`), guard against double dismiss.
 - Haptics: anything that both taps a ThemedPressable and opens/closes the drawer plays two haptics.
+- Never render optional strings with `&&` (`{text && <ThemedText>…}`): an empty string or `0` lands outside `<Text>` and crashes. Use a ternary or an explicit check (`count > 0`).
 - `experimental_backgroundImage: "linear-gradient(...)"` works natively (no expo-linear-gradient needed).
 - Claude's brand fonts (Styrene, Tiempos) are licensed — don't add them.
 - Never call `SplashScreen.preventAutoHideAsync()` without a matching `hideAsync()` — on Android the splash then never disappears (iOS hides it anyway, so it looks fine there).
