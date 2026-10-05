@@ -17,8 +17,15 @@ export const Colors = {
     fg3: "#BBBBBB",
 
     acc1: "#C66AF1",
+
     neg1: "#FF0000",
     neg2: "#FF000025",
+
+    pos1: "#00ff00",
+    pos2: "#00ff0025",
+
+    constWhite: "#ffffff",
+    constBlack: "#000000",
   },
   dark: {
     bg1: "#111111",
@@ -30,8 +37,15 @@ export const Colors = {
     fg3: "#a1a1a1",
 
     acc1: "#C66AF1",
+
     neg1: "#FF0000",
     neg2: "#FF000025",
+
+    pos1: "#00ff00",
+    pos2: "#00ff0025",
+
+    constWhite: "#ffffff",
+    constBlack: "#000000",
   },
 } as const;
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;

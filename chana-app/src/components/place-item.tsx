@@ -1,5 +1,5 @@
 import { ListItem } from "@/components/list-item";
-import { Rating, type RatingValue } from "@/components/rating";
+import { type RatingValue } from "@/components/rating";
 import { ThemedText } from "@/components/themed-text";
 import { Thumbnail } from "@/components/thumbnail";
 import { Spacing } from "@/constants/theme";
@@ -17,6 +17,7 @@ export type Place = {
   distance: string;
   rating: RatingValue;
   image?: string | ImageSource;
+  visited?: boolean;
 };
 
 export type PlaceItemProps = {
@@ -30,10 +31,20 @@ export function PlaceItem({ place }: PlaceItemProps) {
   return (
     <ListItem
       leading={<Thumbnail src={place.image} />}
-      overline={<PlaceMeta author={place.author} distance={place.distance} />}
+      overline={
+        <PlaceMeta
+          author={place.author}
+          distance={place.distance}
+          visited={place.visited}
+        />
+      }
       label={place.name}
       sublabel={place.description}
-      footer={<Rating value={place.rating} />}
+      footer={
+        <ThemedText type="sublabel" themeColor="acc1">
+          {place.rating} stars
+        </ThemedText>
+      }
       onPress={() =>
         router.push({ pathname: "/places/[id]", params: { id: place.id } })
       }
@@ -41,17 +52,20 @@ export function PlaceItem({ place }: PlaceItemProps) {
   );
 }
 
-type PlaceMetaProps = Pick<Place, "author" | "distance">;
+type PlaceMetaProps = Pick<Place, "author" | "distance" | "visited">;
 
-/** "author · distance" line above a place's name */
-export function PlaceMeta({ author, distance }: PlaceMetaProps) {
+/** Author, distance and visited state, shown above a place's name */
+export function PlaceMeta({ author, distance, visited }: PlaceMetaProps) {
   return (
     <View style={styles.meta}>
       <ThemedText type="sublabel" numberOfLines={1} style={styles.author}>
         {author}
       </ThemedText>
       <ThemedText type="subtext" themeColor="fg2">
-        · {distance}
+        {distance}
+      </ThemedText>
+      <ThemedText type="subtext" themeColor={visited ? "pos1" : "neg1"}>
+        {visited ? "Visited" : "Not visited"}
       </ThemedText>
     </View>
   );

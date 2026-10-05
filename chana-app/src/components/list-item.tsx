@@ -82,7 +82,7 @@ export function ListItem({
           hitSlop={12}
           accessibilityLabel="Options"
         >
-          <ThemedIcon icon="ellipsis" />
+          <ThemedIcon icon="line.2.horizontal" />
         </ThemedPressable>
       )}
       {onPress && <ThemedIcon icon="chevron.right" themeColor="fg3" />}
