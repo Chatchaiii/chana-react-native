@@ -4,6 +4,7 @@ import {
   type ThemedPressableProps,
 } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
+import type { IconName } from "@/constants/icons.generated";
 import {
   Radius,
   Spacing,
@@ -11,10 +12,14 @@ import {
   type ThemeColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import type { IconName } from "@/constants/icons.generated";
 import { StyleSheet } from "react-native";
 
-export type ButtonType = "default" | "primary" | "secondary" | "tertiary";
+export type ButtonType =
+  | "default"
+  | "prominent"
+  | "primary"
+  | "secondary"
+  | "tertiary";
 export type ButtonSize = keyof typeof sizeStyles;
 
 export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
@@ -32,6 +37,7 @@ export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
 // Colors per type; the bg/fg props override these
 const TypeColors: Record<ButtonType, { bg: ThemeColor; fg: ThemeColor }> = {
   default: { bg: "bg2", fg: "fg2" },
+  prominent: { bg: "acc1", fg: "constWhite" },
   primary: { bg: "fg1", fg: "bg1" },
   secondary: { bg: "bg2", fg: "fg1" },
   tertiary: { bg: "bg3", fg: "fg1" },
@@ -113,7 +119,7 @@ const sizeStyles = StyleSheet.create({
   },
   large: {
     flexDirection: "column",
-    padding: Spacing.three,
+    padding: Spacing.two,
     gap: Spacing.two,
   },
 });
