@@ -12,7 +12,7 @@ import {
   type ThemeColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export type ButtonType =
   | "default"
@@ -25,6 +25,7 @@ export type ButtonSize = keyof typeof sizeStyles;
 export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
   icon?: IconName;
   label: string;
+  sublabel?: string;
   type?: ButtonType;
   size?: ButtonSize;
   radius?: RadiusKey;
@@ -47,6 +48,7 @@ const TypeColors: Record<ButtonType, { bg: ThemeColor; fg: ThemeColor }> = {
 export function ThemedButton({
   icon,
   label,
+  sublabel,
   type = "default",
   size = "medium_1",
   radius = "sm",
@@ -77,12 +79,19 @@ export function ThemedButton({
       ]}
     >
       {icon && <ThemedIcon icon={icon} themeColor={foreground} />}
-      <ThemedText
-        type={size === "small" ? "sublabel" : "label"}
-        themeColor={foreground}
-      >
-        {label}
-      </ThemedText>
+      <View>
+        <ThemedText
+          type={size === "small" ? "sublabel" : "label"}
+          themeColor={foreground}
+        >
+          {label}
+        </ThemedText>
+        {sublabel && size !== "small" && (
+          <ThemedText type="sublabel" themeColor={foreground}>
+            {sublabel}
+          </ThemedText>
+        )}
+      </View>
     </ThemedPressable>
   );
 }

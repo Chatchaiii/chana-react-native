@@ -64,6 +64,8 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
 | `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Icon: `icon` is an `IconName` from assets/icons. `Icon` is the raw-color version (e.g. on photos). Avatar: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` (Radius key) |
 | `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
 | `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon` |
+| `ThemedCheckItem` | Checkable row (`checked`, `onPress`, `label`, `sublabel`). `children` are trailing controls (e.g. `DatePickerButton`) rendered beside the pressable, not inside it, so tapping them doesn't toggle the item |
+| `DatePickerButton` | Native date picker as a button. iOS: SwiftUI compact `DatePicker` from `@expo/ui/swift-ui` (popover keeps the system blue; `tint` isn't applied to it). Android/web: themed chip that opens `DateTimePicker` from `@expo/ui/community/datetime-picker` as a dialog |
 | `MenuButton` | Header button that opens the drawer |
 | `ScreenScrollView` / `useScreenInsets` | ScrollView root with `contentInsetAdjustmentBehavior="automatic"` (iOS) + Android header/bottom padding. Don't wrap scroll content in SafeAreaView |
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
