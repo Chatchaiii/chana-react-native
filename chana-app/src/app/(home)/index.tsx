@@ -2,8 +2,8 @@ import { List } from "@/components/list";
 import { PostItem } from "@/components/post-item";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { TabScreen } from "@/components/tab-screen";
-import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
 import { Tabs } from "@/constants/tabs";
+import { PLACEHOLDER_POSTS } from "@/data/posts";
 
 export default function Home() {
   return (

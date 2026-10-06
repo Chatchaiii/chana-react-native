@@ -1,40 +1,33 @@
+import { Button, type ButtonType } from "@/components/button";
+import { CheckItem } from "@/components/check-item";
 import { DatePickerButton } from "@/components/date-picker-button";
+import { EmptyState } from "@/components/empty-state";
 import { ImageCarousel } from "@/components/image-carousel";
-import { PlaceMeta, type Place } from "@/components/place-item";
+import { PlaceMeta } from "@/components/place-item";
 import { RatingSummary } from "@/components/rating-summary";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
-import { ThemedButton, type ButtonType } from "@/components/themed-button";
-import { ThemedCheckItem } from "@/components/themed-check-item";
 import { ThemedText } from "@/components/themed-text";
 import type { IconName } from "@/constants/icons.generated";
-import { PLACEHOLDER_PLACES } from "@/constants/placeholder-places";
-import { CURRENT_USER } from "@/constants/placeholder-user";
 import { Spacing } from "@/constants/theme";
+import { CURRENT_USER } from "@/data/current-user";
+import { PLACEHOLDER_PLACES } from "@/data/places";
+import type { Place } from "@/types/place";
 import { withUserRating } from "@/utils/ratings";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-type ButtonProps = {
+type PlaceAction = {
   label: string;
   icon: IconName;
   type?: ButtonType;
 };
 
-const buttondata: ButtonProps[] = [
-  {
-    label: "Route",
-    icon: "location.fill",
-    type: "prominent",
-  },
-  {
-    label: "Share",
-    icon: "square.and.arrow.up",
-  },
-  {
-    label: "Save",
-    icon: "bookmark",
-  },
+// TODO: give each action an onPress once they're implemented
+const PlaceActions: PlaceAction[] = [
+  { label: "Route", icon: "location.fill", type: "prominent" },
+  { label: "Share", icon: "square.and.arrow.up" },
+  { label: "Save", icon: "bookmark" },
 ];
 
 /** A single place, opened by tapping it in the Places list */
@@ -50,7 +43,6 @@ export default function PlaceDetail() {
           title: place?.name ?? "Place",
           headerTransparent: true,
           headerLargeTitleEnabled: true,
-          headerBackButtonDisplayMode: "minimal",
         }}
       />
       <ScreenScrollView contentContainerStyle={styles.content}>
@@ -58,9 +50,7 @@ export default function PlaceDetail() {
           // Keyed by id: if this screen shows another place, its state starts fresh
           <PlaceContent key={place.id} place={place} />
         ) : (
-          <ThemedText themeColor="fg2" style={styles.notFound}>
-            This place doesn’t exist anymore.
-          </ThemedText>
+          <EmptyState>This place doesn’t exist anymore.</EmptyState>
         )}
       </ScreenScrollView>
     </>
@@ -80,25 +70,27 @@ function PlaceContent({ place }: { place: Place }) {
         distance={place.distance}
         visited={visited}
       />
-      {place.image && (
+      {place.image ? (
         <ImageCarousel images={[place.image]} aspectRatio={5 / 4} />
-      )}
-      <View style={styles.row}>
-        {buttondata.map((button) => (
-          <ThemedButton
-            key={button.label}
-            icon={button.icon}
-            label={button.label}
-            type={button.type ?? "tertiary"}
+      ) : null}
+
+      <View style={styles.actions}>
+        {PlaceActions.map((action) => (
+          <Button
+            key={action.label}
+            icon={action.icon}
+            label={action.label}
+            type={action.type ?? "tertiary"}
             size="large"
-            fullWidth
             radius="md"
+            fullWidth
             // Share the row's width equally
-            style={styles.rowButton}
+            style={styles.action}
           />
         ))}
       </View>
-      <ThemedCheckItem
+
+      <CheckItem
         checked={visited}
         onPress={() => setVisited((current) => !current)}
         label={visited ? "Visited" : "Mark as visited"}
@@ -112,7 +104,7 @@ function PlaceContent({ place }: { place: Place }) {
             accessibilityLabel="Visited on"
           />
         ) : null}
-      </ThemedCheckItem>
+      </CheckItem>
 
       <RatingSummary
         ratings={ratings}
@@ -129,18 +121,15 @@ function PlaceContent({ place }: { place: Place }) {
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    gap: Spacing.two,
-  },
-  rowButton: {
-    flex: 1,
-  },
   content: {
     padding: Spacing.three,
     gap: Spacing.three,
   },
-  notFound: {
-    textAlign: "center",
+  actions: {
+    flexDirection: "row",
+    gap: Spacing.two,
+  },
+  action: {
+    flex: 1,
   },
 });

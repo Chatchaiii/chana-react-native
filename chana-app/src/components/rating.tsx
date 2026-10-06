@@ -2,15 +2,8 @@ import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import type { ThemeColor } from "@/constants/theme";
 import { Spacing } from "@/constants/theme";
+import type { RatingValue } from "@/types/rating";
 import { StyleSheet, View } from "react-native";
-
-export type RatingValue = 1 | 2 | 3 | 4 | 5;
-
-/** One person's rating of something */
-export type UserRating = {
-  author: string;
-  value: RatingValue;
-};
 
 export type RatingProps = {
   /** 0 = not rated yet (all stars empty) */

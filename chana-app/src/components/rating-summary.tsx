@@ -1,13 +1,9 @@
 import { List } from "@/components/list";
-import {
-  MAX_RATING,
-  Rating,
-  type RatingValue,
-  type UserRating,
-} from "@/components/rating";
+import { MAX_RATING, Rating } from "@/components/rating";
 import { RingChart } from "@/components/ring-chart";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
+import type { RatingValue, UserRating } from "@/types/rating";
 import { averageRating, formatRating } from "@/utils/ratings";
 import { StyleSheet, View } from "react-native";
 

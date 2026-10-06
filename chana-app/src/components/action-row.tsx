@@ -4,8 +4,8 @@ import {
   type ThemedPressableProps,
 } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
-import { Spacing } from "@/constants/theme";
 import type { IconName } from "@/constants/icons.generated";
+import { Spacing } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
 export type ActionRowProps = Omit<ThemedPressableProps, "children"> & {

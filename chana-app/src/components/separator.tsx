@@ -8,6 +8,7 @@ export type SeparatorProps = {
   orientation?: "horizontal" | "vertical";
 };
 
+/** 1px line between items, inset by `padding` at both ends */
 export function Separator({
   padding = "three",
   orientation = "horizontal",

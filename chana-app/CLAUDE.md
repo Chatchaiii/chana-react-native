@@ -38,57 +38,59 @@ src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
 src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
 src/constants/tabs.ts               Single source of truth for tabs: route, title, icon (filled, same for active and inactive), optional searchTitle (omit = not in search), optional create {label, href} (omit = no create button / new.tsx), profileHref. First entry = the tab the app opens on. `MenuSections` sets the drawer's groups and order
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
-src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
-src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
-src/constants/placeholder-user.ts   CURRENT_USER stand-in until there's authentication
-src/constants/placeholder-comments.ts  Comment type + stand-in comments (by postId)
-src/constants/placeholder-places.ts    Stand-in Place data
+src/constants/motion.ts             Timings (fast/normal/slow eased), PressSpring, ListPressDelay
+src/types/                          Domain types: post.ts (Post), place.ts (Place), comment.ts (Comment), rating.ts (RatingValue, UserRating), user.ts (User)
+src/data/                           Stand-in content until there's a backend: posts.ts, places.ts, comments.ts (by postId), current-user.ts (CURRENT_USER)
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 src/utils/ratings.ts                averageRating, formatRating (4 → "4", 4.33 → "4.3")
 ```
-Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `saved`, `couple` (placeholder pages, no create/search).
+Tabs: `(home)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `saved`, `couple` (placeholder pages, no create/search).
 
 - **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`. The swipe-to-open is only enabled while a tab is on its `index` (`getFocusedRouteNameFromRoute`), so the left-edge swipe on pushed pages is the native back gesture.
-- **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal and `profile` as a sheet (`SheetScreenOptions`, also exported for tab-specific sheets) (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
+- **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` (pushed pages get a minimal back button: chevron only) declaring `index` first, then `new` as a modal and `profile` as a sheet (`SheetScreenOptions`, also exported for tab-specific sheets) (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
-- **AppDrawerContent**: not scrollable (plain View + safe-area insets). "CHANA" heading + one group of `ThemedButton`s per `MenuSections` entry (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
+- **AppDrawerContent**: not scrollable (plain View + safe-area insets). "CHANA" heading + one group of `Button`s per `MenuSections` entry (`variant` row/list → `sectionStyles` + `buttonProps` lookup tables, optional `spaceBefore`) (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
 - Adding a tab: entry in `Tabs` (incl. `profileHref`) and in `MenuSections` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen` (only with `create`), and the one-line `profile.tsx`. Tabs without `create` use `<DrawerStack withCreate={false} />` in their layout (declaring a missing `new` route warns).
 - Places has `places/[id]` (place detail page, opened from `PlaceItem`). Its state lives in `PlaceContent`, keyed by place id, so it resets if the screen is reused for another place (e.g. a deep link).
-- Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
+- Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet bodies use `SheetContent` (no bottom safe-area padding: on iOS 26 the sheet floats).
 
 ## Components
 
 | Component | Purpose |
 |---|---|
-| `ThemedText` | `type`: heading, heading_2–4, label, sublabel, text, subtext, code (looked up from the style table); `themeColor` |
-| `ThemedView`, `ThemedIcon`, `ThemedAvatar` | Themed primitives. Icon: `icon` is an `IconName` from assets/icons. `Icon` is the raw-color version (e.g. on photos). Avatar: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` (Radius key) |
+| `ThemedText` | `type` (`TextType`): heading, heading_2–4, label, sublabel, text, subtext, code; `themeColor` |
+| `ThemedView`, `ThemedIcon` | Theme-colored primitives. Icon: `icon` is an `IconName` from assets/icons; `Icon` is the raw-color version (e.g. on photos) |
 | `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
-| `ThemedButton` | Styled button on ThemedPressable: `type` (default/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon` |
-| `ThemedCheckItem` | Checkable row (`checked`, `onPress`, `label`, `sublabel`). `children` are trailing controls (e.g. `DatePickerButton`) rendered beside the pressable, not inside it, so tapping them doesn't toggle the item |
+| `Button` | Styled button on ThemedPressable: `type` (default/prominent/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon`, `sublabel` |
+| `Avatar` | Person picture: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` |
+| `CheckItem` | Radio-style checkable row (`checked`, `onPress`, `label`, `sublabel`). `children` are trailing controls (e.g. `DatePickerButton`) rendered beside the pressable, not inside it, so tapping them doesn't toggle the item |
 | `DatePickerButton` | Native date picker as a button. iOS: SwiftUI compact `DatePicker` from `@expo/ui/swift-ui` (popover keeps the system blue; `tint` isn't applied to it). Android/web: themed chip that opens `DateTimePicker` from `@expo/ui/community/datetime-picker` as a dialog |
 | `MenuButton` | Header button that opens the drawer |
 | `ScreenScrollView` / `useScreenInsets` | ScrollView root with `contentInsetAdjustmentBehavior="automatic"` (iOS) + Android header/bottom padding. Don't wrap scroll content in SafeAreaView |
+| `SheetContent` | Padded column for the body of a native sheet (post options, profile) |
+| `EmptyState` | Centered fg2 hint where content is missing ("No comments yet.", "This place doesn't exist anymore.") |
 | `List` | Stacks children with `Separator` between; `type`: plain / card (bg1, `Radius.md`, clipped) |
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
-| `PostItem` | Renders a `Post` (`id, author, postedAt, commentCount, savedCount, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` + `InteractionItem`. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, short press delay so scrolling doesn't flash; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
 | `ListItem` | Generic row, no domain knowledge. Slots: `leading` (avatar/thumbnail), `overline`, `label` + `addOn`, `sublabel` (`sublabelLines`, default 2), `footer`. `onOptionsPress` → "…" button; `onPress` → whole row pressable + chevron. Domain rows wrap it (`PostItem`, `PlaceItem`) instead of adding domain props to it |
-| `PlaceItem` | Renders a `Place` (`id, name, description, author, distance, ratings: UserRating[], image?`) via ListItem with `Thumbnail`, `PlaceMeta` overline and average-rating footer; opens `/places/[id]` |
+| `PostItem` | Renders a `Post`: `ListItem` (author row) + optional `ImageCarousel` + `ExpandableText` + `PostActions`, and sets their spacing. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, `ListPressDelay`; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
+| `ExpandableText` | `title` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |
+| `PostActions` | Right-aligned comment + save buttons with counts (hidden when 0). A button only renders when its handler is set |
+| `PlaceItem` / `PlaceMeta` | Renders a `Place` via ListItem with `Thumbnail`, `PlaceMeta` overline (author, distance, visited) and average-rating footer; opens `/places/[id]` |
 | `Thumbnail` | Rectangular image (`size` = height, `aspectRatio`, `radius`), placeholder icon when no `src` |
-| `Rating` | 1–5 stars (`star.fill` in acc1 / `star` in fg3); `value` 0 = not rated. Read-only unless `onChange` is set (each star becomes a ThemedPressable with hitSlop). Also exports `MAX_RATING` and `UserRating` (`author`, `value`) |
+| `Rating` | 1–5 stars (`star.fill` in acc1 / `star` in fg3); `value` 0 = not rated. Read-only unless `onChange` is set (each star becomes a ThemedPressable with hitSlop). Exports `MAX_RATING` |
 | `RatingSummary` | Card (`List type="card"`) with the average as a `RingChart` + number, then one row per person's stars. With `currentUser` + `onRate`, that user's row is tappable (larger stars) and shown with empty stars until they've rated. `withUserRating` (utils/ratings) updates the list |
 | `RingChart` | Ring filled clockwise from 12 o'clock to `portion / total` (optional `startPortion`), animated from the current fill. `size` (ContainerSizes), `strokeWidth` s/m/l; announced as a progress bar |
-| `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
-| `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |
 | `ImageCarousel` | Paging images, "1/4" counter + animated dots, tap → `ImageViewer`. No outer margin — the parent places it |
 | `ImageViewer` | Modal viewer that expands from the thumbnail (`measureInWindow`), swipe sideways to browse, vertical drag to dismiss |
-| `CreateScreen` | Body of each tab's `new.tsx` modal |
+| `CreateScreen` | Body of each tab's `new.tsx` modal (takes a `CreatableTab`) |
 | `ProfileSheet` | Signed-in user's sheet (avatar, name, Edit profile / Settings / Log out — actions still TODO) |
 
 ## Conventions
 
-- Files kebab-case; always import via `@/…` (no relative imports); double quotes; Prettier formatting.
+- Files kebab-case; always import via `@/…` (no relative imports); double quotes; Prettier formatting. Imports sorted: `@/…` first (alphabetical by path), then packages.
+- Naming: the `Themed` prefix is only for thin wrappers of RN primitives (`ThemedText`, `ThemedView`, `ThemedIcon`, `ThemedPressable`); everything else is named for what it is (`Button`, `Avatar`, `CheckItem`, …). `…Item` = a list row (`ListItem`, `PostItem`, `PlaceItem`). Domain types live in `src/types`, stand-in content in `src/data`, never in components or `constants/`.
 - **No magic numbers for shared design values.** Use `Spacing`, `Radius`, `ContainerSizes`, `Colors` via `useTheme()`, `OverlayColors` for UI on top of photos, `Timings` / `PressSpring` for motion, `HapticStyles` + `playHaptic` for haptics. Component-specific constants (e.g. `DOT_SIZE`) stay local, in SCREAMING_CASE at the top of the file.
 - Styles: `StyleSheet.create` at the bottom of the module, camelCase keys; variants as lookup tables (`TypeColors`, `sizeStyles`) composed in a style array; theme colors applied inline. Spacing around a component is set by its parent (via `style`), not baked into the component.
 - Props: component props types are `<Component>Props`, extend the underlying RN props when they forward them, and use defaults in the destructuring. Content comes in through props, never hardcoded in a component.

@@ -1,26 +1,11 @@
 import { ListItem } from "@/components/list-item";
-import type { UserRating } from "@/components/rating";
 import { ThemedText } from "@/components/themed-text";
 import { Thumbnail } from "@/components/thumbnail";
 import { Spacing } from "@/constants/theme";
+import type { Place } from "@/types/place";
 import { averageRating, formatRating } from "@/utils/ratings";
-import type { ImageSource } from "expo-image";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
-
-export type Place = {
-  id: string;
-  name: string;
-  description: string;
-  /** Who added the place */
-  author: string;
-  /** Already formatted, e.g. "4 km" */
-  distance: string;
-  /** One rating per person who rated it */
-  ratings: UserRating[];
-  image?: string | ImageSource;
-  visited?: boolean;
-};
 
 export type PlaceItemProps = {
   place: Place;

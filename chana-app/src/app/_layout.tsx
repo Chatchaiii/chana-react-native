@@ -1,10 +1,10 @@
 import { AppDrawerContent } from "@/components/app-drawer-content";
 import { Tabs } from "@/constants/tabs";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useTheme } from "@/hooks/use-theme";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { getFocusedRouteNameFromRoute } from "expo-router/react-navigation";
-import { useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 

@@ -6,6 +6,7 @@ export type ThemedViewProps = ViewProps & {
   themeColor?: ThemeColor;
 };
 
+/** View with a theme background color */
 export function ThemedView({
   themeColor = "bg2",
   style,

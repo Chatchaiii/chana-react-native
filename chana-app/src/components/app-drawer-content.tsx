@@ -1,7 +1,4 @@
-import {
-  ThemedButton,
-  type ThemedButtonProps,
-} from "@/components/themed-button";
+import { Button, type ButtonProps } from "@/components/button";
 import { ThemedText } from "@/components/themed-text";
 import { MenuSections, type MenuSection } from "@/constants/tabs";
 import { Spacing } from "@/constants/theme";
@@ -32,7 +29,7 @@ export function AppDrawerContent({
         },
       ]}
     >
-      <ThemedText type="heading_2" style={styles.text}>
+      <ThemedText type="heading_2" style={styles.title}>
         CHANA
       </ThemedText>
 
@@ -50,7 +47,7 @@ export function AppDrawerContent({
             const focused = tab.route === focusedRoute;
 
             return (
-              <ThemedButton
+              <Button
                 key={tab.route}
                 icon={tab.icon}
                 label={tab.title}
@@ -73,7 +70,7 @@ export function AppDrawerContent({
 }
 
 const styles = StyleSheet.create({
-  text: {
+  title: {
     marginBottom: Spacing.three,
   },
   container: {
@@ -105,4 +102,4 @@ const buttonProps = {
     style: styles.rowButton,
   },
   list: { size: "medium_2", radius: "md", align: "left", fullWidth: true },
-} satisfies Record<MenuSection["variant"], Partial<ThemedButtonProps>>;
+} satisfies Record<MenuSection["variant"], Partial<ButtonProps>>;

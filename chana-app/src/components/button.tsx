@@ -18,7 +18,7 @@ export type ButtonType =
   "default" | "prominent" | "primary" | "secondary" | "tertiary";
 export type ButtonSize = keyof typeof sizeStyles;
 
-export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
+export type ButtonProps = Omit<ThemedPressableProps, "children"> & {
   icon?: IconName;
   label: string;
   sublabel?: string;
@@ -41,7 +41,7 @@ const TypeColors: Record<ButtonType, { bg: ThemeColor; fg: ThemeColor }> = {
 };
 
 /** Styled button (colors, size, radius, icon + label) on top of ThemedPressable */
-export function ThemedButton({
+export function Button({
   icon,
   label,
   sublabel,
@@ -54,7 +54,7 @@ export function ThemedButton({
   fg,
   style,
   ...rest
-}: ThemedButtonProps) {
+}: ButtonProps) {
   const theme = useTheme();
   const colors = TypeColors[type];
   const foreground = fg ?? colors.fg;

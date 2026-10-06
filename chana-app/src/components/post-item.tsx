@@ -1,24 +1,14 @@
+import { Avatar } from "@/components/avatar";
+import { ExpandableText } from "@/components/expandable-text";
 import { ImageCarousel } from "@/components/image-carousel";
-import { InteractionItem } from "@/components/interaction-item";
 import { ListItem } from "@/components/list-item";
-import { TextItem } from "@/components/text-item";
-import { ThemedAvatar } from "@/components/themed-avatar";
+import { PostActions } from "@/components/post-actions";
 import { ThemedPressable } from "@/components/themed-pressable";
+import { ListPressDelay } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
-import type { ImageSource } from "expo-image";
+import type { Post } from "@/types/post";
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
-
-export type Post = {
-  id: string;
-  author: string;
-  postedAt: string;
-  commentCount: number;
-  savedCount: number;
-  title: string;
-  text: string;
-  images?: (string | ImageSource)[];
-};
 
 export type PostItemProps = {
   post: Post;
@@ -29,10 +19,7 @@ export type PostItemProps = {
   variant?: "feed" | "detail";
 };
 
-// Wait before the press feedback so scrolling the feed doesn't flash posts
-const PRESS_DELAY = 100;
-
-/** A post: author row, optional photos and the text */
+/** A post: author row, optional photos, the text and its actions */
 export function PostItem({ post, variant = "feed" }: PostItemProps) {
   const router = useRouter();
   const openPost = () =>
@@ -41,7 +28,7 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
   const content = (
     <>
       <ListItem
-        leading={<ThemedAvatar name={post.author} size="m" />}
+        leading={<Avatar name={post.author} size="m" />}
         label={post.author}
         sublabel={post.postedAt}
         onOptionsPress={() =>
@@ -51,15 +38,16 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
           })
         }
       />
-      {post.images && post.images.length > 0 && (
-        <ImageCarousel images={post.images} style={styles.carousel} />
-      )}
-      <TextItem
+      {post.images && post.images.length > 0 ? (
+        <ImageCarousel images={post.images} style={styles.part} />
+      ) : null}
+      <ExpandableText
         title={post.title}
         text={post.text}
         collapsible={variant === "feed"}
+        style={styles.part}
       />
-      <InteractionItem
+      <PostActions
         commentCount={post.commentCount}
         savedCount={post.savedCount}
         // On the post's own page, opening it again would stack a duplicate
@@ -67,6 +55,7 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
         onCommentPress={variant === "feed" ? openPost : () => {}}
         // TODO: save the post
         onSavePress={() => alert("Saving not implemented yet")}
+        style={styles.part}
       />
     </>
   );
@@ -78,7 +67,7 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
     // "…" button, photos and "View more" inside
     <ThemedPressable
       accessible={false}
-      unstable_pressDelay={PRESS_DELAY}
+      unstable_pressDelay={ListPressDelay}
       onPress={openPost}
     >
       {content}
@@ -87,7 +76,8 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
 }
 
 const styles = StyleSheet.create({
-  carousel: {
+  // Photos, text and actions line up with the author row's padding
+  part: {
     marginHorizontal: Spacing.three,
     marginBottom: Spacing.three,
   },

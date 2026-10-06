@@ -1,13 +1,14 @@
+import { Avatar } from "@/components/avatar";
+import { EmptyState } from "@/components/empty-state";
 import { List } from "@/components/list";
 import { ListItem } from "@/components/list-item";
 import { PostItem } from "@/components/post-item";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { Separator } from "@/components/separator";
-import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedText } from "@/components/themed-text";
-import { PLACEHOLDER_COMMENTS } from "@/constants/placeholder-comments";
-import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
 import { Spacing } from "@/constants/theme";
+import { PLACEHOLDER_COMMENTS } from "@/data/comments";
+import { PLACEHOLDER_POSTS } from "@/data/posts";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { StyleSheet } from "react-native";
 
@@ -38,7 +39,7 @@ export default function PostDetail() {
                 {comments.map((comment) => (
                   <ListItem
                     key={comment.id}
-                    leading={<ThemedAvatar name={comment.author} size="m" />}
+                    leading={<Avatar name={comment.author} size="m" />}
                     label={comment.author}
                     addOn={comment.postedAt}
                     sublabel={comment.text}
@@ -47,15 +48,11 @@ export default function PostDetail() {
                 ))}
               </List>
             ) : (
-              <ThemedText themeColor="fg2" style={styles.empty}>
-                No comments yet.
-              </ThemedText>
+              <EmptyState>No comments yet.</EmptyState>
             )}
           </>
         ) : (
-          <ThemedText themeColor="fg2" style={styles.notFound}>
-            This post doesn’t exist anymore.
-          </ThemedText>
+          <EmptyState>This post doesn’t exist anymore.</EmptyState>
         )}
       </ScreenScrollView>
     </>
@@ -66,12 +63,5 @@ const styles = StyleSheet.create({
   sectionTitle: {
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.three,
-  },
-  empty: {
-    padding: Spacing.three,
-  },
-  notFound: {
-    padding: Spacing.three,
-    textAlign: "center",
   },
 });

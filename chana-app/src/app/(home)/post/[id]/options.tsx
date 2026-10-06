@@ -1,10 +1,11 @@
 import { ActionRow } from "@/components/action-row";
 import { List } from "@/components/list";
+import { SheetContent } from "@/components/sheet-content";
 import { ThemedText } from "@/components/themed-text";
-import { PLACEHOLDER_POSTS } from "@/constants/placeholder-posts";
 import { Spacing } from "@/constants/theme";
+import { PLACEHOLDER_POSTS } from "@/data/posts";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 
 /** Sheet with the options for one post, opened from its "…" button */
 export default function PostOptions() {
@@ -16,13 +17,12 @@ export default function PostOptions() {
   const close = () => router.back();
 
   return (
-    // The sheet already floats above the home indicator, so no safe-area padding
-    <View style={styles.container}>
-      {post && (
+    <SheetContent>
+      {post ? (
         <ThemedText type="heading_4" themeColor="fg2" style={styles.title}>
           Post by {post.author}
         </ThemedText>
-      )}
+      ) : null}
 
       <List type="card" separatorPadding="three">
         <ActionRow icon="square.and.arrow.up" label="Share" onPress={close} />
@@ -33,17 +33,11 @@ export default function PostOptions() {
       <List type="card" separatorPadding="three">
         <ActionRow icon="trash" label="Delete" destructive onPress={close} />
       </List>
-    </View>
+    </SheetContent>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: Spacing.five,
-    paddingBottom: Spacing.three,
-    paddingHorizontal: Spacing.three,
-    gap: Spacing.three,
-  },
   title: {
     paddingHorizontal: Spacing.two,
   },
