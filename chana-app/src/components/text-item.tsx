@@ -21,7 +21,7 @@ export type TextItemProps = {
   collapsible?: boolean;
 };
 
-/** Author name and post text, truncated to three lines with "View more" */
+/** Post title and text, truncated to three lines with "View more" */
 export function TextItem({ title, text, collapsible = true }: TextItemProps) {
   if (!collapsible) {
     return (

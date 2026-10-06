@@ -9,7 +9,10 @@ export const PLACEHOLDER_PLACES: Place[] = [
       "Small coffee bar with great flat whites and a quiet corner to read.",
     author: "chadchai",
     distance: "4 km",
-    rating: 4,
+    ratings: [
+      { author: "chadchai", value: 5 },
+      { author: "hanshine", value: 3 },
+    ],
     image: "https://picsum.photos/seed/chana-place-1/600/480",
     visited: false,
   },
@@ -19,7 +22,10 @@ export const PLACEHOLDER_PLACES: Place[] = [
     description: "Big park with a pond, perfect for a picnic on sunny days.",
     author: "chadchai",
     distance: "1.2 km",
-    rating: 5,
+    ratings: [
+      { author: "chadchai", value: 5 },
+      { author: "hanshine", value: 5 },
+    ],
     image: "https://picsum.photos/seed/chana-place-2/600/480",
     visited: true,
   },
@@ -29,7 +35,7 @@ export const PLACEHOLDER_PLACES: Place[] = [
     description: "Hand-pulled noodles. Usually busy around lunch.",
     author: "chadchai",
     distance: "800 m",
-    rating: 2,
+    ratings: [{ author: "chadchai", value: 2 }],
     visited: true,
   },
 ];

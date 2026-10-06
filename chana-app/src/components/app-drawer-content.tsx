@@ -26,7 +26,7 @@ export function AppDrawerContent({
       style={[
         styles.container,
         {
-          paddingTop: insets.top + Spacing.two,
+          paddingTop: insets.top,
           paddingBottom: insets.bottom,
           paddingLeft: insets.left + Spacing.three,
         },
@@ -52,9 +52,9 @@ export function AppDrawerContent({
             return (
               <ThemedButton
                 key={tab.route}
-                icon={focused ? tab.activeIcon : tab.icon}
+                icon={tab.icon}
                 label={tab.title}
-                type={focused ? "primary" : "default"}
+                type={focused ? "primary" : "secondary"}
                 {...buttonProps[section.variant]}
                 accessibilityState={{ selected: focused }}
                 onPress={() =>
@@ -74,12 +74,9 @@ export function AppDrawerContent({
 
 const styles = StyleSheet.create({
   text: {
-    textAlign: "center",
-    // Keeps the heading 32 away from the menu, while sections are only 16 apart
     marginBottom: Spacing.three,
   },
   container: {
-    // Smallest gap between sections; a section's spaceBefore adds to it
     gap: Spacing.two,
     paddingHorizontal: Spacing.three,
   },

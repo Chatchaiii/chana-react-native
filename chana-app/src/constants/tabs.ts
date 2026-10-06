@@ -14,8 +14,6 @@ export type Tab = {
   title: string;
   /** Drawer icon */
   icon: IconName;
-  /** Drawer icon while this tab is the active route */
-  activeIcon: IconName;
   /** Heading of this tab's group in the global search results; omit to leave it out of search */
   searchTitle?: string;
   /** What the create button opens on this tab; omit for no create button (and no `new.tsx`) */
@@ -36,8 +34,7 @@ export const Tabs = {
   home: {
     route: "(main)",
     title: "Home",
-    icon: "home",
-    activeIcon: "home.fill",
+    icon: "home.fill",
     searchTitle: "Posts",
     create: { label: "New post", href: "/new" },
     profileHref: "/profile",
@@ -45,8 +42,7 @@ export const Tabs = {
   places: {
     route: "places",
     title: "Places",
-    icon: "map",
-    activeIcon: "map.fill",
+    icon: "map.fill",
     searchTitle: "Places",
     create: { label: "New place", href: "/places/new" },
     profileHref: "/places/profile",
@@ -54,8 +50,7 @@ export const Tabs = {
   wishes: {
     route: "wishes",
     title: "Wishes",
-    icon: "sparkle",
-    activeIcon: "sparkle.fill",
+    icon: "sparkle.fill",
     searchTitle: "Wishes",
     create: { label: "New wish", href: "/wishes/new" },
     profileHref: "/wishes/profile",
@@ -63,8 +58,7 @@ export const Tabs = {
   calendar: {
     route: "calendar",
     title: "Calendar",
-    icon: "calendar",
-    activeIcon: "calendar.fill",
+    icon: "calendar.fill",
     searchTitle: "Events",
     create: { label: "New event", href: "/calendar/new" },
     profileHref: "/calendar/profile",
@@ -72,22 +66,19 @@ export const Tabs = {
   couple: {
     route: "couple",
     title: "Couple",
-    icon: "heart",
-    activeIcon: "heart.fill",
+    icon: "heart.fill",
     profileHref: "/couple/profile",
   },
   activity: {
     route: "activity",
     title: "Activity",
-    icon: "activity",
-    activeIcon: "activity.fill",
+    icon: "activity.fill",
     profileHref: "/activity/profile",
   },
   saved: {
     route: "saved",
     title: "Saved",
-    icon: "bookmark",
-    activeIcon: "bookmark.fill",
+    icon: "bookmark.fill",
     profileHref: "/saved/profile",
   },
 } satisfies Record<string, Tab>;

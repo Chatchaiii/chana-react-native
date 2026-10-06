@@ -36,7 +36,7 @@ src/app/<tab>/_layout.tsx           One-line re-export of DrawerStack + unstable
 src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabScreen>
 src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
 src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
-src/constants/tabs.ts               Single source of truth for tabs: route, title, icon + activeIcon (filled, shown for the active tab in the drawer), optional searchTitle (omit = not in search), optional create {label, href} (omit = no create button / new.tsx), profileHref. First entry = the tab the app opens on. `MenuSections` sets the drawer's groups and order
+src/constants/tabs.ts               Single source of truth for tabs: route, title, icon (filled, same for active and inactive), optional searchTitle (omit = not in search), optional create {label, href} (omit = no create button / new.tsx), profileHref. First entry = the tab the app opens on. `MenuSections` sets the drawer's groups and order
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
 src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
@@ -45,6 +45,7 @@ src/constants/placeholder-comments.ts  Comment type + stand-in comments (by post
 src/constants/placeholder-places.ts    Stand-in Place data
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
+src/utils/ratings.ts                averageRating, formatRating (4 → "4", 4.33 → "4.3")
 ```
 Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `saved`, `couple` (placeholder pages, no create/search).
 
@@ -53,7 +54,7 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `s
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
 - **AppDrawerContent**: not scrollable (plain View + safe-area insets). "CHANA" heading + one group of `ThemedButton`s per `MenuSections` entry (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
 - Adding a tab: entry in `Tabs` (incl. `profileHref`) and in `MenuSections` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen` (only with `create`), and the one-line `profile.tsx`. Tabs without `create` use `<DrawerStack withCreate={false} />` in their layout (declaring a missing `new` route warns).
-- Places has `places/[id]` (place detail page, opened from `PlaceItem`).
+- Places has `places/[id]` (place detail page, opened from `PlaceItem`). Its state lives in `PlaceContent`, keyed by place id, so it resets if the screen is reused for another place (e.g. a deep link).
 - Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
 
 ## Components
@@ -72,9 +73,11 @@ Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `s
 | `Separator` | 1px bg3 line, `padding` (SpacingKey) inset, horizontal/vertical |
 | `PostItem` | Renders a `Post` (`id, author, postedAt, commentCount, savedCount, text, images?`): `ListItem` + optional `ImageCarousel` + `TextItem` + `InteractionItem`. `variant="feed"` (default) is a ThemedPressable that opens `/post/[id]` (no haptic, short press delay so scrolling doesn't flash; `accessible={false}` so inner controls stay reachable); `variant="detail"` shows the full text |
 | `ListItem` | Generic row, no domain knowledge. Slots: `leading` (avatar/thumbnail), `overline`, `label` + `addOn`, `sublabel` (`sublabelLines`, default 2), `footer`. `onOptionsPress` → "…" button; `onPress` → whole row pressable + chevron. Domain rows wrap it (`PostItem`, `PlaceItem`) instead of adding domain props to it |
-| `PlaceItem` | Renders a `Place` (`id, name, description, author, distance, rating, image?`) via ListItem with `Thumbnail`, `PlaceMeta` overline and `Rating` footer; opens `/places/[id]` |
+| `PlaceItem` | Renders a `Place` (`id, name, description, author, distance, ratings: UserRating[], image?`) via ListItem with `Thumbnail`, `PlaceMeta` overline and average-rating footer; opens `/places/[id]` |
 | `Thumbnail` | Rectangular image (`size` = height, `aspectRatio`, `radius`), placeholder icon when no `src` |
-| `Rating` | Read-only 1–5 stars (`star.fill` in acc1 / `star` in fg3) |
+| `Rating` | 1–5 stars (`star.fill` in acc1 / `star` in fg3); `value` 0 = not rated. Read-only unless `onChange` is set (each star becomes a ThemedPressable with hitSlop). Also exports `MAX_RATING` and `UserRating` (`author`, `value`) |
+| `RatingSummary` | Card (`List type="card"`) with the average as a `RingChart` + number, then one row per person's stars. With `currentUser` + `onRate`, that user's row is tappable (larger stars) and shown with empty stars until they've rated. `withUserRating` (utils/ratings) updates the list |
+| `RingChart` | Ring filled clockwise from 12 o'clock to `portion / total` (optional `startPortion`), animated from the current fill. `size` (ContainerSizes), `strokeWidth` s/m/l; announced as a progress bar |
 | `InteractionItem` | Right-aligned comment + save buttons with counts (numbers; hidden when 0). A button only renders when its handler is set |
 | `ActionRow` | Icon + label row on ThemedPressable (`destructive` → neg1), for options in sheets/menus |
 | `TextItem` | `author` + `text`, truncated to 3 lines; View more/less animates height. `collapsible={false}` shows the full text |

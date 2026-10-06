@@ -96,12 +96,14 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
   },
   withTrailing: {
-    paddingRight: Spacing.three,
+    paddingRight: Spacing.two,
   },
   check: {
     flex: 1,
     flexDirection: "row",
-    padding: Spacing.three,
+    alignItems: "center",
+    paddingLeft: Spacing.three,
+    paddingVertical: Spacing.two,
     gap: Spacing.two,
   },
 });
