@@ -6,7 +6,7 @@ import { CURRENT_USER } from "@/constants/placeholder-user";
 import type { Tab } from "@/constants/tabs";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRouter, type Href } from "expo-router";
 import { useState, type ReactNode } from "react";
 import { Platform } from "react-native";
 
@@ -19,7 +19,7 @@ export type TabScreenProps = {
 
 /**
  * Shared header, search bar and bottom toolbar for every drawer tab.
- * Search is global; only the create button differs per tab.
+ * Search is global; only the create button (if the tab has one) differs per tab.
  */
 export function TabScreen({
   tab,
@@ -33,10 +33,12 @@ export function TabScreen({
   const createIcon =
     Platform.OS === "android" ? androidCreateIcon : "square.and.pencil";
 
-  const openCreate = () => {
+  const { create } = tab;
+
+  const openCreate = (href: Href) => {
     // Native toolbar buttons aren't ThemedPressables, so play the haptic here
     playHaptic(HapticStyles.press);
-    router.push(tab.create.href);
+    router.push(href);
   };
 
   return (
@@ -70,13 +72,13 @@ export function TabScreen({
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
         {/* Rendered once the Android icon has loaded; without one it warns */}
-        {createIcon && (
+        {create && createIcon ? (
           <Stack.Toolbar.Button
             icon={createIcon}
-            accessibilityLabel={tab.create.label}
-            onPress={openCreate}
+            accessibilityLabel={create.label}
+            onPress={() => openCreate(create.href)}
           />
-        )}
+        ) : null}
       </Stack.Toolbar>
 
       {query.trim() ? <SearchResults query={query} /> : children}

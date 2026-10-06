@@ -118,8 +118,8 @@ const sizeStyles = StyleSheet.create({
     gap: Spacing.one,
   },
   medium_1: {
-    height: 42,
-    paddingHorizontal: Spacing.three,
+    // height: 42,
+    padding: Spacing.three,
     gap: Spacing.three,
   },
   medium_2: {

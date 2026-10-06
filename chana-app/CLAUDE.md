@@ -36,7 +36,7 @@ src/app/<tab>/_layout.tsx           One-line re-export of DrawerStack + unstable
 src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabScreen>
 src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
 src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
-src/constants/tabs.ts               Single source of truth for tabs: route, title, icon + activeIcon (filled, shown for the active tab in the drawer), searchTitle, create {label, href}, profileHref
+src/constants/tabs.ts               Single source of truth for tabs: route, title, icon + activeIcon (filled, shown for the active tab in the drawer), optional searchTitle (omit = not in search), optional create {label, href} (omit = no create button / new.tsx), profileHref. First entry = the tab the app opens on. `MenuSections` sets the drawer's groups and order
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
 src/constants/motion.ts             Timings (fast/normal/slow eased) and PressSpring
 src/constants/placeholder-posts.ts  Stand-in Post data until there's a backend
@@ -46,13 +46,13 @@ src/constants/placeholder-places.ts    Stand-in Place data
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 ```
-Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`.
+Tabs: `(main)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `saved`, `couple` (placeholder pages, no create/search).
 
 - **Drawer** (`app/_layout.tsx`): `drawerType: "back"` (menu stays behind, screen slides over it), 80% width, no right border, transparent overlay. Drawer screens are built from `Tabs`. The swipe-to-open is only enabled while a tab is on its `index` (`getFocusedRouteNameFromRoute`), so the left-edge swipe on pushed pages is the native back gesture.
 - **DrawerStack** (`components/drawer-stack.tsx`): layout of every tab. A `Stack` declaring `index` first, then `new` as a modal and `profile` as a sheet (`SheetScreenOptions`, also exported for tab-specific sheets) (declared screens are ordered before file routes, so without `index` first a tab would open on `new`). Animates rounded corners + border + fade from `useDrawerProgress()`. Also exports `unstable_settings` (`initialRouteName: "index"`), which each tab layout re-exports.
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
-- **AppDrawerContent**: "Chana" heading + one `ThemedButton` per tab (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
-- Adding a tab: entry in `Tabs` (incl. `profileHref`) + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen`, and the one-line `profile.tsx`.
+- **AppDrawerContent**: not scrollable (plain View + safe-area insets). "CHANA" heading + one group of `ThemedButton`s per `MenuSections` entry (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
+- Adding a tab: entry in `Tabs` (incl. `profileHref`) and in `MenuSections` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen` (only with `create`), and the one-line `profile.tsx`. Tabs without `create` use `<DrawerStack withCreate={false} />` in their layout (declaring a missing `new` route warns).
 - Places has `places/[id]` (place detail page, opened from `PlaceItem`).
 - Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet content needs no bottom safe-area padding on iOS 26 (the sheet floats).
 

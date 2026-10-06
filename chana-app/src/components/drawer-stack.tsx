@@ -30,6 +30,8 @@ export const SheetScreenOptions: NativeStackNavigationOptions = {
 };
 
 export type DrawerStackProps = {
+  /** Whether the tab has a `new.tsx` (create modal); false for tabs without a create button */
+  withCreate?: boolean;
   /** Extra Stack.Screen declarations for routes only this tab has */
   children?: ReactNode;
 };
@@ -39,7 +41,7 @@ export type DrawerStackProps = {
  * the profile sheet. Rounds and fades the screen as it slides away to reveal
  * the menu.
  */
-export function DrawerStack({ children }: DrawerStackProps) {
+export function DrawerStack({ withCreate = true, children }: DrawerStackProps) {
   const theme = useTheme();
   const progress = useDrawerProgress();
 
@@ -65,7 +67,10 @@ export function DrawerStack({ children }: DrawerStackProps) {
       <Stack screenOptions={{ contentStyle: { backgroundColor: theme.bg2 } }}>
         {/* Declared screens are ordered first, so index must come first to stay the tab's start screen */}
         <Stack.Screen name="index" />
-        <Stack.Screen name="new" options={{ presentation: "modal" }} />
+        {/* Declaring a route that doesn't exist warns, so only when the tab has one */}
+        {withCreate ? (
+          <Stack.Screen name="new" options={{ presentation: "modal" }} />
+        ) : null}
         <Stack.Screen name="profile" options={SheetScreenOptions} />
         {children}
       </Stack>
