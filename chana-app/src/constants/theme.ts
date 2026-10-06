@@ -96,7 +96,7 @@ export type SpacingKey = keyof typeof Spacing;
 
 /** Corner radii shared by every rounded element */
 export const Radius = {
-  sm: 16,
+  sm: 20,
   md: 24,
   lg: 32,
   full: 999,

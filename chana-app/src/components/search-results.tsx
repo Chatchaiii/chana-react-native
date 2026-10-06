@@ -1,6 +1,6 @@
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { ThemedText } from "@/components/themed-text";
-import { Tabs } from "@/constants/tabs";
+import { Tabs, type Tab } from "@/constants/tabs";
 import { Spacing } from "@/constants/theme";
 import { StyleSheet, View } from "react-native";
 
@@ -15,15 +15,18 @@ export function SearchResults({ query }: SearchResultsProps) {
       keyboardDismissMode="on-drag"
       contentContainerStyle={styles.container}
     >
-      {Object.values(Tabs).map((tab) => (
-        <View key={tab.route} style={styles.section}>
-          <ThemedText type="label" themeColor="fg2">
-            {tab.searchTitle}
-          </ThemedText>
-          {/* TODO: query this tab's data */}
-          <ThemedText themeColor="fg3">No results for “{query}”</ThemedText>
-        </View>
-      ))}
+      {Object.values<Tab>(Tabs).map((tab) =>
+        // Tabs without a searchTitle aren't searchable
+        tab.searchTitle ? (
+          <View key={tab.route} style={styles.section}>
+            <ThemedText type="label" themeColor="fg2">
+              {tab.searchTitle}
+            </ThemedText>
+            {/* TODO: query this tab's data */}
+            <ThemedText themeColor="fg3">No results for “{query}”</ThemedText>
+          </View>
+        ) : null,
+      )}
     </ScreenScrollView>
   );
 }

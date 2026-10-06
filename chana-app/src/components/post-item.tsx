@@ -12,10 +12,10 @@ import { StyleSheet } from "react-native";
 export type Post = {
   id: string;
   author: string;
-  /** Already formatted, e.g. "2 days ago" */
   postedAt: string;
   commentCount: number;
   savedCount: number;
+  title: string;
   text: string;
   images?: (string | ImageSource)[];
 };
@@ -55,7 +55,7 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
         <ImageCarousel images={post.images} style={styles.carousel} />
       )}
       <TextItem
-        author={post.author}
+        title={post.title}
         text={post.text}
         collapsible={variant === "feed"}
       />

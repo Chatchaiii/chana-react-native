@@ -15,18 +15,18 @@ import { scheduleOnRN } from "react-native-worklets";
 const COLLAPSED_LINES = 3;
 
 export type TextItemProps = {
-  author: string;
+  title: string;
   text: string;
   /** Truncate to three lines with "View more"; false shows the full text */
   collapsible?: boolean;
 };
 
 /** Author name and post text, truncated to three lines with "View more" */
-export function TextItem({ author, text, collapsible = true }: TextItemProps) {
+export function TextItem({ title, text, collapsible = true }: TextItemProps) {
   if (!collapsible) {
     return (
       <View style={styles.container}>
-        <ThemedText type="heading_4">{author}</ThemedText>
+        <ThemedText type="heading_4">{title}</ThemedText>
         <ThemedText type="subtext" themeColor="fg2">
           {text}
         </ThemedText>
@@ -34,10 +34,10 @@ export function TextItem({ author, text, collapsible = true }: TextItemProps) {
     );
   }
 
-  return <CollapsibleText author={author} text={text} />;
+  return <CollapsibleText title={title} text={text} />;
 }
 
-function CollapsibleText({ author, text }: Omit<TextItemProps, "collapsible">) {
+function CollapsibleText({ title, text }: Omit<TextItemProps, "collapsible">) {
   const [expanded, setExpanded] = useState(false);
   // Whether the visible text is cut to COLLAPSED_LINES (with an ellipsis)
   const [clamped, setClamped] = useState(true);
@@ -79,7 +79,7 @@ function CollapsibleText({ author, text }: Omit<TextItemProps, "collapsible">) {
   return (
     <View style={styles.container}>
       <View>
-        <ThemedText type="heading_4">{author}</ThemedText>
+        <ThemedText type="heading_4">{title}</ThemedText>
 
         <View>
           {/* Invisible copies that measure both heights at the current width */}

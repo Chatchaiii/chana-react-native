@@ -11,6 +11,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
     postedAt: "2 days ago",
     commentCount: 9,
     savedCount: 2,
+    title: "Test",
     text: LOREM,
   },
   {
@@ -19,6 +20,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
     postedAt: "2 days ago",
     commentCount: 4,
     savedCount: 1,
+    title: "Test",
     text: LOREM,
     images: [1, 2, 3, 4].map(
       (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
@@ -30,6 +32,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
     postedAt: "2 days ago",
     commentCount: 1,
     savedCount: 3,
+    title: "Test",
     text: LOREM,
   },
   {
@@ -38,6 +41,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
     postedAt: "2 days ago",
     commentCount: 2,
     savedCount: 10,
+    title: "Test",
     text: LOREM,
     images: [1, 2, 3, 4].map(
       (n) => `https://picsum.photos/seed/chana-${n}/800/1000`,
