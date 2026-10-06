@@ -1,8 +1,9 @@
 import { ListItem } from "@/components/list-item";
-import { type RatingValue } from "@/components/rating";
+import type { UserRating } from "@/components/rating";
 import { ThemedText } from "@/components/themed-text";
 import { Thumbnail } from "@/components/thumbnail";
 import { Spacing } from "@/constants/theme";
+import { averageRating, formatRating } from "@/utils/ratings";
 import type { ImageSource } from "expo-image";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -15,7 +16,8 @@ export type Place = {
   author: string;
   /** Already formatted, e.g. "4 km" */
   distance: string;
-  rating: RatingValue;
+  /** One rating per person who rated it */
+  ratings: UserRating[];
   image?: string | ImageSource;
   visited?: boolean;
 };
@@ -41,9 +43,11 @@ export function PlaceItem({ place }: PlaceItemProps) {
       label={place.name}
       sublabel={place.description}
       footer={
-        <ThemedText type="sublabel" themeColor="acc1">
-          {place.rating} stars
-        </ThemedText>
+        place.ratings.length > 0 ? (
+          <ThemedText type="sublabel" themeColor="acc1">
+            {formatRating(averageRating(place.ratings))} stars
+          </ThemedText>
+        ) : null
       }
       onPress={() =>
         router.push({ pathname: "/places/[id]", params: { id: place.id } })

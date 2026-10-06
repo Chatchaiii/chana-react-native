@@ -15,11 +15,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { StyleSheet, View } from "react-native";
 
 export type ButtonType =
-  | "default"
-  | "prominent"
-  | "primary"
-  | "secondary"
-  | "tertiary";
+  "default" | "prominent" | "primary" | "secondary" | "tertiary";
 export type ButtonSize = keyof typeof sizeStyles;
 
 export type ThemedButtonProps = Omit<ThemedPressableProps, "children"> & {
@@ -118,7 +114,6 @@ const sizeStyles = StyleSheet.create({
     gap: Spacing.one,
   },
   medium_1: {
-    // height: 42,
     padding: Spacing.three,
     gap: Spacing.three,
   },
