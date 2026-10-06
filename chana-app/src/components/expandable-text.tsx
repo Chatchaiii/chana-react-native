@@ -3,7 +3,7 @@ import { ThemedText } from "@/components/themed-text";
 import { Timings } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -14,18 +14,24 @@ import { scheduleOnRN } from "react-native-worklets";
 
 const COLLAPSED_LINES = 3;
 
-export type TextItemProps = {
+export type ExpandableTextProps = {
   title: string;
   text: string;
   /** Truncate to three lines with "View more"; false shows the full text */
   collapsible?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
-/** Post title and text, truncated to three lines with "View more" */
-export function TextItem({ title, text, collapsible = true }: TextItemProps) {
+/** Title and text, truncated to three lines with "View more" */
+export function ExpandableText({
+  title,
+  text,
+  collapsible = true,
+  style,
+}: ExpandableTextProps) {
   if (!collapsible) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         <ThemedText type="heading_4">{title}</ThemedText>
         <ThemedText type="subtext" themeColor="fg2">
           {text}
@@ -34,10 +40,14 @@ export function TextItem({ title, text, collapsible = true }: TextItemProps) {
     );
   }
 
-  return <CollapsibleText title={title} text={text} />;
+  return <CollapsibleText title={title} text={text} style={style} />;
 }
 
-function CollapsibleText({ title, text }: Omit<TextItemProps, "collapsible">) {
+function CollapsibleText({
+  title,
+  text,
+  style,
+}: Omit<ExpandableTextProps, "collapsible">) {
   const [expanded, setExpanded] = useState(false);
   // Whether the visible text is cut to COLLAPSED_LINES (with an ellipsis)
   const [clamped, setClamped] = useState(true);
@@ -77,7 +87,7 @@ function CollapsibleText({ title, text }: Omit<TextItemProps, "collapsible">) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View>
         <ThemedText type="heading_4">{title}</ThemedText>
 
@@ -120,21 +130,19 @@ function CollapsibleText({ title, text }: Omit<TextItemProps, "collapsible">) {
         </View>
       </View>
 
-      {truncated && (
+      {truncated ? (
         <ThemedPressable onPress={toggle} hitSlop={8} style={styles.toggle}>
           <ThemedText type="sublabel" themeColor="fg2">
             {expanded ? "View less" : "View more"}
           </ThemedText>
         </ThemedPressable>
-      )}
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: Spacing.three,
-    paddingBottom: Spacing.three,
     gap: Spacing.one,
   },
   measure: {

@@ -1,7 +1,7 @@
 import { useTheme } from "@/hooks/use-theme";
 import { Stack } from "expo-router";
-import type { NativeStackNavigationOptions } from "expo-router/native-stack";
 import { useDrawerProgress } from "expo-router/drawer";
+import type { NativeStackNavigationOptions } from "expo-router/native-stack";
 import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
@@ -64,7 +64,13 @@ export function DrawerStack({ withCreate = true, children }: DrawerStackProps) {
     <Animated.View
       style={[styles.screen, { backgroundColor: theme.bg1 }, screenStyle]}
     >
-      <Stack screenOptions={{ contentStyle: { backgroundColor: theme.bg2 } }}>
+      <Stack
+        screenOptions={{
+          contentStyle: { backgroundColor: theme.bg2 },
+          // Pushed pages show only the back chevron, without the previous title
+          headerBackButtonDisplayMode: "minimal",
+        }}
+      >
         {/* Declared screens are ordered first, so index must come first to stay the tab's start screen */}
         <Stack.Screen name="index" />
         {/* Declaring a route that doesn't exist warns, so only when the tab has one */}

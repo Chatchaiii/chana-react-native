@@ -1,4 +1,4 @@
-import type { Place } from "@/components/place-item";
+import type { Place } from "@/types/place";
 
 /** Stand-in content until places come from real data */
 export const PLACEHOLDER_PLACES: Place[] = [

@@ -2,8 +2,8 @@ import { List } from "@/components/list";
 import { PlaceItem } from "@/components/place-item";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
 import { TabScreen } from "@/components/tab-screen";
-import { PLACEHOLDER_PLACES } from "@/constants/placeholder-places";
 import { Tabs } from "@/constants/tabs";
+import { PLACEHOLDER_PLACES } from "@/data/places";
 
 export default function Places() {
   return (

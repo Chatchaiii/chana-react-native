@@ -1,4 +1,4 @@
-import type { RatingValue, UserRating } from "@/components/rating";
+import type { RatingValue, UserRating } from "@/types/rating";
 
 /** Mean of the ratings' values, 0 when there are none */
 export function averageRating(ratings: UserRating[]): number {

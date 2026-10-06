@@ -9,10 +9,17 @@ import { useTheme } from "@/hooks/use-theme";
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
-export type ThemedCheckItemProps = ThemedPressableProps & {
+const CIRCLE_SIZE = 18;
+// The inner dot's border shows the background, leaving a ring around the dot
+const DOT_SIZE = 14;
+
+export type CheckItemProps = Omit<
+  ThemedPressableProps,
+  "children" | "onPress"
+> & {
   checked: boolean;
-  label: string;
   onPress?: () => void;
+  label: string;
   sublabel?: string;
   bg?: ThemeColor;
   fgLabel?: ThemeColor;
@@ -21,7 +28,8 @@ export type ThemedCheckItemProps = ThemedPressableProps & {
   children?: ReactNode;
 };
 
-export function ThemedCheckItem({
+/** Row with a radio-style check, label and sublabel; tapping it toggles `checked` */
+export function CheckItem({
   checked,
   onPress,
   label,
@@ -32,12 +40,13 @@ export function ThemedCheckItem({
   children,
   style,
   ...rest
-}: ThemedCheckItemProps) {
+}: CheckItemProps) {
   const theme = useTheme();
+  const background = bg ?? "bg3";
 
   return (
     <ThemedView
-      themeColor={bg ?? "bg3"}
+      themeColor={background}
       style={[styles.row, children ? styles.withTrailing : null, style]}
     >
       <ThemedPressable
@@ -48,13 +57,10 @@ export function ThemedCheckItem({
         accessibilityLabel={label}
         style={styles.check}
       >
-        <ThemedView
-          themeColor={checked ? "acc1" : "fg2"}
-          style={styles.outerCircle}
-        >
+        <ThemedView themeColor={checked ? "acc1" : "fg2"} style={styles.circle}>
           <ThemedView
-            themeColor={checked ? "acc1" : (bg ?? "bg3")}
-            style={{ ...styles.innerCircle, borderColor: theme[bg ?? "bg3"] }}
+            themeColor={checked ? "acc1" : background}
+            style={[styles.dot, { borderColor: theme[background] }]}
           />
         </ThemedView>
         <View style={styles.text}>
@@ -74,17 +80,17 @@ export function ThemedCheckItem({
 }
 
 const styles = StyleSheet.create({
-  outerCircle: {
-    height: 18,
-    width: 18,
-    borderRadius: Radius.md,
+  circle: {
+    height: CIRCLE_SIZE,
+    width: CIRCLE_SIZE,
+    borderRadius: Radius.full,
     alignItems: "center",
     justifyContent: "center",
   },
-  innerCircle: {
-    height: 14,
-    width: 14,
-    borderRadius: Radius.md,
+  dot: {
+    height: DOT_SIZE,
+    width: DOT_SIZE,
+    borderRadius: Radius.full,
     borderWidth: Spacing.half,
   },
   text: {

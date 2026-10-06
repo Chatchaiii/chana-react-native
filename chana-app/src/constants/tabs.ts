@@ -32,7 +32,7 @@ export type CreatableTab = Tab & { create: CreateAction };
  */
 export const Tabs = {
   home: {
-    route: "(main)",
+    route: "(home)",
     title: "Home",
     icon: "home.fill",
     searchTitle: "Posts",

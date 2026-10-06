@@ -1,4 +1,4 @@
-import { ThemedText, type TextTypes } from "@/components/themed-text";
+import { ThemedText, type TextType } from "@/components/themed-text";
 import {
   ContainerSizes,
   Radius,
@@ -11,7 +11,7 @@ import { getInitials } from "@/utils/strings";
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
 
-export type ThemedAvatarProps = {
+export type AvatarProps = {
   /** Image URL; falls back to the initials of `name` */
   src?: string;
   name?: string;
@@ -20,11 +20,11 @@ export type ThemedAvatarProps = {
   bg?: ThemeColor;
   fg?: ThemeColor;
   /** Text style of the initials, e.g. larger for big avatars */
-  initialsType?: TextTypes;
+  initialsType?: TextType;
 };
 
 /** Round picture of a person (or place), with initials as fallback */
-export function ThemedAvatar({
+export function Avatar({
   src,
   name = "Unknown User",
   size = "s",
@@ -32,7 +32,7 @@ export function ThemedAvatar({
   bg = "bg3",
   fg = "fg2",
   initialsType = "label",
-}: ThemedAvatarProps) {
+}: AvatarProps) {
   const theme = useTheme();
   const dimension = ContainerSizes[size];
 

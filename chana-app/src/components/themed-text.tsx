@@ -2,13 +2,14 @@ import { Fonts, type ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { Platform, StyleSheet, Text, type TextProps } from "react-native";
 
-export type TextTypes = keyof typeof styles;
+export type TextType = keyof typeof styles;
 
 export type ThemedTextProps = TextProps & {
-  type?: TextTypes;
+  type?: TextType;
   themeColor?: ThemeColor;
 };
 
+/** Text in one of the app's text styles (`type`) and a theme color */
 export function ThemedText({
   type = "text",
   themeColor = "fg1",

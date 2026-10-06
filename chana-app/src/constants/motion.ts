@@ -11,3 +11,6 @@ export const Timings = {
 
 /** Spring for press feedback, where a little physicality feels right */
 export const PressSpring = { stiffness: 300, damping: 30 };
+
+/** Delay before press feedback on rows in scrolling lists, so scrolling doesn't flash them */
+export const ListPressDelay = 100;

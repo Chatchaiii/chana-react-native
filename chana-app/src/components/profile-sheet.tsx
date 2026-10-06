@@ -1,9 +1,10 @@
 import { ActionRow } from "@/components/action-row";
+import { Avatar } from "@/components/avatar";
 import { List } from "@/components/list";
-import { ThemedAvatar } from "@/components/themed-avatar";
+import { SheetContent } from "@/components/sheet-content";
 import { ThemedText } from "@/components/themed-text";
-import { CURRENT_USER } from "@/constants/placeholder-user";
 import { Spacing } from "@/constants/theme";
+import { CURRENT_USER } from "@/data/current-user";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -18,10 +19,9 @@ export function ProfileSheet() {
   const close = () => router.back();
 
   return (
-    // The sheet already floats above the home indicator, so no safe-area padding
-    <View style={styles.container}>
+    <SheetContent>
       <View style={styles.header}>
-        <ThemedAvatar
+        <Avatar
           src={CURRENT_USER.avatar}
           name={CURRENT_USER.name}
           size="xxl"
@@ -48,17 +48,11 @@ export function ProfileSheet() {
           onPress={close}
         />
       </List>
-    </View>
+    </SheetContent>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: Spacing.five,
-    paddingBottom: Spacing.three,
-    paddingHorizontal: Spacing.three,
-    gap: Spacing.three,
-  },
   header: {
     alignItems: "center",
     gap: Spacing.two,

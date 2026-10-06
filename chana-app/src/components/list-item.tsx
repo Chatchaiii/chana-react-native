@@ -1,6 +1,7 @@
 import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { ThemedText } from "@/components/themed-text";
+import { ListPressDelay } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
@@ -12,7 +13,7 @@ export type ListItemProps = {
   sublabel?: string;
   /** Lines the sublabel may take before truncating */
   sublabelLines?: number;
-  /** Left side, e.g. a ThemedAvatar or Thumbnail */
+  /** Left side, e.g. a Avatar or Thumbnail */
   leading?: ReactNode;
   /** Small line above the label, e.g. the author and distance */
   overline?: ReactNode;
@@ -23,9 +24,6 @@ export type ListItemProps = {
   /** Makes the whole row pressable and shows a chevron */
   onPress?: () => void;
 };
-
-// Wait before the press feedback so scrolling a list doesn't flash rows
-const PRESS_DELAY = 100;
 
 /**
  * Generic list row: leading slot, label with optional overline, add-on,
@@ -94,7 +92,7 @@ export function ListItem({
   return (
     <ThemedPressable
       onPress={onPress}
-      unstable_pressDelay={PRESS_DELAY}
+      unstable_pressDelay={ListPressDelay}
       accessibilityLabel={label}
       // With an options button inside, stay a container so it's reachable
       accessible={!onOptionsPress}

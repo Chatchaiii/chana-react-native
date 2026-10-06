@@ -1,9 +1,9 @@
+import { Avatar } from "@/components/avatar";
 import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
-import { ThemedAvatar } from "@/components/themed-avatar";
 import { ThemedPressable } from "@/components/themed-pressable";
-import { CURRENT_USER } from "@/constants/placeholder-user";
 import type { Tab } from "@/constants/tabs";
+import { CURRENT_USER } from "@/data/current-user";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
 import { Stack, useRouter, type Href } from "expo-router";
@@ -53,10 +53,7 @@ export function TabScreen({
               accessibilityLabel="Profile"
               onPress={() => router.push(tab.profileHref)}
             >
-              <ThemedAvatar
-                src={CURRENT_USER.avatar}
-                name={CURRENT_USER.name}
-              />
+              <Avatar src={CURRENT_USER.avatar} name={CURRENT_USER.name} />
             </ThemedPressable>
           ),
         }}
