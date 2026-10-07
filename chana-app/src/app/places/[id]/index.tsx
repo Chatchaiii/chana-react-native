@@ -2,9 +2,11 @@ import { Button, type ButtonType } from "@/components/button";
 import { CheckItem } from "@/components/check-item";
 import { EmptyState } from "@/components/empty-state";
 import { ImageCarousel } from "@/components/image-carousel";
+import { List } from "@/components/list";
 import { PlaceMeta } from "@/components/place-item";
 import { RatingSummary } from "@/components/rating-summary";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
+import { Separator } from "@/components/separator";
 import { ThemedText } from "@/components/themed-text";
 import type { IconName } from "@/constants/icons.generated";
 import { Spacing } from "@/constants/theme";
@@ -16,7 +18,7 @@ import { formatDate } from "@/utils/dates";
 import { withUserRating } from "@/utils/ratings";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
 type PlaceAction = {
   label: string;
@@ -85,12 +87,13 @@ function PlaceContent({ place }: { place: Place }) {
   };
 
   return (
-    <>
+    <View style={styles.body}>
       <PlaceMeta
         author={place.author}
         distance={place.distance}
         visited={visited}
       />
+
       {place.image ? (
         <ImageCarousel images={[place.image]} aspectRatio={5 / 4} />
       ) : null}
@@ -110,6 +113,34 @@ function PlaceContent({ place }: { place: Place }) {
           />
         ))}
       </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.factsScroll}
+        contentContainerStyle={styles.facts}
+      >
+        <View>
+          <ThemedText themeColor="fg2" type="heading_4">
+            Distance
+          </ThemedText>
+          <ThemedText type="sublabel">{place.distance}</ThemedText>
+        </View>
+        <Separator orientation="vertical" />
+        <View>
+          <ThemedText themeColor="fg2" type="heading_4">
+            Address
+          </ThemedText>
+          <ThemedText type="sublabel">{place.address}</ThemedText>
+        </View>
+        <Separator orientation="vertical" />
+        <View>
+          <ThemedText themeColor="fg2" type="heading_4">
+            Address
+          </ThemedText>
+          <ThemedText type="sublabel">{place.address}</ThemedText>
+        </View>
+      </ScrollView>
 
       <CheckItem
         checked={visited}
@@ -145,15 +176,29 @@ function PlaceContent({ place }: { place: Place }) {
           )
         }
       />
-      <ThemedText themeColor="fg2">{place.description}</ThemedText>
-    </>
+
+      <List type="card" style={styles.content} subheading="Notes">
+        <ThemedText themeColor="fg2">{place.description}</ThemedText>
+      </List>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  body: {
+    gap: Spacing.five,
+  },
   content: {
     padding: Spacing.three,
     gap: Spacing.three,
+  },
+  factsScroll: {
+    marginHorizontal: -Spacing.three,
+    paddingLeft: Spacing.three,
+  },
+  facts: {
+    gap: Spacing.three,
+    paddingHorizontal: Spacing.three,
   },
   actions: {
     flexDirection: "row",
