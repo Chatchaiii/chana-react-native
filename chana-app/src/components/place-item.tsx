@@ -2,6 +2,7 @@ import { ListItem } from "@/components/list-item";
 import { ThemedText } from "@/components/themed-text";
 import { Thumbnail } from "@/components/thumbnail";
 import { Spacing } from "@/constants/theme";
+import { usePlaceVisit } from "@/data/place-visits";
 import type { Place } from "@/types/place";
 import { averageRating, formatRating } from "@/utils/ratings";
 import { useRouter } from "expo-router";
@@ -14,6 +15,7 @@ export type PlaceItemProps = {
 /** A place in a list: photo, author and distance, name, description, rating */
 export function PlaceItem({ place }: PlaceItemProps) {
   const router = useRouter();
+  const { visited } = usePlaceVisit(place);
 
   return (
     <ListItem
@@ -22,7 +24,7 @@ export function PlaceItem({ place }: PlaceItemProps) {
         <PlaceMeta
           author={place.author}
           distance={place.distance}
-          visited={place.visited}
+          visited={visited}
         />
       }
       label={place.name}

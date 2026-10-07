@@ -24,7 +24,7 @@ export type CheckItemProps = Omit<
   bg?: ThemeColor;
   fgLabel?: ThemeColor;
   fgSublabel?: ThemeColor;
-  /** Trailing controls, e.g. a DatePickerButton. Tapping them doesn't toggle the item */
+  /** Trailing controls, e.g. a date Button. Tapping them doesn't toggle the item */
   children?: ReactNode;
 };
 
@@ -74,7 +74,8 @@ export function CheckItem({
           ) : null}
         </View>
       </ThemedPressable>
-      {children}
+      {/* Wrapped, so a child's own alignSelf (e.g. Button's) can't pull it off center */}
+      {children ? <View>{children}</View> : null}
     </ThemedView>
   );
 }

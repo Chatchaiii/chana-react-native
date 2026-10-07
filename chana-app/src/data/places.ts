@@ -28,6 +28,7 @@ export const PLACEHOLDER_PLACES: Place[] = [
     ],
     image: "https://picsum.photos/seed/chana-place-2/600/480",
     visited: true,
+    visitedOn: new Date(2026, 8, 12),
   },
   {
     id: "3",
@@ -37,5 +38,6 @@ export const PLACEHOLDER_PLACES: Place[] = [
     distance: "800 m",
     ratings: [{ author: "chadchai", value: 2 }],
     visited: true,
+    visitedOn: new Date(2026, 6, 3),
   },
 ];

@@ -13,4 +13,5 @@ export type Place = {
   ratings: UserRating[];
   image?: string | ImageSource;
   visited?: boolean;
+  visitedOn?: Date;
 };
