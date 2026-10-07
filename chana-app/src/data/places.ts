@@ -8,6 +8,7 @@ export const PLACEHOLDER_PLACES: Place[] = [
     description:
       "Small coffee bar with great flat whites and a quiet corner to read.",
     author: "chadchai",
+    address: "Wilmersdorfer Strasse 44, Berlin 10999",
     distance: "4 km",
     ratings: [
       { author: "chadchai", value: 5 },
@@ -21,6 +22,7 @@ export const PLACEHOLDER_PLACES: Place[] = [
     name: "Stadtpark",
     description: "Big park with a pond, perfect for a picnic on sunny days.",
     author: "chadchai",
+    address: "Wilmersdorfer Strasse 44, Berlin 10999",
     distance: "1.2 km",
     ratings: [
       { author: "chadchai", value: 5 },
@@ -35,6 +37,7 @@ export const PLACEHOLDER_PLACES: Place[] = [
     name: "Noodle House",
     description: "Hand-pulled noodles. Usually busy around lunch.",
     author: "chadchai",
+    address: "Wilmersdorfer Strasse 44, Berlin 10999",
     distance: "800 m",
     ratings: [{ author: "chadchai", value: 2 }],
     visited: true,

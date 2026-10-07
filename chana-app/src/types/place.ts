@@ -7,6 +7,7 @@ export type Place = {
   description: string;
   /** Who added the place */
   author: string;
+  address?: string;
   /** Already formatted, e.g. "4 km" */
   distance: string;
   /** One rating per person who rated it */
