@@ -40,7 +40,7 @@ src/constants/tabs.ts               Single source of truth for tabs: route, titl
 src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
 src/constants/motion.ts             Timings (fast/normal/slow eased), PressSpring, ListPressDelay
 src/types/                          Domain types: post.ts (Post), place.ts (Place), comment.ts (Comment), rating.ts (RatingValue, UserRating), user.ts (User)
-src/data/                           Stand-in content until there's a backend: posts.ts, places.ts, comments.ts (by postId), current-user.ts (CURRENT_USER)
+src/data/                           Stand-in content until there's a backend: posts.ts, places.ts, comments.ts (by postId), current-user.ts (CURRENT_USER), place-visits.ts (in-memory store: `usePlaceVisit(place)` / `setPlaceVisit(id, visit)`, shared by the list, place page and date sheet)
 src/utils/haptics.ts                HapticStyles (press, drawer) + playHaptic
 src/utils/strings.ts                getInitials
 src/utils/ratings.ts                averageRating, formatRating (4 → "4", 4.33 → "4.3")
@@ -52,7 +52,7 @@ Tabs: `(home)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `s
 - **TabScreen** (`components/tab-screen.tsx`): takes `tab` (and optional `title`, defaults to `tab.title`). Sets header (MenuButton left, avatar right, transparent), `Stack.SearchBar`, and bottom `Stack.Toolbar` (search slot + create button → `tab.create.href`). Search is global; `SearchResults` groups by `tab.searchTitle`. Toolbar must be declared in pages, not layouts; iOS 26+ only.
 - **AppDrawerContent**: not scrollable (plain View + safe-area insets). "CHANA" heading + one group of `Button`s per `MenuSections` entry (`variant` row/list → `sectionStyles` + `buttonProps` lookup tables, optional `spaceBefore`) (active = `primary`, tapping active closes drawer) + `useDrawerHaptics()` (`hooks/use-drawer-haptics.ts`).
 - Adding a tab: entry in `Tabs` (incl. `profileHref`) and in `MenuSections` + folder with the one-line `_layout.tsx`, an `index.tsx` using `TabScreen`, a `new.tsx` using `CreateScreen` (only with `create`), and the one-line `profile.tsx`. Tabs without `create` use `<DrawerStack withCreate={false} />` in their layout (declaring a missing `new` route warns).
-- Places has `places/[id]` (place detail page, opened from `PlaceItem`). Its state lives in `PlaceContent`, keyed by place id, so it resets if the screen is reused for another place (e.g. a deep link).
+- Places has `places/[id]` (place detail page, opened from `PlaceItem`) and the sheet `places/[id]/visited-date` (declared in the places layout): inline calendar (`DateTimePicker` from `@expo/ui/community/datetime-picker`, `display`/`presentation` inline) + "Save date"; the date only applies on Save, swiping the sheet away discards it. Unmarking a visit asks for confirmation (`Alert.alert`, destructive Remove). The page's local state (ratings) lives in `PlaceContent`, keyed by place id; visits come from the `place-visits` store.
 - Routes only one tab has are declared as `children` of `DrawerStack` in that tab's layout. Home has `post/[id]` (the post detail page, opened by tapping a post in the feed) and declares `post/[id]/options`: a native `formSheet` (`sheetAllowedDetents: "fitToContents"`, grabber) opened from a post's "…" button with the post id. Sheet bodies use `SheetContent` (no bottom safe-area padding: on iOS 26 the sheet floats).
 
 ## Components
@@ -64,8 +64,7 @@ Tabs: `(home)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `s
 | `ThemedPressable` | Unstyled pressable: haptic (default `HapticStyles.press`, `haptic={false}` to disable), scale+dim on press, disabled dim. Use for any tappable item |
 | `Button` | Styled button on ThemedPressable: `type` (default/prominent/primary/secondary/tertiary), `size` (small/medium_1/medium_2/large), `radius` (Radius key, default `sm`), `align`, `fullWidth`, optional `icon`, `sublabel` |
 | `Avatar` | Person picture: `src` (expo-image) or initials of `name` (`initialsType` text style), `size` (ContainerSizes), `radius` |
-| `CheckItem` | Radio-style checkable row (`checked`, `onPress`, `label`, `sublabel`). `children` are trailing controls (e.g. `DatePickerButton`) rendered beside the pressable, not inside it, so tapping them doesn't toggle the item |
-| `DatePickerButton` | Native date picker as a button. iOS: SwiftUI compact `DatePicker` from `@expo/ui/swift-ui` (popover keeps the system blue; `tint` isn't applied to it). Android/web: themed chip that opens `DateTimePicker` from `@expo/ui/community/datetime-picker` as a dialog |
+| `CheckItem` | Radio-style checkable row (`checked`, `onPress`, `label`, `sublabel`). `children` are trailing controls (e.g. the visited-date Button) rendered beside the pressable (wrapped in a View, so they stay vertically centered), not inside it, so tapping them doesn't toggle the item |
 | `MenuButton` | Header button that opens the drawer |
 | `ScreenScrollView` / `useScreenInsets` | ScrollView root with `contentInsetAdjustmentBehavior="automatic"` (iOS) + Android header/bottom padding. Don't wrap scroll content in SafeAreaView |
 | `SheetContent` | Padded column for the body of a native sheet (post options, profile) |
@@ -108,6 +107,7 @@ Tabs: `(home)` (Home/posts), `places`, `wishes`, `calendar`, plus `activity`, `s
 - Never render optional strings with `&&` (`{text && <ThemedText>…}`): an empty string or `0` lands outside `<Text>` and crashes. Use a ternary or an explicit check (`count > 0`).
 - `experimental_backgroundImage: "linear-gradient(...)"` works natively (no expo-linear-gradient needed).
 - Adding/changing an icon: drop the SVG into `assets/icons` and run `npm run icons`. Draw shapes in black and cut-out details in white (the generator turns white into a transparent mask cut-out, so `.fill` icons work in dark mode); a white 24×24 background rect and clip-path wrappers are stripped. Never edit `icons.generated.ts` by hand.
+- `@expo/ui` date pickers (SwiftUI compact popover, inline calendar) ignore `tint` / `accentColor` in Expo Go and stay system blue; tried modifier order, a custom Popover, updating `@expo/ui` and a plain-string tint.
 - Claude's brand fonts (Styrene, Tiempos) are licensed — don't add them.
 - Never call `SplashScreen.preventAutoHideAsync()` without a matching `hideAsync()` — on Android the splash then never disappears (iOS hides it anyway, so it looks fine there).
 - `Stack.Toolbar.Button` on Android needs an image source, not an SF Symbol, and warns even when `hidden`. `TabScreen` renders the create button only once `useMaterialSymbolSource("edit_square")` has produced the Android image.

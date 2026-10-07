@@ -1,6 +1,5 @@
 import { Button, type ButtonType } from "@/components/button";
 import { CheckItem } from "@/components/check-item";
-import { DatePickerButton } from "@/components/date-picker-button";
 import { EmptyState } from "@/components/empty-state";
 import { ImageCarousel } from "@/components/image-carousel";
 import { PlaceMeta } from "@/components/place-item";
@@ -10,12 +9,14 @@ import { ThemedText } from "@/components/themed-text";
 import type { IconName } from "@/constants/icons.generated";
 import { Spacing } from "@/constants/theme";
 import { CURRENT_USER } from "@/data/current-user";
+import { setPlaceVisit, usePlaceVisit } from "@/data/place-visits";
 import { PLACEHOLDER_PLACES } from "@/data/places";
 import type { Place } from "@/types/place";
+import { formatDate } from "@/utils/dates";
 import { withUserRating } from "@/utils/ratings";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 type PlaceAction = {
   label: string;
@@ -58,10 +59,30 @@ export default function PlaceDetail() {
 }
 
 function PlaceContent({ place }: { place: Place }) {
-  // TODO: save the visited state and ratings once places come from real data
-  const [visited, setVisited] = useState(place.visited ?? false);
-  const [visitedOn, setVisitedOn] = useState(() => new Date());
+  const router = useRouter();
+  const { visited, visitedOn } = usePlaceVisit(place);
+  // TODO: save ratings once places come from real data
   const [ratings, setRatings] = useState(place.ratings);
+
+  const toggleVisited = () => {
+    if (!visited) {
+      setPlaceVisit(place.id, { visited: true, visitedOn: new Date() });
+      return;
+    }
+    // Removing a visit loses its date, so ask first
+    Alert.alert(
+      "Remove visit?",
+      `${place.name} will be marked as not visited.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Remove",
+          style: "destructive",
+          onPress: () => setPlaceVisit(place.id, { visited: false, visitedOn }),
+        },
+      ],
+    );
+  };
 
   return (
     <>
@@ -92,16 +113,25 @@ function PlaceContent({ place }: { place: Place }) {
 
       <CheckItem
         checked={visited}
-        onPress={() => setVisited((current) => !current)}
+        onPress={toggleVisited}
         label={visited ? "Visited" : "Mark as visited"}
         sublabel={visited ? "When were you there?" : "Tap to mark as visited"}
       >
         {visited ? (
-          <DatePickerButton
-            value={visitedOn}
-            onChange={setVisitedOn}
-            maximumDate={new Date()}
-            accessibilityLabel="Visited on"
+          // The date is changed in a sheet with a calendar and a Save button
+          <Button
+            icon="calendar"
+            label={formatDate(visitedOn)}
+            size="small"
+            radius="full"
+            bg="bg2"
+            accessibilityLabel={`Visited on ${formatDate(visitedOn)}, change date`}
+            onPress={() =>
+              router.push({
+                pathname: "/places/[id]/visited-date",
+                params: { id: place.id },
+              })
+            }
           />
         ) : null}
       </CheckItem>
