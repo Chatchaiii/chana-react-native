@@ -1,6 +1,5 @@
 import { Button } from "@/components/button";
 import { SheetContent } from "@/components/sheet-content";
-import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
 import { setPlaceVisit, usePlaceVisit } from "@/data/place-visits";
 import { PLACEHOLDER_PLACES } from "@/data/places";
@@ -9,7 +8,7 @@ import type { Place } from "@/types/place";
 import { DateTimePicker } from "@expo/ui/community/datetime-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet } from "react-native";
+import { View } from "react-native";
 
 /** Sheet to change when a place was visited; the date only applies on Save */
 export default function VisitedDateSheet() {
@@ -26,6 +25,10 @@ function VisitedDatePicker({ place }: { place: Place }) {
   const visit = usePlaceVisit(place);
   // Picked date, only saved once confirmed; swiping the sheet away discards it
   const [date, setDate] = useState(visit.visitedOn);
+  // The calendar only measures its height when it renders, and the sheet's
+  // width settles after mount, which left it too tall until a date was picked.
+  // Passing it the container's width re-renders (and re-measures) it on change
+  const [width, setWidth] = useState(0);
 
   const save = () => {
     setPlaceVisit(place.id, { ...visit, visitedOn: date });
@@ -33,24 +36,25 @@ function VisitedDatePicker({ place }: { place: Place }) {
   };
 
   return (
-    <SheetContent>
-      <ThemedText type="heading_4" themeColor="fg2" style={styles.title}>
-        When were you at {place.name}?
-      </ThemedText>
-
-      <DateTimePicker
-        value={date}
-        mode="date"
-        display="inline"
-        presentation="inline"
-        maximumDate={new Date()}
-        accentColor={theme.acc1}
-        onValueChange={(_, next) => setDate(next)}
-      />
+    <SheetContent style={{ paddingTop: Spacing.three }}>
+      <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+        {width > 0 ? (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="inline"
+            presentation="inline"
+            maximumDate={new Date()}
+            accentColor={theme.acc1}
+            onValueChange={(_, next) => setDate(next)}
+            style={{ width }}
+          />
+        ) : null}
+      </View>
 
       <Button
-        icon="checkmark"
-        label="Save date"
+        icon="arrow.up"
+        label="Update"
         type="prominent"
         size="medium_2"
         radius="md"
@@ -60,9 +64,3 @@ function VisitedDatePicker({ place }: { place: Place }) {
     </SheetContent>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    paddingHorizontal: Spacing.two,
-  },
-});

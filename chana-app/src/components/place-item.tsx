@@ -1,4 +1,6 @@
 import { ListItem } from "@/components/list-item";
+import { MAX_RATING } from "@/components/rating";
+import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedText } from "@/components/themed-text";
 import { Thumbnail } from "@/components/thumbnail";
 import { Spacing } from "@/constants/theme";
@@ -16,6 +18,7 @@ export type PlaceItemProps = {
 export function PlaceItem({ place }: PlaceItemProps) {
   const router = useRouter();
   const { visited } = usePlaceVisit(place);
+  const average = formatRating(averageRating(place.ratings));
 
   return (
     <ListItem
@@ -31,9 +34,16 @@ export function PlaceItem({ place }: PlaceItemProps) {
       sublabel={place.description}
       footer={
         place.ratings.length > 0 ? (
-          <ThemedText type="sublabel" themeColor="acc1">
-            {formatRating(averageRating(place.ratings))} stars
-          </ThemedText>
+          <View
+            style={styles.rating}
+            accessible
+            accessibilityLabel={`Rated ${average} of ${MAX_RATING}`}
+          >
+            <ThemedIcon icon="star.fill" themeColor="acc1" size={12} />
+            <ThemedText type="sublabel" themeColor="acc1">
+              {average}
+            </ThemedText>
+          </View>
         ) : null
       }
       onPress={() =>
@@ -55,7 +65,7 @@ export function PlaceMeta({ author, distance, visited }: PlaceMetaProps) {
       <ThemedText type="subtext" themeColor="fg2">
         {distance}
       </ThemedText>
-      <ThemedText type="subtext" themeColor={visited ? "pos1" : "neg1"}>
+      <ThemedText type="subtext" themeColor={visited ? "acc1" : "fg2"}>
         {visited ? "Visited" : "Not visited"}
       </ThemedText>
     </View>
@@ -64,6 +74,11 @@ export function PlaceMeta({ author, distance, visited }: PlaceMetaProps) {
 
 const styles = StyleSheet.create({
   meta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.one,
+  },
+  rating: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.one,

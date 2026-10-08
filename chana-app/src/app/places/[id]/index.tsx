@@ -2,11 +2,10 @@ import { Button, type ButtonType } from "@/components/button";
 import { CheckItem } from "@/components/check-item";
 import { EmptyState } from "@/components/empty-state";
 import { ImageCarousel } from "@/components/image-carousel";
+import { InfoItem } from "@/components/info-item";
 import { List } from "@/components/list";
-import { PlaceMeta } from "@/components/place-item";
 import { RatingSummary } from "@/components/rating-summary";
 import { ScreenScrollView } from "@/components/screen-scroll-view";
-import { Separator } from "@/components/separator";
 import { ThemedText } from "@/components/themed-text";
 import type { IconName } from "@/constants/icons.generated";
 import { Spacing } from "@/constants/theme";
@@ -18,7 +17,7 @@ import { formatDate } from "@/utils/dates";
 import { withUserRating } from "@/utils/ratings";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 type PlaceAction = {
   label: string;
@@ -88,84 +87,58 @@ function PlaceContent({ place }: { place: Place }) {
 
   return (
     <View style={styles.body}>
-      <PlaceMeta
-        author={place.author}
-        distance={place.distance}
-        visited={visited}
-      />
-
       {place.image ? (
         <ImageCarousel images={[place.image]} aspectRatio={5 / 4} />
       ) : null}
 
-      <View style={styles.actions}>
-        {PlaceActions.map((action) => (
-          <Button
-            key={action.label}
-            icon={action.icon}
-            label={action.label}
-            type={action.type ?? "tertiary"}
-            size="large"
-            radius="md"
-            fullWidth
-            // Share the row's width equally
-            style={styles.action}
-          />
-        ))}
+      <View style={styles.group}>
+        <View style={styles.actions}>
+          {PlaceActions.map((action) => (
+            <Button
+              key={action.label}
+              icon={action.icon}
+              label={action.label}
+              type={action.type ?? "tertiary"}
+              size="large"
+              radius="md"
+              fullWidth
+              style={styles.action}
+            />
+          ))}
+        </View>
+
+        <CheckItem
+          checked={visited}
+          onPress={toggleVisited}
+          label={visited ? "Visited" : "Mark as visited"}
+          sublabel={visited ? "When were you there?" : "Tap to mark as visited"}
+        >
+          {visited ? (
+            <Button
+              icon="calendar"
+              label={formatDate(visitedOn)}
+              size="small"
+              radius="full"
+              bg="bg3"
+              fg="acc1"
+              accessibilityLabel={`Visited on ${formatDate(visitedOn)}, change date`}
+              onPress={() =>
+                router.push({
+                  pathname: "/places/[id]/visited-date",
+                  params: { id: place.id },
+                })
+              }
+            />
+          ) : null}
+        </CheckItem>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.factsScroll}
-        contentContainerStyle={styles.facts}
-      >
-        <View>
-          <ThemedText themeColor="fg2" type="heading_4">
-            Distance
-          </ThemedText>
-          <ThemedText type="sublabel">{place.distance}</ThemedText>
-        </View>
-        <Separator orientation="vertical" />
-        <View>
-          <ThemedText themeColor="fg2" type="heading_4">
-            Address
-          </ThemedText>
-          <ThemedText type="sublabel">{place.address}</ThemedText>
-        </View>
-        <Separator orientation="vertical" />
-        <View>
-          <ThemedText themeColor="fg2" type="heading_4">
-            Address
-          </ThemedText>
-          <ThemedText type="sublabel">{place.address}</ThemedText>
-        </View>
-      </ScrollView>
-
-      <CheckItem
-        checked={visited}
-        onPress={toggleVisited}
-        label={visited ? "Visited" : "Mark as visited"}
-        sublabel={visited ? "When were you there?" : "Tap to mark as visited"}
-      >
-        {visited ? (
-          // The date is changed in a sheet with a calendar and a Save button
-          <Button
-            icon="calendar"
-            label={formatDate(visitedOn)}
-            size="small"
-            radius="full"
-            bg="bg2"
-            accessibilityLabel={`Visited on ${formatDate(visitedOn)}, change date`}
-            onPress={() =>
-              router.push({
-                pathname: "/places/[id]/visited-date",
-                params: { id: place.id },
-              })
-            }
-          />
+      <List type="card" horizontal contentContainerStyle={styles.info}>
+        <InfoItem label="Distance" value={place.distance} />
+        {place.address ? (
+          <InfoItem label="Address" value={place.address} />
         ) : null}
-      </CheckItem>
+      </List>
 
       <RatingSummary
         ratings={ratings}
@@ -177,8 +150,10 @@ function PlaceContent({ place }: { place: Place }) {
         }
       />
 
-      <List type="card" style={styles.content} subheading="Notes">
-        <ThemedText themeColor="fg2">{place.description}</ThemedText>
+      <List type="card" subheading="Notes">
+        <ThemedText themeColor="fg1" type="heading_4" style={styles.notes}>
+          {place.description}
+        </ThemedText>
       </List>
     </View>
   );
@@ -192,19 +167,21 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
     gap: Spacing.three,
   },
-  factsScroll: {
-    marginHorizontal: -Spacing.three,
-    paddingLeft: Spacing.three,
-  },
-  facts: {
-    gap: Spacing.three,
-    paddingHorizontal: Spacing.three,
-  },
   actions: {
     flexDirection: "row",
     gap: Spacing.two,
   },
   action: {
     flex: 1,
+  },
+  group: {
+    gap: Spacing.two,
+  },
+  info: {
+    padding: Spacing.three,
+  },
+  notes: {
+    paddingTop: 0,
+    padding: Spacing.three,
   },
 });

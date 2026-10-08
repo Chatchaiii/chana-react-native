@@ -5,7 +5,7 @@ import { Spacing } from "@/constants/theme";
 import { useDrawerHaptics } from "@/hooks/use-drawer-haptics";
 import type { DrawerContentComponentProps } from "expo-router/drawer";
 import { DrawerActions } from "expo-router/react-navigation";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 /** Side menu: app name and one button per tab, grouped by `MenuSections` */
@@ -18,13 +18,16 @@ export function AppDrawerContent({
   useDrawerHaptics();
 
   return (
-    // Not scrollable: the menu always fits on screen
-    <View
-      style={[
+    // Only scrolls when the menu doesn't fit (landscape); in portrait it stays still
+    <ScrollView
+      alwaysBounceVertical={false}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={[
         styles.container,
         {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
+          // Landscape has no top inset, so keep the heading off the edge
+          paddingTop: Math.max(insets.top, Spacing.three),
+          paddingBottom: Math.max(insets.bottom, Spacing.three),
           paddingLeft: insets.left + Spacing.three,
         },
       ]}
@@ -65,7 +68,7 @@ export function AppDrawerContent({
           })}
         </View>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 

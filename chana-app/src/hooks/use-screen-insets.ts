@@ -5,8 +5,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 /**
  * Content padding for scrollable screens (ScrollView, FlatList, FlashList).
  *
- * iOS handles insets natively via `contentInsetAdjustmentBehavior="automatic"`,
- * so this only returns padding on Android, where a transparent header overlaps content.
+ * iOS handles the top and bottom natively via `contentInsetAdjustmentBehavior="automatic"`,
+ * so `contentInsetStyle` only pads on Android, where a transparent header overlaps content.
+ * `sideInsetStyle` keeps content clear of the notch in landscape, on both platforms
+ * (margins, so they don't override a screen's own content padding).
  */
 export function useScreenInsets({ transparentHeader = true } = {}) {
   const headerHeight = useHeaderHeight();
@@ -20,8 +22,14 @@ export function useScreenInsets({ transparentHeader = true } = {}) {
         }
       : undefined;
 
+  const sideInsetStyle: ViewStyle = {
+    marginLeft: insets.left,
+    marginRight: insets.right,
+  };
+
   return {
     contentInsetAdjustmentBehavior: "automatic" as const,
     contentInsetStyle,
+    sideInsetStyle,
   };
 }
