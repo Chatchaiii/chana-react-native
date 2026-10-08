@@ -1,4 +1,4 @@
-import { ActionRow } from "@/components/action-row";
+import { ActionRow, ActionRowSeparatorInset } from "@/components/action-row";
 import { List } from "@/components/list";
 import { SheetContent } from "@/components/sheet-content";
 import { ThemedText } from "@/components/themed-text";
@@ -24,13 +24,13 @@ export default function PostOptions() {
         </ThemedText>
       ) : null}
 
-      <List type="card" separatorPadding="three">
+      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
         <ActionRow icon="square.and.arrow.up" label="Share" onPress={close} />
         <ActionRow icon="link" label="Copy link" onPress={close} />
         <ActionRow icon="bookmark" label="Save" onPress={close} />
       </List>
 
-      <List type="card" separatorPadding="three">
+      <List type="card">
         <ActionRow icon="trash" label="Delete" destructive onPress={close} />
       </List>
     </SheetContent>

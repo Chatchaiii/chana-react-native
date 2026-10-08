@@ -19,7 +19,9 @@ export type ListProps = {
   type?: "plain" | "card";
   /** Items in a row that scrolls sideways, with vertical separators */
   horizontal?: boolean;
-  separatorPadding?: SeparatorProps["padding"];
+  /** Separator insets in points, e.g. ActionRowSeparatorInset */
+  separatorInsetLeading?: SeparatorProps["insetLeading"];
+  separatorInsetTrailing?: SeparatorProps["insetTrailing"];
   style?: StyleProp<ViewStyle>;
   /** Horizontal lists only: style of the scrolling row, e.g. its end padding */
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -35,7 +37,8 @@ export function List({
   subheading,
   type = "plain",
   horizontal = false,
-  separatorPadding,
+  separatorInsetLeading,
+  separatorInsetTrailing,
   style,
   contentContainerStyle,
 }: ListProps) {
@@ -49,7 +52,11 @@ export function List({
   const items = Children.toArray(children).map((item, index) => (
     <Fragment key={isValidElement(item) ? item.key : index}>
       {index > 0 ? (
-        <Separator padding={separatorPadding} vertical={horizontal} />
+        <Separator
+          insetLeading={separatorInsetLeading}
+          insetTrailing={separatorInsetTrailing}
+          vertical={horizontal}
+        />
       ) : null}
       {item}
     </Fragment>

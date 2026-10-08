@@ -1,4 +1,4 @@
-import { ActionRow } from "@/components/action-row";
+import { ActionRow, ActionRowSeparatorInset } from "@/components/action-row";
 import { Avatar } from "@/components/avatar";
 import { List } from "@/components/list";
 import { SheetContent } from "@/components/sheet-content";
@@ -35,15 +35,46 @@ export function ProfileSheet() {
         </View>
       </View>
 
-      <List type="card">
-        <ActionRow icon="user" label="Edit profile" onPress={close} />
-        <ActionRow icon="gear" label="Settings" onPress={close} />
+      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
+        <ActionRow
+          icon="user.card.fill"
+          label="Personal information"
+          chevron
+          onPress={close}
+        />
+        <ActionRow
+          icon="lock.fill"
+          label="Sign-In & Security"
+          chevron
+          onPress={close}
+        />
+        <ActionRow icon="gear.fill" label="Settings" chevron onPress={close} />
       </List>
 
-      <List type="card">
+      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
         <ActionRow
-          icon="square.and.arrow.right"
+          icon="bell.fill"
+          label="Notification"
+          chevron
+          onPress={close}
+        />
+        <ActionRow
+          icon="circle.fill.half"
+          label="Language & Appearance"
+          chevron
+          onPress={close}
+        />
+      </List>
+
+      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
+        <ActionRow
+          icon="square.and.arrow.right.fill"
           label="Log out"
+          onPress={close}
+        />
+        <ActionRow
+          icon="trash.fill"
+          label="Delete Account"
           destructive
           onPress={close}
         />

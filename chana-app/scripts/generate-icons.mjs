@@ -42,8 +42,11 @@ function parseIcon(file) {
   if (!svg.includes('viewBox="0 0 24 24"')) {
     throw new Error(`${file}: expected a 24×24 viewBox`);
   }
-  // Clip paths only frame the 24×24 canvas, so their contents are skipped
-  const body = svg.replace(/<defs>[\s\S]*?<\/defs>/g, "");
+  // Clip paths only frame the 24×24 canvas, so their contents are skipped.
+  // Masks are Figma's "inside"/"outside" strokes; their shapes aren't drawn
+  const body = svg
+    .replace(/<defs>[\s\S]*?<\/defs>/g, "")
+    .replace(/<mask[\s\S]*?<\/mask>/g, "");
   const elements = [];
 
   for (const [, tag, rawAttrs] of body.matchAll(/<(\w+)\s([^>]*?)\/?>/g)) {
@@ -59,6 +62,12 @@ function parseIcon(file) {
       !attrs.y &&
       !attrs.stroke;
     if (isBackground) continue;
+    // A masked stroke can't be drawn without its mask: skip it, so it doesn't
+    // spill outside its shape. Use centre strokes (or Outline stroke) in Figma
+    if (attrs.mask) {
+      console.warn(`${file}: skipped a masked shape (inside/outside stroke)`);
+      continue;
+    }
 
     const element = { type: tag };
     for (const [svgName, propName] of Object.entries(ATTRIBUTES)) {
