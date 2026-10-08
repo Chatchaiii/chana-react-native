@@ -55,7 +55,7 @@ function VisitedDatePicker({ place }: { place: Place }) {
       <Button
         icon="arrow.up"
         label="Update"
-        type="prominent"
+        type="primary"
         size="medium_2"
         radius="md"
         fullWidth

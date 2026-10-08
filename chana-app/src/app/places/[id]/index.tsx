@@ -87,18 +87,18 @@ function PlaceContent({ place }: { place: Place }) {
 
   return (
     <View style={styles.body}>
-      {place.image ? (
-        <ImageCarousel images={[place.image]} aspectRatio={5 / 4} />
-      ) : null}
-
       <View style={styles.group}>
+        {place.image ? (
+          <ImageCarousel images={[place.image]} aspectRatio={5 / 4} />
+        ) : null}
+
         <View style={styles.actions}>
           {PlaceActions.map((action) => (
             <Button
               key={action.label}
               icon={action.icon}
               label={action.label}
-              type={action.type ?? "tertiary"}
+              type={action.type ?? "secondary"}
               size="large"
               radius="md"
               fullWidth
@@ -106,7 +106,9 @@ function PlaceContent({ place }: { place: Place }) {
             />
           ))}
         </View>
+      </View>
 
+      <List type="card">
         <CheckItem
           checked={visited}
           onPress={toggleVisited}
@@ -119,8 +121,7 @@ function PlaceContent({ place }: { place: Place }) {
               label={formatDate(visitedOn)}
               size="small"
               radius="full"
-              bg="bg3"
-              fg="acc1"
+              type="tertiary"
               accessibilityLabel={`Visited on ${formatDate(visitedOn)}, change date`}
               onPress={() =>
                 router.push({
@@ -131,13 +132,19 @@ function PlaceContent({ place }: { place: Place }) {
             />
           ) : null}
         </CheckItem>
-      </View>
 
-      <List type="card" horizontal contentContainerStyle={styles.info}>
-        <InfoItem label="Distance" value={place.distance} />
-        {place.address ? (
-          <InfoItem label="Address" value={place.address} />
-        ) : null}
+        <List horizontal contentContainerStyle={styles.info}>
+          <InfoItem label="Distance" value={place.distance} />
+          {place.address ? (
+            <InfoItem label="Address" value={place.address} />
+          ) : null}
+        </List>
+      </List>
+
+      <List type="card" subheading="Notes">
+        <ThemedText type="heading_4" style={styles.notes}>
+          {place.description}
+        </ThemedText>
       </List>
 
       <RatingSummary
@@ -149,12 +156,6 @@ function PlaceContent({ place }: { place: Place }) {
           )
         }
       />
-
-      <List type="card" subheading="Notes">
-        <ThemedText themeColor="fg1" type="heading_4" style={styles.notes}>
-          {place.description}
-        </ThemedText>
-      </List>
     </View>
   );
 }
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   group: {
-    gap: Spacing.two,
+    gap: Spacing.three,
   },
   info: {
     padding: Spacing.three,
