@@ -1,7 +1,7 @@
 import { Avatar } from "@/components/avatar";
+import { HeaderButton } from "@/components/header-button";
 import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
-import { ThemedPressable } from "@/components/themed-pressable";
 import type { Tab } from "@/constants/tabs";
 import { CURRENT_USER } from "@/data/current-user";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
@@ -49,12 +49,12 @@ export function TabScreen({
           headerTransparent: true,
           headerLeft: () => <MenuButton />,
           headerRight: () => (
-            <ThemedPressable
+            <HeaderButton
               accessibilityLabel="Profile"
               onPress={() => router.push(tab.profileHref)}
             >
               <Avatar src={CURRENT_USER.avatar} name={CURRENT_USER.name} />
-            </ThemedPressable>
+            </HeaderButton>
           ),
         }}
       />
