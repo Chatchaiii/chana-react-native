@@ -30,6 +30,7 @@
     "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
@@ -41,7 +42,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "icons": "node scripts/generate-icons.mjs && npx prettier --write src/constants/icons.generated.ts"
+    "icons": "node scripts/generate-icons.mjs && npx prettier --write src/constants/icons.generated.ts src/constants/toolbar-icons.generated.ts"
   },
   "private": true
 }

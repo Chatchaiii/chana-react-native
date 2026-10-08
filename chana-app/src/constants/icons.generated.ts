@@ -662,6 +662,20 @@ export const Icons = {
       },
     ],
   },
+  "info.circle": {
+    knockout: false,
+    elements: [
+      { type: "circle", cx: 12, cy: 12, r: 8, strokeWidth: 2, stroke: "on" },
+      { type: "circle", cx: 12, cy: 8.5, r: 1.25, fill: "on" },
+      {
+        type: "path",
+        d: "M12 11.5V16",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        stroke: "on",
+      },
+    ],
+  },
   "line.2.horizontal": {
     knockout: false,
     elements: [
