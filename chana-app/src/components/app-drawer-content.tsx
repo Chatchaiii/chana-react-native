@@ -54,7 +54,7 @@ export function AppDrawerContent({
                 key={tab.route}
                 icon={tab.icon}
                 label={tab.title}
-                type={focused ? "primary" : "secondary"}
+                type={focused ? "prominent" : "secondary"}
                 bg={focused ? undefined : "menuButton"}
                 {...buttonProps[section.variant]}
                 accessibilityState={{ selected: focused }}

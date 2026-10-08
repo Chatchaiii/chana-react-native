@@ -1,28 +1,35 @@
-import { Spacing, type SpacingKey } from "@/constants/theme";
+import { Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { StyleSheet, View } from "react-native";
 
 export type SeparatorProps = {
   /**
-   * Space kept free at both ends of the line. Defaults to "three" for
-   * horizontal lines and none for vertical ones, which sit in short rows.
+   * Space kept free before / after the line, in points. Default: 16 at both
+   * ends of a horizontal line, none for a vertical one (it sits in a short row)
    */
-  padding?: SpacingKey;
+  insetLeading?: number;
+  insetTrailing?: number;
   /** A vertical line between items in a row (e.g. a horizontal List) */
   vertical?: boolean;
 };
 
-/** 1px line between items, inset by `padding` at both ends */
-export function Separator({ padding, vertical = false }: SeparatorProps) {
+/** 1px line between items, inset at its start and end */
+export function Separator({
+  insetLeading,
+  insetTrailing,
+  vertical = false,
+}: SeparatorProps) {
   const theme = useTheme();
-  const inset = padding ? Spacing[padding] : vertical ? 0 : Spacing.three;
+  const defaultInset = vertical ? 0 : Spacing.three;
+  const leading = insetLeading ?? defaultInset;
+  const trailing = insetTrailing ?? defaultInset;
 
   return (
     <View
       style={[
         vertical
-          ? [styles.vertical, { marginVertical: inset }]
-          : [styles.horizontal, { marginHorizontal: inset }],
+          ? [styles.vertical, { marginTop: leading, marginBottom: trailing }]
+          : [styles.horizontal, { marginLeft: leading, marginRight: trailing }],
         { backgroundColor: theme.bg3 },
       ]}
     />
