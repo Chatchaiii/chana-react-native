@@ -33,10 +33,15 @@ export type ButtonProps = Omit<ThemedPressableProps, "children"> & {
 
 // Colors per type; the bg/fg props override these
 const TypeColors: Record<ButtonType, { bg: ThemeColor; fg: ThemeColor }> = {
-  default: { bg: "bg2", fg: "fg2" },
+  // Page color: only stands out on a card
+  default: { bg: "bg2", fg: "fg1" },
+  // Accent, for the main action of a screen
   prominent: { bg: "acc1", fg: "constWhite" },
+  // Inverted (black in light mode, white in dark), e.g. confirming in a sheet
   primary: { bg: "fg1", fg: "bg1" },
-  secondary: { bg: "bg2", fg: "fg1" },
+  // Card color, raised on the page
+  secondary: { bg: "bg1", fg: "fg1" },
+  // Fill, for controls inside a card
   tertiary: { bg: "bg3", fg: "fg1" },
 };
 
@@ -74,7 +79,13 @@ export function Button({
         style,
       ]}
     >
-      {icon && <ThemedIcon icon={icon} themeColor={foreground} />}
+      {icon ? (
+        <ThemedIcon
+          icon={icon}
+          themeColor={foreground}
+          size={IconSizes[size]}
+        />
+      ) : null}
       <View>
         <ThemedText
           type={size === "small" ? "sublabel" : "label"}
@@ -106,6 +117,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
 });
+
+// Large buttons stack the icon above the label, so it can be bigger
+const IconSizes: Record<ButtonSize, number> = {
+  small: 18,
+  medium_1: 18,
+  medium_2: 18,
+  large: 24,
+};
 
 const sizeStyles = StyleSheet.create({
   small: {

@@ -42,7 +42,7 @@ export function CheckItem({
   ...rest
 }: CheckItemProps) {
   const theme = useTheme();
-  const background = bg ?? "bg3";
+  const background = bg ?? "bg1";
 
   return (
     <ThemedView
@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
   },
   withTrailing: {
-    paddingRight: Spacing.two,
+    paddingRight: Spacing.three,
   },
   check: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: Spacing.three,
-    paddingVertical: Spacing.two,
-    gap: Spacing.two,
+    paddingVertical: Spacing.three,
+    gap: Spacing.three,
   },
 });
