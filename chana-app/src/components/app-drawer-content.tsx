@@ -55,6 +55,7 @@ export function AppDrawerContent({
                 icon={tab.icon}
                 label={tab.title}
                 type={focused ? "primary" : "secondary"}
+                bg={focused ? undefined : "menuButton"}
                 {...buttonProps[section.variant]}
                 accessibilityState={{ selected: focused }}
                 onPress={() =>

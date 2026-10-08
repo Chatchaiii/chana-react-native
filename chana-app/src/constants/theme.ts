@@ -3,14 +3,20 @@ import "@/global.css";
 import { Platform } from "react-native";
 
 /**
- * Light and dark palettes. bg = surfaces (1 = top), fg = text and icons
- * (1 = strongest), acc = accent, neg = destructive.
+ * Light and dark palettes. bg = surfaces: bg1 = raised (cards, menu), bg2 =
+ * page, bg3 = fills (controls, tracks, separators); in both modes bg1 sits
+ * above bg2. menu / menuButton = the side menu, which goes darker than the
+ * page in dark mode. fg = text and icons (1 = strongest, 3 = faint), acc = accent,
+ * neg = destructive.
  */
 export const Colors = {
   light: {
     bg1: "#ffffff",
     bg2: "#F4F4F4",
     bg3: "#E8E8E8",
+
+    menu: "#fafafa",
+    menuButton: "#efefef",
 
     fg1: "#000000",
     fg2: "#5F5F5F",
@@ -28,13 +34,16 @@ export const Colors = {
     constBlack: "#000000",
   },
   dark: {
-    bg1: "#111111",
-    bg2: "#1e1e1e",
+    bg1: "#1e1e1e",
+    bg2: "#111111",
     bg3: "#2c2c2c",
+
+    menu: "#0a0a0a",
+    menuButton: "#1a1a1a",
 
     fg1: "#ffffff",
     fg2: "#bdbdbd",
-    fg3: "#a1a1a1",
+    fg3: "#6b6b6b",
 
     acc1: "#C66AF1",
 
