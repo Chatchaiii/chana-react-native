@@ -38,7 +38,7 @@ src/app/<tab>/index.tsx             <TabScreen tab={Tabs.x}>…content…</TabSc
 src/app/<tab>/new.tsx               <CreateScreen tab={Tabs.x} /> (modal)
 src/app/<tab>/profile.tsx           One-line re-export of ProfileSheet (sheet, opened from the header avatar)
 src/constants/tabs.ts               Single source of truth for tabs: route, title, icon (filled, same for active and inactive), optional searchTitle (omit = not in search), optional create {label, href} (omit = no create button / new.tsx), profileHref. First entry = the tab the app opens on. `MenuSections` sets the drawer's groups and order
-src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes
+src/constants/theme.ts              Colors (light/dark), OverlayColors, Fonts, Spacing, Radius, ContainerSizes. Color roles: bg1 = raised (cards, menu), bg2 = page, bg3 = fills (controls, tracks, separators); bg1 sits above bg2 in both modes (dark: bg1 #1e1e1e over bg2 #111111). `menu` / `menuButton` = the side menu and the area around the sliding screen; same as bg1/bg2 in light, but swapped in dark (the user likes the menu darker there). fg1–3 = strong → faint
 src/constants/motion.ts             Timings (fast/normal/slow eased), PressSpring, ListPressDelay
 src/types/                          Domain types: post.ts (Post), place.ts (Place), comment.ts (Comment), rating.ts (RatingValue, UserRating), user.ts (User)
 src/data/                           Stand-in content until there's a backend: posts.ts, places.ts, comments.ts (by postId), current-user.ts (CURRENT_USER), place-visits.ts (in-memory store: `usePlaceVisit(place)` / `setPlaceVisit(id, visit)`, shared by the list, place page and date sheet)
