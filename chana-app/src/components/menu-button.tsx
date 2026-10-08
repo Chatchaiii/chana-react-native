@@ -1,5 +1,5 @@
+import { HeaderButton } from "@/components/header-button";
 import { ThemedIcon } from "@/components/themed-icon";
-import { ThemedPressable } from "@/components/themed-pressable";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "expo-router/react-navigation";
 
@@ -8,11 +8,11 @@ export function MenuButton() {
   const navigation = useNavigation();
 
   return (
-    <ThemedPressable
+    <HeaderButton
       accessibilityLabel="Open menu"
       onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
     >
       <ThemedIcon icon="line.3.horizontal" />
-    </ThemedPressable>
+    </HeaderButton>
   );
 }
