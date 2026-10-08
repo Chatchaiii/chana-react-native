@@ -2,7 +2,7 @@ import { Fonts, type ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { Platform, StyleSheet, Text, type TextProps } from "react-native";
 
-export type TextType = keyof typeof styles;
+export type TextType = keyof typeof TextStyles;
 
 export type ThemedTextProps = TextProps & {
   type?: TextType;
@@ -20,13 +20,14 @@ export function ThemedText({
 
   return (
     <Text
-      style={[{ color: theme[themeColor] }, styles[type], style]}
+      style={[{ color: theme[themeColor] }, TextStyles[type], style]}
       {...rest}
     />
   );
 }
 
-const styles = StyleSheet.create({
+/** The app's text styles, also used by ThemedTextInput */
+export const TextStyles = StyleSheet.create({
   heading: {
     fontSize: 64,
     fontWeight: 800,

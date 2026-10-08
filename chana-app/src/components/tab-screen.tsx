@@ -1,12 +1,13 @@
 import { Avatar } from "@/components/avatar";
 import { HeaderButton } from "@/components/header-button";
-import { MenuButton } from "@/components/menu-button";
 import { SearchResults } from "@/components/search-results";
 import type { Tab } from "@/constants/tabs";
+import { ToolbarIcons } from "@/constants/toolbar-icons.generated";
 import { CURRENT_USER } from "@/data/current-user";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
-import { Stack, useRouter, type Href } from "expo-router";
+import { Stack, useNavigation, useRouter, type Href } from "expo-router";
+import { DrawerActions } from "expo-router/react-navigation";
 import { useState, type ReactNode } from "react";
 import { Platform } from "react-native";
 
@@ -27,6 +28,7 @@ export function TabScreen({
   children,
 }: TabScreenProps) {
   const router = useRouter();
+  const navigation = useNavigation();
   const [query, setQuery] = useState("");
   // Android toolbar buttons need an image; iOS uses an SF Symbol
   const androidCreateIcon = useMaterialSymbolSource("edit_square");
@@ -35,8 +37,13 @@ export function TabScreen({
 
   const { create } = tab;
 
+  // Native toolbar buttons aren't ThemedPressables, so they play the haptic here
+  const openMenu = () => {
+    playHaptic(HapticStyles.press);
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
   const openCreate = (href: Href) => {
-    // Native toolbar buttons aren't ThemedPressables, so play the haptic here
     playHaptic(HapticStyles.press);
     router.push(href);
   };
@@ -47,7 +54,6 @@ export function TabScreen({
         options={{
           headerTitle: title,
           headerTransparent: true,
-          headerLeft: () => <MenuButton />,
           headerRight: () => (
             <HeaderButton
               accessibilityLabel="Profile"
@@ -58,6 +64,18 @@ export function TabScreen({
           ),
         }}
       />
+
+      {/* Native, not a custom headerLeft: on iOS 27 a tap on a custom header
+          item also reaches the header, which scrolls the page to the top */}
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Button
+          // The user's own icon as a PNG, tinted by the system (light/dark)
+          icon={ToolbarIcons["line.3.horizontal"]}
+          iconRenderingMode="template"
+          accessibilityLabel="Open menu"
+          onPress={openMenu}
+        />
+      </Stack.Toolbar>
 
       <Stack.SearchBar
         placeholder="Search"

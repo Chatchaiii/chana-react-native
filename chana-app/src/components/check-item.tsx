@@ -1,3 +1,4 @@
+import { CheckCircle } from "@/components/check-circle";
 import {
   ThemedPressable,
   type ThemedPressableProps,
@@ -5,13 +6,8 @@ import {
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Radius, Spacing, type ThemeColor } from "@/constants/theme";
-import { useTheme } from "@/hooks/use-theme";
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-
-const CIRCLE_SIZE = 18;
-// The inner dot's border shows the background, leaving a ring around the dot
-const DOT_SIZE = 14;
 
 export type CheckItemProps = Omit<
   ThemedPressableProps,
@@ -41,7 +37,6 @@ export function CheckItem({
   style,
   ...rest
 }: CheckItemProps) {
-  const theme = useTheme();
   const background = bg ?? "bg1";
 
   return (
@@ -57,12 +52,7 @@ export function CheckItem({
         accessibilityLabel={label}
         style={styles.check}
       >
-        <ThemedView themeColor={checked ? "acc1" : "fg2"} style={styles.circle}>
-          <ThemedView
-            themeColor={checked ? "acc1" : background}
-            style={[styles.dot, { borderColor: theme[background] }]}
-          />
-        </ThemedView>
+        <CheckCircle checked={checked} background={background} />
         <View style={styles.text}>
           <ThemedText type="label" themeColor={fgLabel ?? "fg1"}>
             {label}
@@ -81,19 +71,6 @@ export function CheckItem({
 }
 
 const styles = StyleSheet.create({
-  circle: {
-    height: CIRCLE_SIZE,
-    width: CIRCLE_SIZE,
-    borderRadius: Radius.full,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  dot: {
-    height: DOT_SIZE,
-    width: DOT_SIZE,
-    borderRadius: Radius.full,
-    borderWidth: Spacing.half,
-  },
   text: {
     flex: 1,
   },
