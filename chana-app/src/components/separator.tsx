@@ -8,24 +8,21 @@ export type SeparatorProps = {
    * horizontal lines and none for vertical ones, which sit in short rows.
    */
   padding?: SpacingKey;
-  orientation?: "horizontal" | "vertical";
+  /** A vertical line between items in a row (e.g. a horizontal List) */
+  vertical?: boolean;
 };
 
 /** 1px line between items, inset by `padding` at both ends */
-export function Separator({
-  padding,
-  orientation = "horizontal",
-}: SeparatorProps) {
+export function Separator({ padding, vertical = false }: SeparatorProps) {
   const theme = useTheme();
-  const horizontal = orientation === "horizontal";
-  const inset = padding ? Spacing[padding] : horizontal ? Spacing.three : 0;
+  const inset = padding ? Spacing[padding] : vertical ? 0 : Spacing.three;
 
   return (
     <View
       style={[
-        horizontal
-          ? [styles.horizontal, { marginHorizontal: inset }]
-          : [styles.vertical, { marginVertical: inset }],
+        vertical
+          ? [styles.vertical, { marginVertical: inset }]
+          : [styles.horizontal, { marginHorizontal: inset }],
         { backgroundColor: theme.bg3 },
       ]}
     />

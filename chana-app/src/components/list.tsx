@@ -1,52 +1,81 @@
 import { Separator, type SeparatorProps } from "@/components/separator";
+import { ThemedText } from "@/components/themed-text";
 import { Radius, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { Children, Fragment, isValidElement, type ReactNode } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-import { ThemedText } from "./themed-text";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 
 export type ListProps = {
-  subheading?: string | undefined;
   children: ReactNode;
+  /** Small heading above the list, e.g. "Notes" */
+  subheading?: string;
   /** plain: no background; card: bg1 background with rounded, clipped corners */
   type?: "plain" | "card";
+  /** Items in a row that scrolls sideways, with vertical separators */
+  horizontal?: boolean;
   separatorPadding?: SeparatorProps["padding"];
   style?: StyleProp<ViewStyle>;
+  /** Horizontal lists only: style of the scrolling row, e.g. its end padding */
+  contentContainerStyle?: StyleProp<ViewStyle>;
 };
 
 /**
- * Stacks its children with a separator between each of them. For long or
- * data-driven lists, use a FlatList with `ItemSeparatorComponent={Separator}`.
+ * Stacks its children (or lines them up with `horizontal`) with a separator
+ * between each of them. For long or data-driven lists, use a FlatList with
+ * `ItemSeparatorComponent={Separator}`.
  */
 export function List({
-  subheading,
   children,
+  subheading,
   type = "plain",
+  horizontal = false,
   separatorPadding,
   style,
+  contentContainerStyle,
 }: ListProps) {
   const theme = useTheme();
+  const containerStyle = [
+    type === "card" && [styles.card, { backgroundColor: theme.bg1 }],
+    style,
+  ];
+
+  // Children.toArray drops null children, so separators only go between real items
+  const items = Children.toArray(children).map((item, index) => (
+    <Fragment key={isValidElement(item) ? item.key : index}>
+      {index > 0 ? (
+        <Separator padding={separatorPadding} vertical={horizontal} />
+      ) : null}
+      {item}
+    </Fragment>
+  ));
+
+  const subheadingContent = subheading ? (
+    <ThemedText type="heading_4" themeColor="fg2" style={styles.subheading}>
+      {subheading}
+    </ThemedText>
+  ) : null;
 
   return (
-    <View>
-      {subheading ? (
-        <ThemedText themeColor="fg2" type="heading_4" style={styles.subheading}>
-          {subheading}
-        </ThemedText>
-      ) : null}
-      <View
-        style={[
-          type === "card" && [styles.card, { backgroundColor: theme.bg1 }],
-          style,
-        ]}
-      >
-        {Children.toArray(children).map((item, index) => (
-          <Fragment key={isValidElement(item) ? item.key : index}>
-            {index > 0 && <Separator padding={separatorPadding} />}
-            {item}
-          </Fragment>
-        ))}
-      </View>
+    <View style={containerStyle}>
+      {subheadingContent}
+
+      {horizontal ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[styles.row, contentContainerStyle]}
+        >
+          {items}
+        </ScrollView>
+      ) : (
+        <>{items}</>
+      )}
     </View>
   );
 }
@@ -59,7 +88,8 @@ const styles = StyleSheet.create({
   },
   subheading: {
     padding: Spacing.three,
-    justifyContent: "space-between",
-    alignContent: "center",
+  },
+  row: {
+    gap: Spacing.three,
   },
 });

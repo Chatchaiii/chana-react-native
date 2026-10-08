@@ -49,7 +49,7 @@ export function Thumbnail({
           style={StyleSheet.absoluteFill}
         />
       ) : (
-        <ThemedIcon icon="photo" themeColor="fg3" />
+        <ThemedIcon icon="photo.slash" themeColor="fg3" />
       )}
     </View>
   );

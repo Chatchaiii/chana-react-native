@@ -6,19 +6,20 @@ export type ScreenScrollViewProps = ScrollViewProps & {
   transparentHeader?: boolean;
 };
 
-/** Root ScrollView of a screen, inset below the header and home indicator */
+/** Root ScrollView of a screen, inset below the header, above the home indicator and beside the notch */
 export function ScreenScrollView({
   transparentHeader,
+  style,
   contentContainerStyle,
   ...rest
 }: ScreenScrollViewProps) {
-  const { contentInsetAdjustmentBehavior, contentInsetStyle } = useScreenInsets(
-    { transparentHeader },
-  );
+  const { contentInsetAdjustmentBehavior, contentInsetStyle, sideInsetStyle } =
+    useScreenInsets({ transparentHeader });
 
   return (
     <ScrollView
       contentInsetAdjustmentBehavior={contentInsetAdjustmentBehavior}
+      style={[sideInsetStyle, style]}
       contentContainerStyle={[contentInsetStyle, contentContainerStyle]}
       {...rest}
     />

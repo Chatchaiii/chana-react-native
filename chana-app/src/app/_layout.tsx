@@ -6,11 +6,16 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { getFocusedRouteNameFromRoute } from "expo-router/react-navigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useWindowDimensions } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+// The menu takes 80% of the screen, but no more than this (e.g. in landscape)
+const DRAWER_MAX_WIDTH = 360;
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+  const { width } = useWindowDimensions();
 
   return (
     // Painted in the menu color so the main screen's rounded corners blend into the menu
@@ -24,7 +29,7 @@ export default function RootLayout() {
               // Menu stays behind; the main screen slides over it (Claude/Threads style)
               drawerType: "back",
               drawerStyle: {
-                width: "80%",
+                width: Math.min(width * 0.8, DRAWER_MAX_WIDTH),
                 backgroundColor: theme.bg1,
                 borderRightWidth: 0,
               },
