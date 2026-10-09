@@ -1,5 +1,6 @@
 import { PressSpring } from "@/constants/motion";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
+import { isPressBlocked } from "@/utils/press-guard";
 import type { ImpactFeedbackStyle } from "expo-haptics";
 import { useRef } from "react";
 import {
@@ -40,10 +41,13 @@ export function ThemedPressable({
   onPress,
   onPressIn,
   onPressOut,
+  onTouchStart,
   ...rest
 }: ThemedPressableProps) {
   const pressed = useSharedValue(0);
-  // Where on screen the finger went down
+  // Where on screen the finger went down. Taken on touch start, not press in:
+  // with a press delay (feed items), a quick swipe only gets its press in on
+  // release, at the release point
   const pressStart = useRef<{ x: number; y: number } | null>(null);
 
   // Shrinks and dims while pressed, on the UI thread
@@ -62,11 +66,14 @@ export function ThemedPressable({
       accessibilityState={{ disabled: !!disabled }}
       {...rest}
       disabled={disabled}
-      onPressIn={(event) => {
+      onTouchStart={(event) => {
         pressStart.current = {
           x: event.nativeEvent.pageX,
           y: event.nativeEvent.pageY,
         };
+        onTouchStart?.(event);
+      }}
+      onPressIn={(event) => {
         pressed.set(withSpring(1, PressSpring));
         onPressIn?.(event);
       }}
@@ -77,15 +84,16 @@ export function ThemedPressable({
       onPress={(event) => {
         const start = pressStart.current;
         pressStart.current = null;
-        // When the item moves along with the finger (the screen sliding aside
-        // as the drawer is swiped open), the finger never leaves it and RN
-        // counts a tap. On screen it travelled far, so it was a swipe
+        // A swipe that opened the drawer, not a tap: RN still counts it, as
+        // the item moves along with the finger. Either the drawer is still
+        // sliding, or the finger travelled far on screen (dragged all the way)
         if (
-          start &&
-          Math.hypot(
-            event.nativeEvent.pageX - start.x,
-            event.nativeEvent.pageY - start.y,
-          ) > TAP_SLOP
+          isPressBlocked() ||
+          (start &&
+            Math.hypot(
+              event.nativeEvent.pageX - start.x,
+              event.nativeEvent.pageY - start.y,
+            ) > TAP_SLOP)
         ) {
           return;
         }

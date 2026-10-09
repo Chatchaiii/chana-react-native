@@ -1,35 +1,34 @@
-import { Button, ButtonIconSizes } from "@/components/button";
+import { Button } from "@/components/button";
 import { TextField, type TextFieldProps } from "@/components/text-field";
-import { Spacing } from "@/constants/theme";
+import { ThemedText } from "@/components/themed-text";
 import { StyleSheet } from "react-native";
-
-// The icon-only medium_1 arrow button is square: padding on both sides + icon
-const BUTTON_SIZE = Spacing.three * 2 + ButtonIconSizes.medium_1;
-// Keeps typed text off the button
-const TEXT_GAP = Spacing.two;
 
 export type SubmitFieldProps = Omit<
   TextFieldProps,
-  "trailing" | "onSubmitEditing"
+  "trailing" | "onSubmitEditing" | "invalid"
 > & {
   onSubmit: () => void;
   /** Whether the input is complete, e.g. a valid email */
   canSubmit: boolean;
   /** While the submit runs: spinner in the button, no second submit */
   loading?: boolean;
-  /** What the arrow button does, for screen readers */
+  /** Label of the button under the field, e.g. "Continue with email" */
   submitLabel: string;
+  /** Shown between the field and the button; also outlines the field red */
+  error?: string | null;
 };
 
 /**
- * Gray field with centred text and an arrow button at its end, for a single
- * value that moves the sign-in flow on (email, password). Return submits too
+ * Gray field with centred text and a full-width button under it, for a single
+ * value that moves the sign-in flow on (email, password, name). Return
+ * submits too
  */
 export function SubmitField({
   onSubmit,
   canSubmit,
   loading = false,
   submitLabel,
+  error = null,
   style,
   ...rest
 }: SubmitFieldProps) {
@@ -38,34 +37,36 @@ export function SubmitField({
   };
 
   return (
-    <TextField
-      bg="bg3"
-      returnKeyType="go"
-      {...rest}
-      onSubmitEditing={submit}
-      style={[styles.input, style]}
-      trailing={
-        <Button
-          icon="arrow.right"
-          type="prominent"
-          size="medium_1"
-          radius="md"
-          loading={loading}
-          disabled={!canSubmit || loading}
-          accessibilityLabel={submitLabel}
-          onPress={submit}
-        />
-      }
-    />
+    <>
+      <TextField
+        bg="bg3"
+        returnKeyType="go"
+        {...rest}
+        invalid={error !== null}
+        onSubmitEditing={submit}
+        style={[styles.input, style]}
+      />
+      {error ? (
+        <ThemedText type="sublabel" themeColor="neg1" style={styles.input}>
+          {error}
+        </ThemedText>
+      ) : null}
+      <Button
+        label={submitLabel}
+        type="primary"
+        size="medium_1"
+        radius="md"
+        fullWidth
+        loading={loading}
+        disabled={!canSubmit || loading}
+        onPress={submit}
+      />
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  // The button takes the right end, so the same width is kept free on the
-  // left: the text then centres on the whole field, not just the space beside it
   input: {
     textAlign: "center",
-    paddingLeft: BUTTON_SIZE + TEXT_GAP,
-    paddingRight: TEXT_GAP,
   },
 });
