@@ -99,26 +99,18 @@ export default function SignIn() {
         autoCorrect={false}
         autoComplete="email"
         textContentType="emailAddress"
-        invalid={error !== null}
+        error={error}
         accessibilityLabel="Email"
         canSubmit={valid}
         loading={pending}
         submitLabel="Continue with email"
         onSubmit={submit}
       />
-      {error ? (
-        <ThemedText type="sublabel" themeColor="neg1" style={styles.center}>
-          {error}
-        </ThemedText>
-      ) : null}
     </AuthScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  center: {
-    textAlign: "center",
-  },
   legal: {
     textAlign: "center",
   },

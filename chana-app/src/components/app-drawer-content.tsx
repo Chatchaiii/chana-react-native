@@ -3,6 +3,7 @@ import { ThemedText } from "@/components/themed-text";
 import { MenuSections, type MenuSection } from "@/constants/tabs";
 import { Spacing } from "@/constants/theme";
 import { useDrawerHaptics } from "@/hooks/use-drawer-haptics";
+import { useDrawerPressGuard } from "@/hooks/use-drawer-press-guard";
 import type { DrawerContentComponentProps } from "expo-router/drawer";
 import { DrawerActions } from "expo-router/react-navigation";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -16,6 +17,7 @@ export function AppDrawerContent({
   const focusedRoute = state.routes[state.index]?.name;
   const insets = useSafeAreaInsets();
   useDrawerHaptics();
+  useDrawerPressGuard();
 
   return (
     // Only scrolls when the menu doesn't fit (landscape); in portrait it stays still
