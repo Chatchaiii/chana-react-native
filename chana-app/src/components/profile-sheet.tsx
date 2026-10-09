@@ -5,6 +5,7 @@ import { SheetContent } from "@/components/sheet-content";
 import { ThemedText } from "@/components/themed-text";
 import { Spacing } from "@/constants/theme";
 import { CURRENT_USER } from "@/data/current-user";
+import { signOut, useSession } from "@/data/session";
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
@@ -14,6 +15,8 @@ import { StyleSheet, View } from "react-native";
  */
 export function ProfileSheet() {
   const router = useRouter();
+  // TODO: use the session everywhere once CURRENT_USER is gone
+  const user = useSession() ?? CURRENT_USER;
 
   // TODO: implement each action; for now they just close the sheet
   const close = () => router.back();
@@ -22,15 +25,15 @@ export function ProfileSheet() {
     <SheetContent>
       <View style={styles.header}>
         <Avatar
-          src={CURRENT_USER.avatar}
-          name={CURRENT_USER.name}
+          src={user.avatar}
+          name={user.name}
           size="xxl"
           initialsType="heading_2"
         />
         <View style={styles.names}>
-          <ThemedText type="heading_3">{CURRENT_USER.name}</ThemedText>
+          <ThemedText type="heading_3">{user.name}</ThemedText>
           <ThemedText type="subtext" themeColor="fg2">
-            {CURRENT_USER.handle}
+            {user.handle}
           </ThemedText>
         </View>
       </View>
@@ -70,7 +73,8 @@ export function ProfileSheet() {
         <ActionRow
           icon="square.and.arrow.right.fill"
           label="Log out"
-          onPress={close}
+          // The root layout swaps to the welcome screen
+          onPress={signOut}
         />
         <ActionRow
           icon="trash.fill"

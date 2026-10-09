@@ -12,7 +12,7 @@ import {
   type ThemeColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export type ButtonType =
   "default" | "prominent" | "primary" | "secondary" | "tertiary";
@@ -23,6 +23,8 @@ export type ButtonProps = Omit<ThemedPressableProps, "children"> & {
   /** Optional for icon-only buttons, which then need an accessibilityLabel */
   label?: string;
   sublabel?: string;
+  /** Shows a spinner instead of the icon and label, e.g. while a request runs */
+  loading?: boolean;
   type?: ButtonType;
   size?: ButtonSize;
   radius?: RadiusKey;
@@ -51,6 +53,7 @@ export function Button({
   icon,
   label,
   sublabel,
+  loading = false,
   type = "default",
   size = "medium_1",
   radius = "sm",
@@ -80,7 +83,10 @@ export function Button({
         style,
       ]}
     >
-      {icon ? (
+      {/* While loading, a spinner takes the place of the icon and label */}
+      {loading ? (
+        <ActivityIndicator color={theme[foreground]} />
+      ) : icon ? (
         <ThemedIcon
           icon={icon}
           themeColor={foreground}
@@ -88,7 +94,7 @@ export function Button({
         />
       ) : null}
       {/* Ternaries, not &&: an empty string outside <Text> would crash */}
-      {label || sublabel ? (
+      {!loading && (label || sublabel) ? (
         <View>
           {label ? (
             <ThemedText
