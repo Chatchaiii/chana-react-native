@@ -1,10 +1,11 @@
 import { Avatar } from "@/components/avatar";
 import { HeaderButton } from "@/components/header-button";
 import { SearchResults } from "@/components/search-results";
+import { ThemedIcon } from "@/components/themed-icon";
 import type { Tab } from "@/constants/tabs";
-import { ToolbarIcons } from "@/constants/toolbar-icons.generated";
 import { CURRENT_USER } from "@/data/current-user";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
+import { useTheme } from "@/hooks/use-theme";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
 import { Stack, useNavigation, useRouter, type Href } from "expo-router";
 import { DrawerActions } from "expo-router/react-navigation";
@@ -31,9 +32,8 @@ export function TabScreen({
   const navigation = useNavigation();
   const [query, setQuery] = useState("");
   // Android toolbar buttons need an image; iOS uses an SF Symbol
-  const androidCreateIcon = useMaterialSymbolSource("edit_square");
-  const createIcon =
-    Platform.OS === "android" ? androidCreateIcon : "square.and.pencil";
+  const androidCreateIcon = useMaterialSymbolSource("create");
+  const createIcon = Platform.OS === "android" ? androidCreateIcon : "plus";
 
   const { create } = tab;
 
@@ -47,6 +47,8 @@ export function TabScreen({
     playHaptic(HapticStyles.press);
     router.push(href);
   };
+
+  const theme = useTheme();
 
   return (
     <>
@@ -62,33 +64,31 @@ export function TabScreen({
               <Avatar src={CURRENT_USER.avatar} name={CURRENT_USER.name} />
             </HeaderButton>
           ),
+          headerLeft: () => (
+            <HeaderButton accessibilityLabel="Profile" onPress={openMenu}>
+              <ThemedIcon icon="line.3.horizontal" />
+            </HeaderButton>
+          ),
+          headerSearchBarOptions: {
+            autoFocus: true,
+            placeholder: "Search",
+            onChangeText(e) {
+              setQuery(e.nativeEvent.text);
+            },
+            onCancelButtonPress() {
+              setQuery("");
+            },
+          },
         }}
       />
 
-      {/* Native, not a custom headerLeft: on iOS 27 a tap on a custom header
-          item also reaches the header, which scrolls the page to the top */}
-      <Stack.Toolbar placement="left">
-        <Stack.Toolbar.Button
-          // The user's own icon as a PNG, tinted by the system (light/dark)
-          icon={ToolbarIcons["line.3.horizontal"]}
-          iconRenderingMode="template"
-          accessibilityLabel="Open menu"
-          onPress={openMenu}
-        />
-      </Stack.Toolbar>
-
-      <Stack.SearchBar
-        placeholder="Search"
-        onChangeText={(event) => setQuery(event.nativeEvent.text)}
-        onCancelButtonPress={() => setQuery("")}
-      />
-
-      <Stack.Toolbar>
+      <Stack.Toolbar placement="bottom">
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        {/* Rendered once the Android icon has loaded; without one it warns */}
         {create && createIcon ? (
           <Stack.Toolbar.Button
+            variant="prominent"
+            tintColor={theme.acc1}
             icon={createIcon}
             accessibilityLabel={create.label}
             onPress={() => openCreate(create.href)}
