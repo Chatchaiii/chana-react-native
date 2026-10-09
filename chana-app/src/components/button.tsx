@@ -20,7 +20,8 @@ export type ButtonSize = keyof typeof sizeStyles;
 
 export type ButtonProps = Omit<ThemedPressableProps, "children"> & {
   icon?: IconName;
-  label: string;
+  /** Optional for icon-only buttons, which then need an accessibilityLabel */
+  label?: string;
   sublabel?: string;
   type?: ButtonType;
   size?: ButtonSize;
@@ -83,22 +84,27 @@ export function Button({
         <ThemedIcon
           icon={icon}
           themeColor={foreground}
-          size={IconSizes[size]}
+          size={ButtonIconSizes[size]}
         />
       ) : null}
-      <View>
-        <ThemedText
-          type={size === "small" ? "sublabel" : "label"}
-          themeColor={foreground}
-        >
-          {label}
-        </ThemedText>
-        {sublabel && size !== "small" && (
-          <ThemedText type="sublabel" themeColor={foreground}>
-            {sublabel}
-          </ThemedText>
-        )}
-      </View>
+      {/* Ternaries, not &&: an empty string outside <Text> would crash */}
+      {label || sublabel ? (
+        <View>
+          {label ? (
+            <ThemedText
+              type={size === "small" ? "sublabel" : "label"}
+              themeColor={foreground}
+            >
+              {label}
+            </ThemedText>
+          ) : null}
+          {sublabel && size !== "small" ? (
+            <ThemedText type="sublabel" themeColor={foreground}>
+              {sublabel}
+            </ThemedText>
+          ) : null}
+        </View>
+      ) : null}
     </ThemedPressable>
   );
 }
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
 });
 
 // Large buttons stack the icon above the label, so it can be bigger
-const IconSizes: Record<ButtonSize, number> = {
+export const ButtonIconSizes: Record<ButtonSize, number> = {
   small: 18,
   medium_1: 18,
   medium_2: 18,

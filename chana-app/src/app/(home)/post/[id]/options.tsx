@@ -25,12 +25,17 @@ export default function PostOptions() {
       ) : null}
 
       <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
+        <ActionRow icon="bookmark" label="Bookmark" onPress={close} />
         <ActionRow icon="square.and.arrow.up" label="Share" onPress={close} />
         <ActionRow icon="link" label="Copy link" onPress={close} />
-        <ActionRow icon="bookmark" label="Save" onPress={close} />
+      </List>
+
+      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
+        <ActionRow icon="pen.2" label="Edit" onPress={close} />
       </List>
 
       <List type="card">
+        <ActionRow icon="archive" label="Archive" onPress={close} />
         <ActionRow icon="trash" label="Delete" destructive onPress={close} />
       </List>
     </SheetContent>
