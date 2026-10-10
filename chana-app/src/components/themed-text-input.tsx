@@ -3,9 +3,12 @@ import type { ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { HapticStyles, playNotification } from "@/utils/haptics";
 import type { NotificationFeedbackType } from "expo-haptics";
+import type { Ref } from "react";
 import { TextInput, type TextInputProps } from "react-native";
 
 export type ThemedTextInputProps = TextInputProps & {
+  /** The native input, e.g. to focus it from a FocusArea around it */
+  ref?: Ref<TextInput>;
   type?: TextType;
   themeColor?: ThemeColor;
   /** Haptic played when the input gains focus; false turns it off */

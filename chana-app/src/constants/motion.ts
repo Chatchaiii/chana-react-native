@@ -9,8 +9,12 @@ export const Timings = {
   slow: { duration: 280, easing: easeOut },
 };
 
-/** Spring for press feedback, where a little physicality feels right */
-export const PressSpring = { stiffness: 300, damping: 30 };
+/**
+ * Press feedback like a UIKit button: down almost at once (eased timing), back
+ * with a spring, where a little physicality feels right
+ */
+export const PressIn = { duration: 80, easing: easeOut };
+export const PressOut = { stiffness: 300, damping: 30 };
 
 /** Delay before press feedback on rows in scrolling lists, so scrolling doesn't flash them */
 export const ListPressDelay = 100;

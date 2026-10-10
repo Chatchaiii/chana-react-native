@@ -1,3 +1,4 @@
+import { FocusArea } from "@/components/focus-area";
 import { TextStyles } from "@/components/themed-text";
 import {
   ThemedTextInput,
@@ -5,8 +6,13 @@ import {
 } from "@/components/themed-text-input";
 import { Radius, Spacing, type ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import type { ReactNode } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { useRef, type ReactNode } from "react";
+import {
+  StyleSheet,
+  type StyleProp,
+  type TextInput,
+  type ViewStyle,
+} from "react-native";
 
 /** Height of a field without controls in it */
 export const TEXT_FIELD_HEIGHT = Spacing.three * 2 + TextStyles.label.fontSize;
@@ -14,7 +20,7 @@ const BORDER_WIDTH = 2;
 // Space between the field's edge and a control inside it
 const SLOT_INSET = Spacing.one;
 
-export type TextFieldProps = ThemedTextInputProps & {
+export type TextFieldProps = Omit<ThemedTextInputProps, "ref"> & {
   /** Red outline, e.g. for a rejected password */
   invalid?: boolean;
   /** Control inside the field before the text */
@@ -38,9 +44,12 @@ export function TextField({
   ...rest
 }: TextFieldProps) {
   const theme = useTheme();
+  const inputRef = useRef<TextInput>(null);
 
   return (
-    <View
+    // Tapping the box anywhere (its edge, next to a control) focuses the input
+    <FocusArea
+      inputRef={inputRef}
       style={[
         styles.field,
         leading || trailing ? styles.withControls : null,
@@ -52,9 +61,9 @@ export function TextField({
       ]}
     >
       {leading}
-      <ThemedTextInput {...rest} style={[styles.input, style]} />
+      <ThemedTextInput {...rest} ref={inputRef} style={[styles.input, style]} />
       {trailing}
-    </View>
+    </FocusArea>
   );
 }
 

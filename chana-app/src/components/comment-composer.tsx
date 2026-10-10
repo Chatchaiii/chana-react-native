@@ -1,11 +1,12 @@
 import { Button, ButtonIconSizes } from "@/components/button";
+import { FocusArea } from "@/components/focus-area";
 import { TextStyles } from "@/components/themed-text";
 import { ThemedTextInput } from "@/components/themed-text-input";
 import { Spacing } from "@/constants/theme";
 import { useKeyboardPadding } from "@/hooks/use-keyboard-padding";
 import { useTheme } from "@/hooks/use-theme";
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import { StyleSheet, type TextInput } from "react-native";
 import Animated from "react-native-reanimated";
 
 // Lines the input grows to before it scrolls
@@ -30,6 +31,7 @@ export function CommentComposer({ onSend }: CommentComposerProps) {
   // Sits on top of the keyboard, or above the home indicator while it's closed
   const keyboardPadding = useKeyboardPadding(BAR_PADDING);
   const [text, setText] = useState("");
+  const inputRef = useRef<TextInput>(null);
   const canSend = text.trim().length > 0;
 
   const send = () => {
@@ -46,8 +48,13 @@ export function CommentComposer({ onSend }: CommentComposerProps) {
         keyboardPadding,
       ]}
     >
-      <View style={[styles.field, { backgroundColor: theme.bg3 }]}>
+      {/* The whole pill focuses the input, not just the line of text in it */}
+      <FocusArea
+        inputRef={inputRef}
+        style={[styles.field, { backgroundColor: theme.bg3 }]}
+      >
         <ThemedTextInput
+          ref={inputRef}
           value={text}
           onChangeText={setText}
           placeholder="Add a comment…"
@@ -55,7 +62,7 @@ export function CommentComposer({ onSend }: CommentComposerProps) {
           accessibilityLabel="Comment"
           style={styles.input}
         />
-      </View>
+      </FocusArea>
 
       <Button
         icon="arrow.up"
