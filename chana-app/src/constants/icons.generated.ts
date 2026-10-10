@@ -137,32 +137,6 @@ export const Icons = {
     elements: [
       {
         type: "path",
-        d: "M20 12L12 20",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        stroke: "on",
-      },
-      {
-        type: "path",
-        d: "M20 12L12 4",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        stroke: "on",
-      },
-      {
-        type: "path",
-        d: "M20 12H4",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        stroke: "on",
-      },
-    ],
-  },
-  "arrow.right": {
-    knockout: false,
-    elements: [
-      {
-        type: "path",
         d: "M4 12L12 20",
         strokeWidth: 2,
         strokeLinecap: "round",
@@ -178,6 +152,32 @@ export const Icons = {
       {
         type: "path",
         d: "M4 12H20",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        stroke: "on",
+      },
+    ],
+  },
+  "arrow.right": {
+    knockout: false,
+    elements: [
+      {
+        type: "path",
+        d: "M20 12L12 20",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        stroke: "on",
+      },
+      {
+        type: "path",
+        d: "M20 12L12 4",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        stroke: "on",
+      },
+      {
+        type: "path",
+        d: "M20 12H4",
         strokeWidth: 2,
         strokeLinecap: "round",
         stroke: "on",
