@@ -23,6 +23,9 @@ export function ScreenScrollView({
       // No scrollbars anywhere in the app; pass the prop to bring one back
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
+      // iOS scrolls to the top on a tap in the status bar or the header; easy
+      // to hit by accident next to the header buttons
+      scrollsToTop={false}
       contentInsetAdjustmentBehavior={contentInsetAdjustmentBehavior}
       style={[sideInsetStyle, style]}
       contentContainerStyle={[contentInsetStyle, contentContainerStyle]}
