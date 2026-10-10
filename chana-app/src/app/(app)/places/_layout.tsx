@@ -1,12 +1,12 @@
-import { DrawerStack, SheetScreenOptions } from "@/components/drawer-stack";
+import { TabStack, SheetScreenOptions } from "@/components/tab-stack";
 import { Stack } from "expo-router";
 
-export { unstable_settings } from "@/components/drawer-stack";
+export { unstable_settings } from "@/components/tab-stack";
 
 export default function PlacesLayout() {
   return (
-    <DrawerStack>
+    <TabStack>
       <Stack.Screen name="[id]/visited-date" options={SheetScreenOptions} />
-    </DrawerStack>
+    </TabStack>
   );
 }

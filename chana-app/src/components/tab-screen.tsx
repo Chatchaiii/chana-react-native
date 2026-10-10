@@ -1,14 +1,14 @@
 import { Avatar } from "@/components/avatar";
 import { HeaderButton } from "@/components/header-button";
 import { SearchResults } from "@/components/search-results";
+import { useDrawer } from "@/components/side-drawer";
 import { ThemedIcon } from "@/components/themed-icon";
 import type { Tab } from "@/constants/tabs";
 import { CURRENT_USER } from "@/data/current-user";
 import { useMaterialSymbolSource } from "@/hooks/use-material-symbol-source";
 import { useTheme } from "@/hooks/use-theme";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
-import { Stack, useNavigation, useRouter, type Href } from "expo-router";
-import { DrawerActions } from "expo-router/react-navigation";
+import { Stack, useRouter, type Href } from "expo-router";
 import { useState, type ReactNode } from "react";
 import { Platform } from "react-native";
 
@@ -20,7 +20,7 @@ export type TabScreenProps = {
 };
 
 /**
- * Shared header, search bar and bottom toolbar for every drawer tab.
+ * Shared header, search bar and bottom toolbar for every tab.
  * Search is global; only the create button (if the tab has one) differs per tab.
  */
 export function TabScreen({
@@ -29,19 +29,13 @@ export function TabScreen({
   children,
 }: TabScreenProps) {
   const router = useRouter();
-  const navigation = useNavigation();
+  const drawer = useDrawer();
   const [query, setQuery] = useState("");
   // Android toolbar buttons need an image; iOS uses an SF Symbol
   const androidCreateIcon = useMaterialSymbolSource("create");
   const createIcon = Platform.OS === "android" ? androidCreateIcon : "plus";
 
   const { create } = tab;
-
-  // Native toolbar buttons aren't ThemedPressables, so they play the haptic here
-  const openMenu = () => {
-    playHaptic(HapticStyles.press);
-    navigation.dispatch(DrawerActions.openDrawer());
-  };
 
   const openCreate = (href: Href) => {
     playHaptic(HapticStyles.press);
@@ -65,11 +59,12 @@ export function TabScreen({
             </HeaderButton>
           ),
           headerLeft: () => (
-            <HeaderButton accessibilityLabel="Profile" onPress={openMenu}>
+            <HeaderButton accessibilityLabel="Menu" onPress={drawer.open}>
               <ThemedIcon icon="line.3.horizontal" />
             </HeaderButton>
           ),
           headerSearchBarOptions: {
+            placement: "integratedButton",
             autoFocus: true,
             placeholder: "Search",
             onChangeText(e) {

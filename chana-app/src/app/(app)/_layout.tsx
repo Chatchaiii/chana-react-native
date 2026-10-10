@@ -1,48 +1,62 @@
-import { AppDrawerContent } from "@/components/app-drawer-content";
+import { AppMenu } from "@/components/app-menu";
+import { SideDrawer } from "@/components/side-drawer";
 import { Tabs } from "@/constants/tabs";
-import { useTheme } from "@/hooks/use-theme";
-import { Drawer } from "expo-router/drawer";
 import { getFocusedRouteNameFromRoute } from "expo-router/react-navigation";
-import { useWindowDimensions } from "react-native";
+import {
+  TabList,
+  Tabs as TabsNavigator,
+  TabSlot,
+  TabTrigger,
+  useTabTrigger,
+} from "expo-router/ui";
+import { StyleSheet } from "react-native";
 
-// The menu takes 80% of the screen, but no more than this (e.g. in landscape)
-const DRAWER_MAX_WIDTH = 360;
+// The tab the app opens on
+export const unstable_settings = {
+  initialRouteName: Tabs.home.route,
+};
 
-/** The signed-in app: a side menu with one screen per tab */
+const TABS = Object.values(Tabs);
+
+/**
+ * The signed-in app: the tabs (each a stack that keeps its place while
+ * another is shown) inside a SideDrawer, with the menu underneath
+ */
 export default function AppLayout() {
-  const theme = useTheme();
-  const { width } = useWindowDimensions();
-
   return (
-    <Drawer
-      drawerContent={(props) => <AppDrawerContent {...props} />}
-      screenOptions={{
-        headerShown: false,
-        // Menu stays behind; the main screen slides over it (Claude/Threads style)
-        drawerType: "back",
-        drawerStyle: {
-          width: Math.min(width * 0.8, DRAWER_MAX_WIDTH),
-          backgroundColor: theme.menu,
-          borderRightWidth: 0,
-        },
-        // The rounding and fade are drawn by DrawerStack (components/drawer-stack.tsx)
-        sceneStyle: { backgroundColor: theme.menu },
-        overlayColor: "transparent",
-      }}
-    >
-      {Object.values(Tabs).map((tab) => (
-        <Drawer.Screen
-          key={tab.route}
-          name={tab.route}
-          options={({ route }) => ({
-            drawerLabel: tab.title,
-            // Only swipe the menu open from a tab's main page; on pushed
-            // pages the left-edge swipe belongs to the back gesture
-            swipeEnabled:
-              (getFocusedRouteNameFromRoute(route) ?? "index") === "index",
-          })}
-        />
-      ))}
-    </Drawer>
+    <TabsNavigator>
+      <AppDrawer />
+      {/* Only declares the tabs' routes; the menu's buttons do the switching */}
+      <TabList style={styles.hidden}>
+        {TABS.map((tab) => (
+          <TabTrigger key={tab.route} name={tab.route} href={tab.href} />
+        ))}
+      </TabList>
+    </TabsNavigator>
   );
 }
+
+/** The drawer around the current tab */
+function AppDrawer() {
+  const { getTrigger } = useTabTrigger({ name: Tabs.home.route });
+  const current = TABS.map((tab) => getTrigger(tab.route)).find(
+    (trigger) => trigger?.isFocused,
+  );
+  // Only swipe the menu open from a tab's main page; on pushed pages a swipe
+  // to the right belongs to the back gesture
+  const onTabRoot =
+    !current ||
+    (getFocusedRouteNameFromRoute(current.route) ?? "index") === "index";
+
+  return (
+    <SideDrawer menu={<AppMenu />} swipeEnabled={onTabRoot}>
+      <TabSlot />
+    </SideDrawer>
+  );
+}
+
+const styles = StyleSheet.create({
+  hidden: {
+    display: "none",
+  },
+});

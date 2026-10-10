@@ -1,4 +1,5 @@
 import { ImageViewer, type ViewerOrigin } from "@/components/image-viewer";
+import { DrawerSwipeBlocker } from "@/components/side-drawer";
 import { ThemedText } from "@/components/themed-text";
 import { OverlayColors, Radius, Spacing } from "@/constants/theme";
 import { Image, type ImageSource } from "expo-image";
@@ -85,36 +86,40 @@ export function ImageCarousel({
       style={[styles.container, style, origin && styles.hidden]}
       onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
     >
-      <Animated.ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={onScroll}
-      >
-        {images.map((source, i) => (
-          <Pressable
-            key={i}
-            onPress={openViewer}
-            accessibilityRole="imagebutton"
-            accessibilityLabel={`Open image ${i + 1} of ${images.length}`}
-          >
-            <Image
-              source={source}
-              contentFit="cover"
-              transition={200}
-              onLoad={(event) => {
-                const ratio = event.source.width / event.source.height;
-                setImageRatios((ratios) =>
-                  ratios[i] === ratio ? ratios : { ...ratios, [i]: ratio },
-                );
-              }}
-              style={{ width, height: width / aspectRatio }}
-            />
-          </Pressable>
-        ))}
-      </Animated.ScrollView>
+      {/* Swiping back through the images doesn't open the menu; on the first
+          one there's nothing to go back to, so it does */}
+      <DrawerSwipeBlocker enabled={index > 0}>
+        <Animated.ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={onScroll}
+        >
+          {images.map((source, i) => (
+            <Pressable
+              key={i}
+              onPress={openViewer}
+              accessibilityRole="imagebutton"
+              accessibilityLabel={`Open image ${i + 1} of ${images.length}`}
+            >
+              <Image
+                source={source}
+                contentFit="cover"
+                transition={200}
+                onLoad={(event) => {
+                  const ratio = event.source.width / event.source.height;
+                  setImageRatios((ratios) =>
+                    ratios[i] === ratio ? ratios : { ...ratios, [i]: ratio },
+                  );
+                }}
+                style={{ width, height: width / aspectRatio }}
+              />
+            </Pressable>
+          ))}
+        </Animated.ScrollView>
+      </DrawerSwipeBlocker>
 
       {showIndicators && (
         <>

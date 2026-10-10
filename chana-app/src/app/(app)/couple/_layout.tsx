@@ -1,7 +1,7 @@
-import { DrawerStack } from "@/components/drawer-stack";
+import { TabStack } from "@/components/tab-stack";
 
-export { unstable_settings } from "@/components/drawer-stack";
+export { unstable_settings } from "@/components/tab-stack";
 
 export default function CoupleLayout() {
-  return <DrawerStack withCreate={false} />;
+  return <TabStack withCreate={false} />;
 }

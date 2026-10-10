@@ -16,5 +16,12 @@ export const Timings = {
 export const PressIn = { duration: 80, easing: easeOut };
 export const PressOut = { stiffness: 300, damping: 30 };
 
+/**
+ * The side drawer settling open or closed. Critically damped (no bounce); a
+ * spring rather than a timing, so it carries on at the speed of the finger
+ * that let go of it
+ */
+export const DrawerSpring = { stiffness: 400, damping: 40, mass: 1 };
+
 /** Delay before press feedback on rows in scrolling lists, so scrolling doesn't flash them */
 export const ListPressDelay = 100;
