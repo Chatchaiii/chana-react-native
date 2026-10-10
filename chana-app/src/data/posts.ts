@@ -1,4 +1,5 @@
 import type { Post } from "@/types/post";
+import { daysFromNow } from "@/utils/dates";
 
 const LOREM =
   "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.";
@@ -8,7 +9,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
   {
     id: "1",
     author: "chadchai",
-    postedAt: "2 days ago",
+    postedAt: daysFromNow(-2),
     commentCount: 9,
     savedCount: 2,
     title: "Test",
@@ -17,7 +18,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
   {
     id: "2",
     author: "chadchai",
-    postedAt: "2 days ago",
+    postedAt: daysFromNow(-2),
     commentCount: 4,
     savedCount: 1,
     title: "Test",
@@ -29,7 +30,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
   {
     id: "3",
     author: "chadchai",
-    postedAt: "2 days ago",
+    postedAt: daysFromNow(-5),
     commentCount: 1,
     savedCount: 3,
     title: "Test",
@@ -38,7 +39,7 @@ export const PLACEHOLDER_POSTS: Post[] = [
   {
     id: "4",
     author: "chadchai",
-    postedAt: "2 days ago",
+    postedAt: daysFromNow(-12),
     commentCount: 2,
     savedCount: 10,
     title: "Test",

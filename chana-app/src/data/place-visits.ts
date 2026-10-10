@@ -1,3 +1,4 @@
+import { PLACEHOLDER_PLACES } from "@/data/places";
 import type { Place } from "@/types/place";
 import { useSyncExternalStore } from "react";
 
@@ -9,6 +10,10 @@ export type PlaceVisit = {
 
 // TODO: save visits once places come from real data; for now they live in memory
 const visits = new Map<string, PlaceVisit>();
+export type VisitedPlace = { place: Place; visitedOn: Date };
+
+// The snapshot of useVisitedPlaces; rebuilt after a visit changes
+let visitedPlaces: VisitedPlace[] | null = null;
 const listeners = new Set<() => void>();
 
 function subscribe(listener: () => void) {
@@ -36,7 +41,24 @@ export function usePlaceVisit(place: Place): PlaceVisit {
   return useSyncExternalStore(subscribe, () => getVisit(place));
 }
 
+function getVisitedPlaces(): VisitedPlace[] {
+  // TODO: load the places from real data
+  visitedPlaces ??= PLACEHOLDER_PLACES.map((place) => ({
+    place,
+    visit: getVisit(place),
+  }))
+    .filter(({ visit }) => visit.visited)
+    .map(({ place, visit }) => ({ place, visitedOn: visit.visitedOn }));
+  return visitedPlaces;
+}
+
+/** Every visited place with the day it was visited, e.g. for the calendar */
+export function useVisitedPlaces(): VisitedPlace[] {
+  return useSyncExternalStore(subscribe, getVisitedPlaces);
+}
+
 export function setPlaceVisit(placeId: string, visit: PlaceVisit) {
   visits.set(placeId, visit);
+  visitedPlaces = null;
   listeners.forEach((listener) => listener());
 }

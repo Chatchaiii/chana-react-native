@@ -7,6 +7,7 @@ import { ThemedPressable } from "@/components/ui/themed-pressable";
 import { ListPressDelay } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
 import type { Post } from "@/types/post";
+import { formatRelative } from "@/utils/dates";
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 
@@ -30,7 +31,7 @@ export function PostItem({ post, variant = "feed" }: PostItemProps) {
       <ListItem
         leading={<Avatar name={post.author} size="m" />}
         label={post.author}
-        sublabel={post.postedAt}
+        sublabel={formatRelative(post.postedAt)}
         onOptionsPress={() =>
           router.push({
             pathname: "/post/[id]/options",
