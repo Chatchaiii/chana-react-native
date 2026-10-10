@@ -1,5 +1,5 @@
-import { AuthScreen } from "@/components/auth-screen";
-import { SubmitField } from "@/components/submit-field";
+import { AuthScreen } from "@/components/auth/auth-screen";
+import { SubmitField } from "@/components/auth/submit-field";
 import { createAccount } from "@/data/auth";
 import { signIn } from "@/data/session";
 import { useAuthAction } from "@/hooks/use-auth-action";

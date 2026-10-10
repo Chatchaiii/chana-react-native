@@ -1,9 +1,9 @@
-import { Button } from "@/components/button";
-import { CheckItem } from "@/components/check-item";
-import { List } from "@/components/list";
-import { SheetContent } from "@/components/sheet-content";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedTextInput } from "@/components/themed-text-input";
+import { Button } from "@/components/ui/button";
+import { CheckItem } from "@/components/ui/check-item";
+import { List } from "@/components/ui/list";
+import { SheetContent } from "@/components/layout/sheet-content";
+import { ThemedText } from "@/components/ui/themed-text";
+import { ThemedTextInput } from "@/components/ui/themed-text-input";
 import { Spacing } from "@/constants/theme";
 import { setWishCompleted, updateWish, useWish } from "@/data/wishes";
 import { formatDate } from "@/utils/dates";

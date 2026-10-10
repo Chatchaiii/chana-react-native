@@ -1,7 +1,7 @@
-import { List } from "@/components/list";
-import { PlaceItem } from "@/components/place-item";
-import { ScreenScrollView } from "@/components/screen-scroll-view";
-import { TabScreen } from "@/components/tab-screen";
+import { List } from "@/components/ui/list";
+import { PlaceItem } from "@/components/places/place-item";
+import { ScreenScrollView } from "@/components/layout/screen-scroll-view";
+import { TabScreen } from "@/components/layout/tab-screen";
 import { Tabs } from "@/constants/tabs";
 import { PLACEHOLDER_PLACES } from "@/data/places";
 

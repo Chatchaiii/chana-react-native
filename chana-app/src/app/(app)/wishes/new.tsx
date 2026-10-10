@@ -1,4 +1,4 @@
-import { CreateScreen } from "@/components/create-screen";
+import { CreateScreen } from "@/components/layout/create-screen";
 import { Tabs } from "@/constants/tabs";
 
 export default function NewWish() {

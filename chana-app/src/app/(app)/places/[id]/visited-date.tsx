@@ -1,5 +1,5 @@
-import { Button } from "@/components/button";
-import { SheetContent } from "@/components/sheet-content";
+import { Button } from "@/components/ui/button";
+import { SheetContent } from "@/components/layout/sheet-content";
 import { Spacing } from "@/constants/theme";
 import { setPlaceVisit, usePlaceVisit } from "@/data/place-visits";
 import { PLACEHOLDER_PLACES } from "@/data/places";
