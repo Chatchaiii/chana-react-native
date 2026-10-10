@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ui/themed-text";
 import { Thumbnail } from "@/components/ui/thumbnail";
 import { Spacing } from "@/constants/theme";
 import { usePlaceVisit } from "@/data/place-visits";
+import { useDetailRoutes } from "@/hooks/use-detail-routes";
 import type { Place } from "@/types/place";
 import { averageRating, formatRating } from "@/utils/ratings";
 import { useRouter } from "expo-router";
@@ -17,6 +18,7 @@ export type PlaceItemProps = {
 /** A place in a list: photo, author and distance, name, description, rating */
 export function PlaceItem({ place }: PlaceItemProps) {
   const router = useRouter();
+  const routes = useDetailRoutes();
   const { visited } = usePlaceVisit(place);
   const average = formatRating(averageRating(place.ratings));
 
@@ -46,9 +48,7 @@ export function PlaceItem({ place }: PlaceItemProps) {
           </View>
         ) : null
       }
-      onPress={() =>
-        router.push({ pathname: "/places/[id]", params: { id: place.id } })
-      }
+      onPress={() => router.push(routes.place(place.id))}
     />
   );
 }

@@ -2,11 +2,15 @@ import { ScreenScrollView } from "@/components/layout/screen-scroll-view";
 import { TabScreen } from "@/components/layout/tab-screen";
 import { PlaceItem } from "@/components/places/place-item";
 import { Avatar } from "@/components/ui/avatar";
-import { Calendar as MonthCalendar } from "@/components/ui/calendar";
+import {
+  Calendar as CalendarPicker,
+  type CalendarView,
+} from "@/components/ui/calendar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FilterButton } from "@/components/ui/filter-button";
 import { List } from "@/components/ui/list";
 import { ListItem } from "@/components/ui/list-item";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { ThemedText } from "@/components/ui/themed-text";
 import { ThemedView } from "@/components/ui/themed-view";
 import { Tabs, type CreatableTab } from "@/constants/tabs";
@@ -14,6 +18,7 @@ import { Radius, Spacing } from "@/constants/theme";
 import { deleteEvent, useEvents } from "@/data/events";
 import { useVisitedPlaces } from "@/data/place-visits";
 import { PLACEHOLDER_POSTS } from "@/data/posts";
+import { useDetailRoutes } from "@/hooks/use-detail-routes";
 import type { CalendarEvent } from "@/types/event";
 import type { Post } from "@/types/post";
 import { formatDate, isSameDay } from "@/utils/dates";
@@ -30,8 +35,17 @@ const KINDS: { kind: Kind; label: string }[] = [
   { kind: "places", label: "Places" },
 ];
 
+/** How much of the calendar is on show; the lists are always the picked day's */
+const VIEWS: { value: CalendarView; label: string }[] = [
+  { value: "day", label: "Day" },
+  { value: "week", label: "Week" },
+  { value: "month", label: "Month" },
+  { value: "year", label: "Year" },
+];
+
 export default function Calendar() {
   const [day, setDay] = useState(() => new Date());
+  const [view, setView] = useState<CalendarView>("month");
   // The kinds whose list is shown; all of them to begin with
   const [shown, setShown] = useState<Kind[]>(["events", "posts", "places"]);
 
@@ -79,15 +93,30 @@ export default function Calendar() {
   return (
     <TabScreen tab={tab}>
       <ScreenScrollView contentContainerStyle={styles.content}>
-        <ThemedView themeColor="bg1" style={styles.card}>
-          <MonthCalendar
-            value={day}
-            onChange={setDay}
-            markedDates={markedDates}
-          />
-        </ThemedView>
+        <View style={styles.calendar}>
+          <SegmentedControl options={VIEWS} value={view} onChange={setView} />
+          <ThemedView themeColor="bg1" style={styles.card}>
+            <CalendarPicker
+              value={day}
+              onChange={setDay}
+              view={view}
+              onViewChange={setView}
+              markedDates={markedDates}
+            />
+          </ThemedView>
+        </View>
 
         <View style={styles.day}>
+          {/* The day view already names the day in its header */}
+          {view === "day" ? null : (
+            <ThemedText
+              type="heading_4"
+              themeColor="fg2"
+              style={styles.heading}
+            >
+              {formatDate(day)}
+            </ThemedText>
+          )}
           <View style={styles.filters}>
             {KINDS.map(({ kind, label }) => (
               <FilterButton
@@ -173,6 +202,7 @@ function EventItem({ event }: { event: CalendarEvent }) {
 /** A post of the day in one line; opens the post */
 function PostRow({ post }: { post: Post }) {
   const router = useRouter();
+  const routes = useDetailRoutes();
 
   return (
     <ListItem
@@ -180,9 +210,7 @@ function PostRow({ post }: { post: Post }) {
       label={post.title}
       sublabel={post.text}
       sublabelLines={1}
-      onPress={() =>
-        router.push({ pathname: "/post/[id]", params: { id: post.id } })
-      }
+      onPress={() => router.push(routes.post(post.id))}
     />
   );
 }
@@ -191,6 +219,9 @@ const styles = StyleSheet.create({
   content: {
     padding: Spacing.three,
     gap: Spacing.four,
+  },
+  calendar: {
+    gap: Spacing.two,
   },
   card: {
     padding: Spacing.two,
