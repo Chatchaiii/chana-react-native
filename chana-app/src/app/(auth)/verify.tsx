@@ -1,7 +1,7 @@
-import { AuthScreen } from "@/components/auth-screen";
-import { Button } from "@/components/button";
-import { CodeInput } from "@/components/code-input";
-import { ThemedText } from "@/components/themed-text";
+import { AuthScreen } from "@/components/auth/auth-screen";
+import { Button } from "@/components/ui/button";
+import { CodeField } from "@/components/auth/code-field";
+import { ThemedText } from "@/components/ui/themed-text";
 import { CODE_LENGTH, DEV_CODE, requestCode, verifyCode } from "@/data/auth";
 import { signIn } from "@/data/session";
 import { useAuthAction } from "@/hooks/use-auth-action";
@@ -62,7 +62,7 @@ export default function Verify() {
         ) : null
       }
     >
-      <CodeInput
+      <CodeField
         value={code}
         onChangeText={(next) => {
           setCode(next);

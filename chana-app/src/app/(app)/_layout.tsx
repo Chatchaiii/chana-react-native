@@ -1,5 +1,5 @@
-import { AppMenu } from "@/components/app-menu";
-import { SideDrawer } from "@/components/side-drawer";
+import { AppMenu } from "@/components/layout/app-menu";
+import { SideDrawer } from "@/components/layout/side-drawer";
 import { Tabs } from "@/constants/tabs";
 import { getFocusedRouteNameFromRoute } from "expo-router/react-navigation";
 import {

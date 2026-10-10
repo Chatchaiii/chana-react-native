@@ -1,7 +1,10 @@
-import { ActionRow, ActionRowSeparatorInset } from "@/components/action-row";
-import { List } from "@/components/list";
-import { SheetContent } from "@/components/sheet-content";
-import { ThemedText } from "@/components/themed-text";
+import {
+  ActionItem,
+  ActionItemSeparatorInset,
+} from "@/components/ui/action-item";
+import { List } from "@/components/ui/list";
+import { SheetContent } from "@/components/layout/sheet-content";
+import { ThemedText } from "@/components/ui/themed-text";
 import { Spacing } from "@/constants/theme";
 import { PLACEHOLDER_POSTS } from "@/data/posts";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -24,19 +27,19 @@ export default function PostOptions() {
         </ThemedText>
       ) : null}
 
-      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
-        <ActionRow icon="bookmark" label="Bookmark" onPress={close} />
-        <ActionRow icon="square.and.arrow.up" label="Share" onPress={close} />
-        <ActionRow icon="link" label="Copy link" onPress={close} />
+      <List type="card" separatorInsetLeading={ActionItemSeparatorInset}>
+        <ActionItem icon="bookmark" label="Bookmark" onPress={close} />
+        <ActionItem icon="square.and.arrow.up" label="Share" onPress={close} />
+        <ActionItem icon="link" label="Copy link" onPress={close} />
       </List>
 
-      <List type="card" separatorInsetLeading={ActionRowSeparatorInset}>
-        <ActionRow icon="pen.2" label="Edit" onPress={close} />
+      <List type="card" separatorInsetLeading={ActionItemSeparatorInset}>
+        <ActionItem icon="pen.2" label="Edit" onPress={close} />
       </List>
 
       <List type="card">
-        <ActionRow icon="archive" label="Archive" onPress={close} />
-        <ActionRow icon="trash" label="Delete" destructive onPress={close} />
+        <ActionItem icon="archive" label="Archive" onPress={close} />
+        <ActionItem icon="trash" label="Delete" destructive onPress={close} />
       </List>
     </SheetContent>
   );

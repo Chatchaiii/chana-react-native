@@ -1,7 +1,7 @@
-import { List } from "@/components/list";
-import { PostItem } from "@/components/post-item";
-import { ScreenScrollView } from "@/components/screen-scroll-view";
-import { TabScreen } from "@/components/tab-screen";
+import { List } from "@/components/ui/list";
+import { PostItem } from "@/components/posts/post-item";
+import { ScreenScrollView } from "@/components/layout/screen-scroll-view";
+import { TabScreen } from "@/components/layout/tab-screen";
 import { Tabs } from "@/constants/tabs";
 import { PLACEHOLDER_POSTS } from "@/data/posts";
 

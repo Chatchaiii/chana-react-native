@@ -1,9 +1,12 @@
-import { EmptyState } from "@/components/empty-state";
-import { FilterButton } from "@/components/filter-button";
-import { List } from "@/components/list";
-import { ScreenScrollView } from "@/components/screen-scroll-view";
-import { TabScreen } from "@/components/tab-screen";
-import { WishItem, WishItemSeparatorInset } from "@/components/wish-item";
+import { EmptyState } from "@/components/ui/empty-state";
+import { FilterButton } from "@/components/ui/filter-button";
+import { List } from "@/components/ui/list";
+import { ScreenScrollView } from "@/components/layout/screen-scroll-view";
+import { TabScreen } from "@/components/layout/tab-screen";
+import {
+  WishItem,
+  WishItemSeparatorInset,
+} from "@/components/wishes/wish-item";
 import type { IconName } from "@/constants/icons.generated";
 import { Tabs } from "@/constants/tabs";
 import { Spacing } from "@/constants/theme";

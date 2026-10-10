@@ -1,7 +1,7 @@
-import { TabStack, SheetScreenOptions } from "@/components/tab-stack";
+import { TabStack, SheetScreenOptions } from "@/components/layout/tab-stack";
 import { Stack } from "expo-router";
 
-export { unstable_settings } from "@/components/tab-stack";
+export { unstable_settings } from "@/components/layout/tab-stack";
 
 export default function WishesLayout() {
   return (

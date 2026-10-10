@@ -1,8 +1,8 @@
-import { AuthScreen } from "@/components/auth-screen";
-import { Button } from "@/components/button";
-import { SubmitField } from "@/components/submit-field";
-import { ThemedText } from "@/components/themed-text";
-import { Wordmark } from "@/components/wordmark";
+import { AuthScreen } from "@/components/auth/auth-screen";
+import { Button } from "@/components/ui/button";
+import { SubmitField } from "@/components/auth/submit-field";
+import { ThemedText } from "@/components/ui/themed-text";
+import { Wordmark } from "@/components/ui/wordmark";
 import { isValidEmail, requestCode } from "@/data/auth";
 import { useAuthAction } from "@/hooks/use-auth-action";
 import { useSplashIntro } from "@/hooks/use-splash-intro";
