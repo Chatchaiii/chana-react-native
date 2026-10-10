@@ -3,7 +3,7 @@ import {
   ThemedPressable,
   type ThemedPressableProps,
 } from "@/components/themed-pressable";
-import { ThemedText } from "@/components/themed-text";
+import { TextStyles, ThemedText } from "@/components/themed-text";
 import type { IconName } from "@/constants/icons.generated";
 import {
   Radius,
@@ -67,6 +67,11 @@ export function Button({
   const theme = useTheme();
   const colors = TypeColors[type];
   const foreground = fg ?? colors.fg;
+  const labelType = size === "small" ? "sublabel" : "label";
+  // The label's line when there is one, the icon otherwise
+  const loadingSize = label
+    ? TextStyles[labelType].lineHeight
+    : ButtonIconSizes[size];
 
   return (
     <ThemedPressable
@@ -85,7 +90,12 @@ export function Button({
     >
       {/* While loading, a spinner takes the place of the icon and label */}
       {loading ? (
-        <ActivityIndicator color={theme[foreground]} />
+        // In a box as big as what it replaces, so the button keeps its size
+        <View
+          style={[styles.spinner, { width: loadingSize, height: loadingSize }]}
+        >
+          <ActivityIndicator color={theme[foreground]} />
+        </View>
       ) : icon ? (
         <ThemedIcon
           icon={icon}
@@ -97,10 +107,7 @@ export function Button({
       {!loading && (label || sublabel) ? (
         <View>
           {label ? (
-            <ThemedText
-              type={size === "small" ? "sublabel" : "label"}
-              themeColor={foreground}
-            >
+            <ThemedText type={labelType} themeColor={foreground}>
               {label}
             </ThemedText>
           ) : null}
@@ -124,6 +131,10 @@ const styles = StyleSheet.create({
   },
   fit: {
     alignSelf: "flex-start",
+  },
+  spinner: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   alignLeft: {
     justifyContent: "flex-start",

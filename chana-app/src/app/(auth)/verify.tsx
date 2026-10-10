@@ -7,7 +7,7 @@ import { signIn } from "@/data/session";
 import { useAuthAction } from "@/hooks/use-auth-action";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 // Seconds before another code can be sent
 const RESEND_COOLDOWN = 30;
@@ -70,23 +70,10 @@ export default function Verify() {
           if (next.length === CODE_LENGTH) check(next);
         }}
         length={CODE_LENGTH}
-        invalid={error !== null}
+        loading={pending}
+        error={error}
         autoFocus
       />
-
-      <View style={styles.center}>
-        {pending ? (
-          <ActivityIndicator />
-        ) : error ? (
-          <ThemedText
-            themeColor="neg1"
-            type="subtext"
-            style={{ textAlign: "center" }}
-          >
-            {error}
-          </ThemedText>
-        ) : null}
-      </View>
 
       <View style={styles.links}>
         <Button
@@ -114,7 +101,7 @@ export default function Verify() {
 
 const styles = StyleSheet.create({
   center: {
-    alignContent: "center",
+    textAlign: "center",
   },
   links: {
     flexDirection: "row",

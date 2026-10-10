@@ -61,7 +61,7 @@ export const TextStyles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontWeight: 500,
-    lineHeight: 21,
+    lineHeight: 18,
   },
   subtext: {
     fontSize: 12,

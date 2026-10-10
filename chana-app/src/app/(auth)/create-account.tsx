@@ -35,6 +35,7 @@ export default function CreateAccount() {
         accessibilityLabel="Name"
         canSubmit={name.trim().length > 0}
         loading={pending}
+        submitIcon="checkmark"
         submitLabel="Create account"
         onSubmit={submit}
       />

@@ -690,15 +690,31 @@ export const Icons = {
       },
     ],
   },
+  "info.circle.fill": {
+    knockout: false,
+    elements: [
+      {
+        type: "path",
+        d: "M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12 10C11.4477 10 11 10.4477 11 11V17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17V11C13 10.4477 12.5523 10 12 10ZM12 5.75C11.3096 5.75 10.75 6.30964 10.75 7C10.75 7.69036 11.3096 8.25 12 8.25C12.6904 8.25 13.25 7.69036 13.25 7C13.25 6.30964 12.6904 5.75 12 5.75Z",
+        fill: "on",
+      },
+    ],
+  },
   "info.circle": {
     knockout: false,
     elements: [
-      { type: "circle", cx: 12, cy: 12, r: 8, strokeWidth: 2, stroke: "on" },
-      { type: "circle", cx: 12, cy: 8.5, r: 1.25, fill: "on" },
+      { type: "circle", cx: 12, cy: 12, r: 9, strokeWidth: 2, stroke: "on" },
       {
         type: "path",
-        d: "M12 11.5V16",
+        d: "M12 11V17",
         strokeWidth: 2,
+        strokeLinecap: "round",
+        stroke: "on",
+      },
+      {
+        type: "path",
+        d: "M12 7V7.0001",
+        strokeWidth: 2.5,
         strokeLinecap: "round",
         stroke: "on",
       },

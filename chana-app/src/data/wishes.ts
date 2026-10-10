@@ -61,8 +61,10 @@ export function updateWish(id: string, changes: Partial<Omit<Wish, "id">>) {
 
 /** Checks or unchecks a wish, stamping when it was completed */
 export function setWishCompleted(id: string, completed: boolean) {
+  const now = new Date();
   updateWish(id, {
     completed,
-    completedAt: completed ? new Date() : undefined,
+    completedAt: completed ? now : undefined,
+    toggledAt: now,
   });
 }
