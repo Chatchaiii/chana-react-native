@@ -1,4 +1,4 @@
-import { PressSpring } from "@/constants/motion";
+import { PressIn, PressOut } from "@/constants/motion";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
 import { isPressBlocked } from "@/utils/press-guard";
 import type { ImpactFeedbackStyle } from "expo-haptics";
@@ -14,6 +14,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 export type ThemedPressableProps = Omit<PressableProps, "style"> & {
@@ -22,8 +23,8 @@ export type ThemedPressableProps = Omit<PressableProps, "style"> & {
   haptic?: ImpactFeedbackStyle | false;
 };
 
-const PRESSED_SCALE = 0.98;
-const PRESSED_OPACITY = 0.7;
+const PRESSED_SCALE = 0.99;
+const PRESSED_OPACITY = 0.8;
 const DISABLED_OPACITY = 0.4;
 // A press whose finger travelled further than this on screen was a swipe
 const TAP_SLOP = 10;
@@ -74,11 +75,11 @@ export function ThemedPressable({
         onTouchStart?.(event);
       }}
       onPressIn={(event) => {
-        pressed.set(withSpring(1, PressSpring));
+        pressed.set(withTiming(1, PressIn));
         onPressIn?.(event);
       }}
       onPressOut={(event) => {
-        pressed.set(withSpring(0, PressSpring));
+        pressed.set(withSpring(0, PressOut));
         onPressOut?.(event);
       }}
       onPress={(event) => {

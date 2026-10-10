@@ -1,4 +1,5 @@
 import { CHECK_CIRCLE_SIZE, CheckCircle } from "@/components/check-circle";
+import { FocusArea } from "@/components/focus-area";
 import { ThemedIcon } from "@/components/themed-icon";
 import { ThemedPressable } from "@/components/themed-pressable";
 import { TextStyles, ThemedText } from "@/components/themed-text";
@@ -7,8 +8,8 @@ import { Spacing } from "@/constants/theme";
 import { setWishCompleted, updateWish } from "@/data/wishes";
 import type { Wish } from "@/types/wish";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import { Keyboard, StyleSheet, View, type TextInput } from "react-native";
 
 const ROW_PADDING = Spacing.three;
 const GAP = Spacing.three;
@@ -31,6 +32,7 @@ export type WishItemProps = {
 export function WishItem({ wish }: WishItemProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
+  const titleRef = useRef<TextInput>(null);
 
   const openDetails = () => {
     Keyboard.dismiss();
@@ -51,8 +53,14 @@ export function WishItem({ wish }: WishItemProps) {
         <CheckCircle checked={wish.completed} background="bg1" />
       </ThemedPressable>
 
-      <View style={styles.text}>
+      {/* Tapping the notes or the row's padding edits the title too */}
+      <FocusArea
+        inputRef={titleRef}
+        hitSlop={{ top: ROW_PADDING, bottom: ROW_PADDING }}
+        style={styles.text}
+      >
         <ThemedTextInput
+          ref={titleRef}
           type="label"
           // Completed wishes fade back, like checked reminders
           themeColor={wish.completed ? "fg2" : "fg1"}
@@ -72,7 +80,7 @@ export function WishItem({ wish }: WishItemProps) {
             {wish.description}
           </ThemedText>
         ) : null}
-      </View>
+      </FocusArea>
 
       {editing ? (
         <ThemedPressable
