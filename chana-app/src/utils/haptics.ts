@@ -4,6 +4,8 @@ import * as Haptics from "expo-haptics";
 export const HapticStyles = {
   press: Haptics.ImpactFeedbackStyle.Medium,
   drawer: Haptics.ImpactFeedbackStyle.Soft,
+  // Picking an option, e.g. a filter
+  select: Haptics.ImpactFeedbackStyle.Light,
   focus: Haptics.NotificationFeedbackType.Success,
   blur: Haptics.NotificationFeedbackType.Warning,
 };

@@ -44,7 +44,10 @@ export function ThemedTextInput({
       // Inputs add vertical padding by default; text should sit like ThemedText
       style={[
         TextStyles[type],
-        { color: theme[themeColor], padding: 0 },
+        {
+          color: theme[themeColor],
+          padding: 0,
+        },
         style,
       ]}
     />
