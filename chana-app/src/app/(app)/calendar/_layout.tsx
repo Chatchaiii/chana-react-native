@@ -1,4 +1,1 @@
-export {
-  DrawerStack as default,
-  unstable_settings,
-} from "@/components/drawer-stack";
+export { TabStack as default, unstable_settings } from "@/components/tab-stack";

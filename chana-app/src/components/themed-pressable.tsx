@@ -1,6 +1,6 @@
 import { PressIn, PressOut } from "@/constants/motion";
 import { HapticStyles, playHaptic } from "@/utils/haptics";
-import { isPressBlocked } from "@/utils/press-guard";
+import { isPressBlocked, setActivePress } from "@/utils/press-guard";
 import type { ImpactFeedbackStyle } from "expo-haptics";
 import { useRef } from "react";
 import {
@@ -75,7 +75,12 @@ export function ThemedPressable({
         onTouchStart?.(event);
       }}
       onPressIn={(event) => {
-        pressed.set(withTiming(1, PressIn));
+        // No feedback for a finger that's dragging the drawer; the drawer
+        // also clears the feedback of a press that began before its drag
+        if (!isPressBlocked()) {
+          setActivePress(pressed);
+          pressed.set(withTiming(1, PressIn));
+        }
         onPressIn?.(event);
       }}
       onPressOut={(event) => {
@@ -85,9 +90,9 @@ export function ThemedPressable({
       onPress={(event) => {
         const start = pressStart.current;
         pressStart.current = null;
-        // A swipe that opened the drawer, not a tap: RN still counts it, as
-        // the item moves along with the finger. Either the drawer is still
-        // sliding, or the finger travelled far on screen (dragged all the way)
+        // A swipe that moved the drawer, not a tap: RN still counts it, as the
+        // item moves along with the finger. Either the drawer is still
+        // moving, or the finger travelled far on screen (dragged all the way)
         if (
           isPressBlocked() ||
           (start &&

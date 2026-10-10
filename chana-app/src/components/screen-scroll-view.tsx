@@ -20,6 +20,9 @@ export function ScreenScrollView({
 
   return (
     <ScrollView
+      // No scrollbars anywhere in the app; pass the prop to bring one back
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
       contentInsetAdjustmentBehavior={contentInsetAdjustmentBehavior}
       style={[sideInsetStyle, style]}
       contentContainerStyle={[contentInsetStyle, contentContainerStyle]}

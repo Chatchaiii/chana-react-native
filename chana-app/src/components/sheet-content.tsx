@@ -24,6 +24,7 @@ export function SheetContent({ children, style }: SheetContentProps) {
   return (
     <ScrollView
       alwaysBounceVertical={false}
+      showsVerticalScrollIndicator={false}
       contentContainerStyle={[
         styles.container,
         // Clear of the notch in landscape
