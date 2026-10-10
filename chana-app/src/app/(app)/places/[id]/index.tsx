@@ -12,6 +12,7 @@ import { Spacing } from "@/constants/theme";
 import { CURRENT_USER } from "@/data/current-user";
 import { setPlaceVisit, usePlaceVisit } from "@/data/place-visits";
 import { PLACEHOLDER_PLACES } from "@/data/places";
+import { useDetailRoutes } from "@/hooks/use-detail-routes";
 import type { Place } from "@/types/place";
 import { formatDate } from "@/utils/dates";
 import { withUserRating } from "@/utils/ratings";
@@ -61,6 +62,7 @@ export default function PlaceDetail() {
 
 function PlaceContent({ place }: { place: Place }) {
   const router = useRouter();
+  const routes = useDetailRoutes();
   const { visited, visitedOn } = usePlaceVisit(place);
   // TODO: save ratings once places come from real data
   const [ratings, setRatings] = useState(place.ratings);
@@ -123,12 +125,7 @@ function PlaceContent({ place }: { place: Place }) {
               radius="full"
               type="tertiary"
               accessibilityLabel={`Visited on ${formatDate(visitedOn)}, change date`}
-              onPress={() =>
-                router.push({
-                  pathname: "/places/[id]/visited-date",
-                  params: { id: place.id },
-                })
-              }
+              onPress={() => router.push(routes.placeVisitedDate(place.id))}
             />
           ) : null}
         </CheckItem>

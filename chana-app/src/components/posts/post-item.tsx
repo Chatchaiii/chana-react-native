@@ -6,7 +6,9 @@ import { PostActions } from "@/components/posts/post-actions";
 import { ThemedPressable } from "@/components/ui/themed-pressable";
 import { ListPressDelay } from "@/constants/motion";
 import { Spacing } from "@/constants/theme";
+import { useDetailRoutes } from "@/hooks/use-detail-routes";
 import type { Post } from "@/types/post";
+import { formatRelative } from "@/utils/dates";
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 
@@ -22,21 +24,16 @@ export type PostItemProps = {
 /** A post: author row, optional photos, the text and its actions */
 export function PostItem({ post, variant = "feed" }: PostItemProps) {
   const router = useRouter();
-  const openPost = () =>
-    router.push({ pathname: "/post/[id]", params: { id: post.id } });
+  const routes = useDetailRoutes();
+  const openPost = () => router.push(routes.post(post.id));
 
   const content = (
     <>
       <ListItem
         leading={<Avatar name={post.author} size="m" />}
         label={post.author}
-        sublabel={post.postedAt}
-        onOptionsPress={() =>
-          router.push({
-            pathname: "/post/[id]/options",
-            params: { id: post.id },
-          })
-        }
+        sublabel={formatRelative(post.postedAt)}
+        onOptionsPress={() => router.push(routes.postOptions(post.id))}
       />
       {post.images && post.images.length > 0 ? (
         <ImageCarousel images={post.images} style={styles.part} />

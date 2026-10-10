@@ -1,6 +1,6 @@
-import { Avatar } from "@/components/ui/avatar";
 import { SearchResults } from "@/components/layout/search-results";
 import { useDrawer } from "@/components/layout/side-drawer";
+import { Avatar } from "@/components/ui/avatar";
 import { Icon } from "@/components/ui/icon";
 import {
   ThemedPressable,
@@ -68,7 +68,6 @@ export function TabScreen({
             </HeaderButton>
           ),
           headerSearchBarOptions: {
-            placement: "integratedButton",
             autoFocus: true,
             placeholder: "Search",
             onChangeText(e) {
